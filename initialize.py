@@ -20,7 +20,6 @@ default_value = {'Width': 63,
                  'Init': True
                  }
 
-
 def get_available_cameras():
     devices = FilterGraph().get_input_devices()
 

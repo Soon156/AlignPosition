@@ -37,11 +37,6 @@ def threading(distance_label, use_time_label, total_use_time_label):
         t.sleep(var)
 
 
-def thread_status():
-    for thread in trd.enumerate():
-        print(thread.name)
-
-
 class App(tkinter.Tk):
 
     def __init__(self):
@@ -139,7 +134,6 @@ class App(tkinter.Tk):
                                             args=(self.distance_label, self.use_time_label, self.tt_use_time_label)))
                 self.memo[counter_thread].join(timeout=5)
                 counter_thread += 1
-                print(thread_status)
 
             if var.get('Init'):
                 var['Init'] = False
