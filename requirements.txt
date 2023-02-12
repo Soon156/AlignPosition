@@ -1,0 +1,9 @@
+customtkinter~=5.1.2
+Pillow~=9.4.0
+pystray~=0.19.4
+plyer~=2.1.0
+opencv-python~=4.7.0.68
+cvzone~=1.5.6
+psutil~=5.9.4
+pygrabber~=0.1
+mediapipe~=0.9.1.0

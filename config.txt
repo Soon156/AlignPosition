@@ -1,0 +1,1 @@
+{'Width': 63, 'Focal': 840, 'Distance': 53, 'Camera': 0, 'Range': 10, 'Speed': 1, 'Position': 5, 'Idle': 5, 'Rest': 5, 'Scaling': 1.0, 'Appearance': 'System', 'Notifications': True, 'Background': True, 'Init': False}
