@@ -43,11 +43,11 @@ class create_toplevel:
         main.pack(fill="both", expand=True)
 
         frame = customtkinter.CTkFrame(master=main, corner_radius=0)
-        frame.grid(row=0, column=0, rowspan=9, padx=10, pady=10)
+        frame.grid(row=0, column=0, rowspan=10, padx=10, pady=10)
 
-        title = customtkinter.CTkLabel(master=frame, font=("Arial", 15),
-                                       text='Input info to calibrate distance')
-        title.grid(row=0, column=0, padx=20, pady=(20, 10))
+        title = customtkinter.CTkLabel(master=frame, font=("Arial", 12),
+                                       text='CALIBRATE DISTANCE BETWEEN CAMERA AND OBJECT:')
+        title.grid(row=0, column=0, padx=20, pady=(15, 10))
 
         self.width = customtkinter.CTkLabel(master=frame,
                                             text='Distance between centre of eyes (mm): ' + str(values.get('Width')))
@@ -71,22 +71,26 @@ class create_toplevel:
                                               command=lambda: calibrate_attribute(distance_entry),
                                               text='Calibrate')
         calibration.grid(row=5, column=0, padx=20, pady=(5, 5))
-        title = customtkinter.CTkLabel(master=frame, justify=tkinter.LEFT,
-                                       text="Press 'q' to exit")
-        title.grid(row=6, column=0, padx=20, pady=(0, 10))
+        title2 = customtkinter.CTkLabel(master=frame, justify=tkinter.LEFT,
+                                        text="Press 'q' to exit calibration")
+        title2.grid(row=6, column=0, padx=20, pady=(0, 10))
+
+        focal_length = customtkinter.CTkLabel(master=frame, font=("Arial", 12),
+                                              text='INPUT FOCAL LENGTH AFTER DONE CALIBRATE:')
+        focal_length.grid(row=7, column=0, padx=20, pady=(30, 5))
 
         focal = customtkinter.CTkLabel(master=frame,
                                        text='Average Focal Length: ')
-        focal.grid(row=7, column=0, padx=20, pady=(30, 10))
+        focal.grid(row=8, column=0, padx=20, pady=(5, 10))
 
         focal_entry = customtkinter.CTkEntry(master=frame)
         focal_entry.insert(0, values.get('Focal'))
-        focal_entry.grid(row=8, column=0, padx=20, pady=(0, 10))
+        focal_entry.grid(row=9, column=0, padx=20, pady=(0, 10))
 
         submit = customtkinter.CTkButton(master=frame,
                                          command=lambda: set_config(focal_entry),
                                          text='Apply')
-        submit.grid(row=9, column=0, padx=20, pady=(5, 20))
+        submit.grid(row=10, column=0, padx=20, pady=(5, 15))
 
     # Set slider input
     def slider_callback(self, value):
