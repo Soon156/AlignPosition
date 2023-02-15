@@ -198,7 +198,6 @@ class App(tkinter.Tk):
     # Exit app function
     def exit_app(self, system_icon):
         global condition
-        # BUG
         if self.memo[counter_thread].is_alive():
             condition = False
             self.memo[counter_thread].join()
