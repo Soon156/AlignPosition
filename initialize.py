@@ -1,8 +1,8 @@
 from ast import literal_eval
 from psutil import process_iter
 from pygrabber.dshow_graph import FilterGraph
-from tkinter import messagebox
 
+# default config
 file_name = 'config.txt'
 default_value = {'Width': 63,
                  'Focal': 840,
@@ -20,6 +20,8 @@ default_value = {'Width': 63,
                  'Init': True
                  }
 
+
+# get camera list
 def get_available_cameras():
     devices = FilterGraph().get_input_devices()
 
@@ -31,17 +33,20 @@ def get_available_cameras():
     return available_cameras
 
 
+# save value to config
 def save_value(input_value):
     with open(file_name, 'w') as f:
         f.write(input_value)
 
 
+# read value from config
 def load_value(filename):
     with open(filename, 'r') as f:
         read = f.read()
     return read
 
 
+# Check value type when get value
 def get_val():
     try:
         check_condition()
@@ -58,6 +63,7 @@ def get_val():
         return var
 
 
+# avoid program to run 2 times
 def check_process():
     if "Align Position" in (p.name() for p in process_iter()):
         return False
@@ -70,11 +76,12 @@ def check_process():
 # w, pixel distance (set by ml)
 # d, distance between camera and object (Distance)
 
-
+# create or rest config
 def create_config():
     save_value(str(default_value))
 
 
+# check config condition
 def check_condition():
     values = literal_eval(load_value(file_name))
     for i in default_value:
