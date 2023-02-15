@@ -2,3 +2,5 @@
 *.pyc
 config.txt
 test.py
+.idea/.name
+setup.py
