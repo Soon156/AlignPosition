@@ -192,8 +192,8 @@ class App(tkinter.Tk):
         if self.distance[counter].is_alive():
             condition = True
             self.memo[counter_thread].start()
-        self.deiconify()
         icon.stop()
+        self.after(0, self.deiconify())
 
     # Exit app function
     def exit_app(self, system_icon):
