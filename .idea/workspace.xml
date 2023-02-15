@@ -5,12 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9b26368e-df6b-44ee-9acc-21480c181e2c" name="Changes" comment="First">
-      <change beforePath="$PROJECT_DIR$/.idea/AlignPosition.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/AlignPosition.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Align Position.py" beforeDir="false" afterPath="$PROJECT_DIR$/Align Position.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/initialize.py" beforeDir="false" afterPath="$PROJECT_DIR$/initialize.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
