@@ -139,6 +139,9 @@ class App(tkinter.Tk):
                 i.get_val()
             else:
                 i.create_config()
+            if available_camera == {}:
+                tkinter.messagebox.showerror("Error", "No camera available on the system")
+                self.destroy()
         else:
             self.destroy()
 
