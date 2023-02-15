@@ -5,19 +5,22 @@ from cvzone import putTextRect
 import initialize as i
 import time as t
 
-# counter
+# counter to decide condition
 counter_position = 0
 counter_face = 0
 object_distance = 0
 
+# condition to break/stop thread
 condition = True
 
+# use to update main window usetime tracker
 use_time = 0
 temp_time = 0
 total_time = 0
 rest_timer = 0
 
 
+# Notification list
 def active_notification(value):
     values = i.get_val()
     if values.get('Notifications'):
@@ -61,6 +64,7 @@ def active_notification(value):
             )
 
 
+# Detect Position
 def position_detect():
     global object_distance
     global counter_position
@@ -80,6 +84,7 @@ def position_detect():
         pass
 
 
+# Track Use Time
 def computer_time(rest_time):
     global rest_timer
     rest = use_time - rest_timer
@@ -88,6 +93,7 @@ def computer_time(rest_time):
         rest_timer = use_time
 
 
+# Provide tool to calibrate focal length
 def calibration():
     values = i.get_val()
     W = (float(values.get('Width'))) / 10
@@ -117,6 +123,7 @@ def calibration():
     cv2.destroyAllWindows()
 
 
+# Detect Face
 def distance_measure():
     global object_distance, counter_face, counter_position, use_time, temp_time, total_time
     values = i.get_val()
@@ -124,7 +131,6 @@ def distance_measure():
     f = float(values.get('Focal'))
     cap = cv2.VideoCapture(values.get('Camera'), cv2.CAP_DSHOW)
     detector = FaceMeshDetector(maxFaces=1)
-    start = 0
     active_notification(0)
     while condition:
         success, img = cap.read()
