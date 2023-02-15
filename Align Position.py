@@ -52,7 +52,7 @@ class App(tkinter.Tk):
         customtkinter.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
         customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
         customtkinter.deactivate_automatic_dpi_awareness()
-        self.geometry(f"{320}x{200}")
+        self.geometry(f"{350}x{200}")
         self.title("Align Position")
         self.iconbitmap('Resources/logo.ico')
 
