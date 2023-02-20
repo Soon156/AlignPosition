@@ -6,7 +6,7 @@ from os import path
 import customtkinter
 from PIL.Image import open
 from pystray import Menu, Icon, MenuItem
-from plyer import notification as n
+from notifypy import Notify
 
 import AppTopLevel as at
 import FaceDistanceMeasurement as fm
@@ -170,13 +170,9 @@ class App(tkinter.Tk):
                 var['Init'] = False
                 i.save_value(str(var))
                 # Then show notification
-                n.notify(
-                    app_name="Align Position",
-                    title="Working Background",
-                    message="I'm Still working in background!",
-                    app_icon='Resources/logo.ico',
-                    timeout=5,
-                )
+                fm.notification.title = "Working Background"
+                fm.notification.message = "I'm Still working in background!"
+                fm.notification.send(block=False)
             self.withdraw()
             system_icon.run()
         else:
@@ -196,6 +192,10 @@ class App(tkinter.Tk):
         if self.distance[counter].is_alive():
             condition = True
             self.memo[counter_thread].start()
+        else:
+            self.distance_label.configure(text='Distance: ' + str(fm.object_distance))
+            self.use_time_label.configure(text='Use Time(s): ' + str(fm.use_time))
+            self.tt_use_time_label.configure(text='Total Use Time(s): ' + str(fm.temp_time))
         icon.stop()
         self.after(0, self.deiconify())
 
@@ -225,7 +225,8 @@ class App(tkinter.Tk):
             self.distance.append(trd.Thread(target=fm.distance_measure, name='dc'))
             self.memo.append(trd.Thread(target=threading, name='memo',
                                         args=(self.distance_label, self.use_time_label, self.tt_use_time_label)))
-            self.memo[counter_thread].join()
+            if self.winfo_viewable():
+                self.memo[counter_thread].join()
             self.distance[counter].join()
             self.reset_scoreboard()
             counter += 1
@@ -235,7 +236,8 @@ class App(tkinter.Tk):
             fm.condition = True
             condition = True
             self.distance[counter].start()
-            self.memo[counter_thread].start()
+            if self.winfo_viewable():
+                self.memo[counter_thread].start()
             self.detect.configure(text='Stop Detection')
 
     # Reset when stop detection
