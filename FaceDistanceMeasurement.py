@@ -1,6 +1,6 @@
 import cv2
 from cvzone.FaceMeshModule import FaceMeshDetector
-from plyer import notification as n
+from notifypy import Notify
 from cvzone import putTextRect
 import initialize as i
 import time as t
@@ -18,6 +18,8 @@ use_time = 0
 temp_time = 0
 total_time = 0
 rest_timer = 0
+notification = Notify(default_application_name="AlignPosition.exe",
+                      default_notification_icon="Resources/logo.ico")
 
 
 # Notification list
@@ -25,43 +27,21 @@ def active_notification(value):
     values = i.get_val()
     if values.get('Notifications'):
         if value == 0:
-            n.notify(
-                app_name="Align Position",
-                title="Detection Start!",
-                message="Monitoring your health from now!",
-                app_icon='Resources/logo.ico',
-                timeout=5,
-            )
+            notification.title = "Detection Start!"
+            notification.message = "Monitoring your health from now!"
+            notification.send(block=False)
         elif value == 1:
-            n.notify(
-                app_name="Align Position",
-                title="Take a break!",
-                message="You already use computer for a long time",
-                app_icon='Resources/logo.ico',
-                timeout=10,
-            )
+            notification.title = "Take a break!"
+            notification.message = "You already use computer for a long time"
+            notification.send(block=False)
         elif value == 2:
-            n.notify(
-                app_name="Align Position",
-                title="Sit Properly!",
-                message="Keep your position right",
-                app_icon='Resources/logo.ico',
-                timeout=10,
-            )
-        elif value == 3:
-            n.notify(
-                title="Align Position",
-                message="Take a break!",
-                app_icon='Resources/logo.ico',
-                timeout=5,
-            )
+            notification.title = "Sit Properly!"
+            notification.message = "Keep your position right"
+            notification.send(block=False)
         else:
-            n.notify(
-                title="Something Wrong...",
-                message="This shouldn't happened!",
-                app_icon='Resources/logo.ico',
-                timeout=5,
-            )
+            notification.title = "Something Wrong..."
+            notification.message = "This shouldn't happened!"
+            notification.send(block=False)
 
 
 # Detect Position
@@ -112,7 +92,7 @@ def calibration():
             f = (d * w) / W
             print(f)
 
-            putTextRect(img, f'Focal Length: {round(f,2)}',
+            putTextRect(img, f'Focal Length: {round(f, 2)}',
                         (face[10][0] - 100, face[10][1] - 50),
                         scale=1.5)
 
