@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../AIModel/.idea/AIModel.iml" filepath="$PROJECT_DIR$/../AIModel/.idea/AIModel.iml" />
+      <module fileurl="file://$USER_HOME$/Desktop/AlignPosition-main/.idea/AlignPosition-main.iml" filepath="$USER_HOME$/Desktop/AlignPosition-main/.idea/AlignPosition-main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/AlignPositionDev.iml" filepath="$PROJECT_DIR$/.idea/AlignPositionDev.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../pythonProject/.idea/pythonProject.iml" filepath="$PROJECT_DIR$/../pythonProject/.idea/pythonProject.iml" />
+    </modules>
+  </component>
+</project>
