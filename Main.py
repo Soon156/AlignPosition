@@ -1,50 +1,85 @@
-from Settings import *
-from Parental import NewPinTopLevel, PinTopLevel
-import os
+import cv2
+from PyQt6.QtCore import Qt, QTimer
+from PyQt6.QtGui import QImage, QPixmap
+from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QPushButton, QHBoxLayout
 
 
-def SettingsWindow():
-    settingwindow = SettingsTopLevel()
-
-
-def ParentalWindow():
-    if os.path.exists(PSW_HASH):
-        parentalwindow = PinTopLevel()
-    else:
-        pinwindow = NewPinTopLevel()
-
-
-class App(ctk.CTk):
+class WebcamWidget(QWidget):
     def __init__(self):
-        # window setup
-        super().__init__(fg_color=APP_BACKGROUND_COLOR)
-        self.title('Align Position')
-        self.iconbitmap("./Resources/logo.ico")
-        self.geometry('300x300')
-        self.resizable(False, False)
-        change_title_bar_color(self)
+        super().__init__()
 
-        # Widget
-        MainFrame(self)
+        self.camera = None
+        self.is_previewing = False
 
-        self.mainloop()
+        # Create the GUI elements
+        self.image_label = QLabel(self)
+        self.start_button = QPushButton("Start", self)
+        self.end_button = QPushButton("End", self)
+
+        # Connect the button signals to the corresponding slots
+        self.start_button.clicked.connect(self.start_preview)
+        self.end_button.clicked.connect(self.end_preview)
+
+        # Create a layout for the buttons
+        button_layout = QHBoxLayout()
+        button_layout.addWidget(self.start_button)
+        button_layout.addWidget(self.end_button)
+
+        # Create a layout for the image label and buttons
+        main_layout = QVBoxLayout(self)
+        main_layout.addWidget(self.image_label, alignment=Qt.AlignmentFlag.AlignCenter)
+        main_layout.addLayout(button_layout)
+
+        # Set the main layout for the widget
+        self.setLayout(main_layout)
+
+        # Create a timer to update the preview frames
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.update_preview)
+
+    def start_preview(self):
+        if not self.is_previewing:
+            self.camera = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+            self.is_previewing = True
+            self.timer.start(30)  # Update every 30 milliseconds
+
+    def end_preview(self):
+        if self.is_previewing:
+            self.is_previewing = False
+            self.timer.stop()
+            self.camera.release()
+
+    def update_preview(self):
+        ret, frame = self.camera.read()
+        if ret:
+            # Flip the frame horizontally
+            frame = cv2.flip(frame, 1)
+
+            # Convert the OpenCV frame to QImage
+            rgb_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            h, w, ch = rgb_image.shape
+            bytes_per_line = ch * w
+            q_image = QImage(rgb_image.data, w, h, bytes_per_line, QImage.Format.Format_RGB888)
+
+            # Convert the QImage to QPixmap for display
+            pixmap = QPixmap.fromImage(q_image)
+
+            # Set the pixmap on the image label
+            self.image_label.setPixmap(pixmap)
+
+    def closeEvent(self, event):
+        self.end_preview()
+        super().closeEvent(event)
 
 
-class MainFrame(ctk.CTkFrame):
-    def __init__(self, parent):
-        super().__init__(master=parent, fg_color='transparent')
-        # layout
-        self.pack(pady=20)
+# Create the application instance
+app = QApplication([])
 
-        button_detection = ctk.CTkButton(master=self, text='Start Detection')
-        button_detection.grid(column=0, row=0, sticky='nsew', pady=20)
+# Create the main window
+window = WebcamWidget()
+window.setWindowTitle("Webcam Preview")
+window.resize(800, 600)
+window.show()
 
-        button_parental = ctk.CTkButton(master=self, text='Parental Control', command=ParentalWindow)
-        button_parental.grid(column=0, row=1, sticky='nsew', pady=20)
-
-        button_settings = ctk.CTkButton(master=self, text='Settings', command=SettingsWindow)
-        button_settings.grid(column=0, row=2, sticky='nsew', pady=20)
-
-
-if __name__ == '__main__':
-    App()
+# Start the event loop
+app.exec()

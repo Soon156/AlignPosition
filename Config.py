@@ -1,61 +1,138 @@
 import ast
 import configparser
 import os
+import logging as log
+import datetime
 
-# default config
-file_name = 'config.ini'
-default_value = {'width': 63,
-                 'focal': 840,
-                 'distance': 53,
-                 'camera': 0,
-                 'range': 10,
-                 'speed': 1,
-                 'position': 5,
-                 'idle': 5,
-                 'rest': 5,
-                 'scaling': 1.0,
-                 'appearance': 'System',
-                 'notifications': True,
-                 'background': True,
-                 'init': True,
-                 }
+from psutil import process_iter
+from pygrabber.dshow_graph import FilterGraph
+
+# FILE
+PSW_HASH = "hash.txt"
+TEMP = 'temps'
+LOG_FOLDER = 'logs'
+
+# PATH
+ICON_PATH = "Resources/logo.ico"
+appdata_path = os.getenv('APPDATA')
+app_folder = os.path.join(appdata_path, 'AlignPosition')
+main_folder = os.path.dirname(os.path.abspath(__file__))
+log_folder = os.path.join(main_folder, LOG_FOLDER)
+
+# LOGGING
+X = datetime.datetime.now()
+FORMAT = X.strftime("%Y") + '-' + X.strftime("%m") + '-' + X.strftime("%d") + ' ' + X.strftime("%H") + X.strftime(
+    "%M") + X.strftime("%S")
+# Maximum number of log records allowed
+max_log_records = 10
+
+# Create folders if they don't exist
+os.makedirs(log_folder, exist_ok=True)
+
+# Iterate over the files in the log folder
+for file_name in os.listdir(log_folder):
+    if file_name.endswith('.log'):
+        file_path = os.path.join(log_folder, file_name)
+        with open(file_path, 'r') as file:
+            log_records = sum(1 for _ in file)
+
+        # Delete the log file if it exceeds the maximum number of log records
+        if log_records > max_log_records:
+            os.remove(file_path)
+
+log.basicConfig(
+    level=log.INFO,
+    format='%(asctime)s %(levelname)s %(name)s: %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S',
+    handlers=[
+        log.FileHandler(os.path.join(log_folder, FORMAT + '.log')),
+        log.StreamHandler()
+    ]
+)
+
+# DEFAULT
+CONFIG_PATH = f'{main_folder}/config.ini'
+DEFAULT_VAL = {
+    'camera': 0,
+    'speed': 1,
+    'idle': 5,
+    'rest': 5,
+    'notifications': True,
+    'background': True,
+    'init': True,
+}
+
+# COLORS
+APP_BACKGROUND_COLOR = '#1FC3B7'  # LIGHT GREEN
+
+# TEXT STYLE
+TITLE_TEXT_SIZE = 26
+TEXT_SIZE = 18
+SMALL_TEXT = 12
+TEXT_COLOR = '#ffffff'  # WHITE
+SYNC_TEXT_COLOR = '#0F615B'  # DARK GREEN
+BUTTON_COLOR = '#0F615B'
+FONT = 'Calibri'
 
 
-# save value to config
+# check alive of program
+def check_process():
+    if "Align Position" in (p.name() for p in process_iter()):
+        return False
+    else:
+        return True
+
+
+# get camera list
+def get_available_cameras():
+    available_cameras = {}
+    try:
+        devices = FilterGraph().get_input_devices()
+        for device_index, device_name in enumerate(devices):
+            available_cameras[device_index] = device_name
+    finally:
+        return available_cameras
+
+
+# update value
 def write_config(dictionary_str):
     config = configparser.ConfigParser(allow_no_value=True)
-    config.read(file_name)
+    config.read(CONFIG_PATH)
     config.optionxform = str
     config['Option'] = ast.literal_eval(str(dictionary_str))
-    with open(file_name, "w") as f:
+    with open(CONFIG_PATH, "w") as f:
+        log.info("Config updated")
         config.write(f)
 
 
 # create or reset config
 def create_config():
     config = configparser.ConfigParser(allow_no_value=True)
-    config['Option'] = default_value
-    with open(file_name, "w") as f:
+    config['Option'] = DEFAULT_VAL
+    with open(CONFIG_PATH, "w") as f:
+        log.info("Reset/create config")
         config.write(f)
 
 
 # read value from config
 def read_config():
-    if os.path.exists(file_name):
+    if os.path.exists(CONFIG_PATH):
         # Read config from a file
         config = configparser.ConfigParser(allow_no_value=True)
-        config.read(file_name)
+        config.read(CONFIG_PATH)
         config_dict = dict(config['Option'])
         return config_dict
     else:
+        log.warning("Config not found")
         create_config()
 
 
-# Check value type when get value
+# Check value valid before read value
 def get_config():
     try:
         check_condition()
     except Exception as e:
+        log.error(e)
         create_config()
     finally:
         var = read_config()
@@ -63,27 +140,20 @@ def get_config():
 
 
 # check config condition
-def check_condition():  # FIXME need to change condition
-    values = read_config()
-    for i in default_value:
-        if i not in values:
-            raise Exception()
-    float(values.get('width'))
-    float(values.get('focal'))
-    float(values.get('distance'))
-    float(values.get('range'))
-    int(values.get('camera'))
-    float(values.get('speed'))
-    float(values.get('position'))
-    float(values.get('idle'))
-    float(values.get('rest'))
-    float(values.get('scaling'))
-    a = values.get('background') == 'True' or values.get('background') == 'False'
-    b = values.get('notifications') == 'True' or values.get('notifications') == 'False'
-    c = values.get('init') == 'True' or values.get('init') == 'False'
-    d = values.get('appearance') == 'System' or values.get('appearance') == 'Light' or \
-        values.get('appearance') == 'Dark'
-    e = values.get('scaling') == 1.2 or values.get('scaling') == 1.1 or values.get('scaling') == 1.0 \
-        or values.get('scaling') == 0.9 or values.get('scaling') == 0.8
-    if not (a or b or c or d or e):
-        raise Exception()
+def check_condition():
+    try:
+        read_config()  # to make sure the file is initialized
+        values = read_config()
+        if len(values) != len(DEFAULT_VAL):
+            raise Exception("Invalid config option")
+        int(values.get('camera'))
+        float(values.get('speed'))
+        float(values.get('idle'))
+        float(values.get('rest'))
+        a = values.get('background') == 'True' or values.get('background') == 'False'
+        b = values.get('notifications') == 'True' or values.get('notifications') == 'False'
+        c = values.get('init') == 'True' or values.get('init') == 'False'
+        if not (a and b and c):
+            raise Exception("Invalid config option")
+    except Exception as e:
+        raise Exception("Invalid config values")

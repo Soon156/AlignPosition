@@ -71,6 +71,7 @@ def update_app_use_time():
         for app_name, use_time in app_use_times.items():
             writer.writerow({'App Name': app_name, 'Use Time (seconds)': use_time})
 
+
 '''
 # Track Use Time
 def computer_time(rest_time):

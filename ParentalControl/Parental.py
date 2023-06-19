@@ -59,11 +59,13 @@ def changePin(secret, new_secret):
     if comparePin(secret):
         tk.messagebox.showinfo(title="Success", message="Your PIN has been change!")
 
+
 def parentalWindow(win):
     try:
-         win.destroy()
+        win.destroy()
     finally:
         parental_window = ParentalTopLevel()
+
 
 class NewPinTopLevel(ctk.CTkToplevel):
     def __init__(self):
@@ -121,9 +123,9 @@ class ParentalTopLevel(ctk.CTkToplevel):
 class TimeTable(ctk.CTkFrame):
     def __init__(self, parent):
         # window setup
-        super().__init__(master=parent, fg_color=APP_BACKGROUND_COLOR)
-        change_title_bar_color(self)
-
+        super().__init__(master=parent, fg_color='transparent')
+        # layout
+        self.pack(pady=20)
         # Widgets
         table = ttk.Treeview(master=self, columns=('mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'))
         table.heading('mon', text='Monday')
@@ -148,5 +150,3 @@ class TimeTable(ctk.CTkFrame):
             status = "False"
             data = (time, status)
             table.insert(parent='', index=i, values=data)
-
-        self.mainloop()
