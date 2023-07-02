@@ -1,14 +1,12 @@
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
+from sklearn.utils import parallel_backend
 import os
 import glob
 import joblib
 import logging as log
-from Config import app_folder, TEMP
-
-model_file = os.path.join(app_folder, 'trained_model.joblib')
-folder_prefix = 'bad'
+from Config import app_folder, TEMP, model_file
 
 
 def load_landmarks(folder):
@@ -26,7 +24,7 @@ def train_model():
     # Step 1: Load the pose landmarks from the folder
     temp_folder = os.path.join(app_folder, TEMP)
     good_folder = os.path.join(temp_folder, 'good')
-    bad_folder = os.path.join(temp_folder, 'bad1')
+    bad_folder = os.path.join(temp_folder, 'bad')
 
     landmarks_good = load_landmarks(good_folder)
     landmarks_bad = load_landmarks(bad_folder)
@@ -40,7 +38,8 @@ def train_model():
 
     # Step 4: Choose and train your classifier
     classifier = SVC()
-    classifier.fit(X_train, y_train)
+    with parallel_backend('threading', n_jobs=-1):
+        classifier.fit(X_train, y_train)
 
     # Step 5: Evaluate the trained classifier
     accuracy = classifier.score(X_test, y_test)

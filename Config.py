@@ -7,6 +7,10 @@ import datetime
 from psutil import process_iter
 from pygrabber.dshow_graph import FilterGraph
 
+# ACCURACY AND PERFORMANCE
+DETECTION_RATE = 0.5  # second
+
+
 # FILE
 PSW_HASH = "hash.txt"
 TEMP = 'temps'
@@ -18,6 +22,7 @@ appdata_path = os.getenv('APPDATA')
 app_folder = os.path.join(appdata_path, 'AlignPosition')
 main_folder = os.path.dirname(os.path.abspath(__file__))
 log_folder = os.path.join(main_folder, LOG_FOLDER)
+model_file = os.path.join(main_folder, 'trained_model.joblib')
 
 # LOGGING
 X = datetime.datetime.now()
@@ -26,19 +31,19 @@ FORMAT = X.strftime("%Y") + '-' + X.strftime("%m") + '-' + X.strftime("%d") + ' 
 # Maximum number of log records allowed
 max_log_records = 10
 
-# Create folders if they don't exist
+# Create log folders if they don't exist
 os.makedirs(log_folder, exist_ok=True)
 
-# Iterate over the files in the log folder
-for file_name in os.listdir(log_folder):
-    if file_name.endswith('.log'):
-        file_path = os.path.join(log_folder, file_name)
-        with open(file_path, 'r') as file:
-            log_records = sum(1 for _ in file)
+# Get a list of log files in the folder
+log_files = [f for f in os.listdir(log_folder) if f.endswith('.log')]
 
-        # Delete the log file if it exceeds the maximum number of log records
-        if log_records > max_log_records:
-            os.remove(file_path)
+# Sort the log files by modification time in ascending order
+log_files.sort(key=lambda x: os.path.getmtime(os.path.join(log_folder, x)))
+
+# Delete the oldest log file if there are more than 3 log files
+if len(log_files) > 3:
+    oldest_log_file = os.path.join(log_folder, log_files[0])
+    os.remove(oldest_log_file)
 
 log.basicConfig(
     level=log.INFO,
