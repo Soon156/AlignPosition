@@ -1,5 +1,4 @@
 import hashlib
-from Settings import *
 import win32api
 import win32con
 import tkinter as tk

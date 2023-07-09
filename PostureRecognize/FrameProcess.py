@@ -2,7 +2,7 @@ import multiprocessing
 import threading
 
 import cv2
-from Config import get_config, TEMP, app_folder
+from Funtionality.Config import get_config, TEMP, app_folder
 import time
 import logging as log
 import os

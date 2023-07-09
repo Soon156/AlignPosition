@@ -6,7 +6,7 @@ import os
 import glob
 import joblib
 import logging as log
-from Config import app_folder, TEMP, model_file
+from Funtionality.Config import app_folder, TEMP, model_file
 
 
 def load_landmarks(folder):

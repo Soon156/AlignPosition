@@ -17,10 +17,11 @@ TEMP = 'temps'
 LOG_FOLDER = 'logs'
 
 # PATH
-ICON_PATH = "Resources/logo.ico"
+ICON_PATH = "../Resources/logo.ico"
 appdata_path = os.getenv('APPDATA')
 app_folder = os.path.join(appdata_path, 'AlignPosition')
-main_folder = os.path.dirname(os.path.abspath(__file__))
+package_folder = os.path.dirname(os.path.abspath(__file__))
+main_folder = os.path.dirname(package_folder)
 log_folder = os.path.join(main_folder, LOG_FOLDER)
 model_file = os.path.join(main_folder, 'trained_model.joblib')
 
@@ -33,17 +34,6 @@ max_log_records = 10
 
 # Create log folders if they don't exist
 os.makedirs(log_folder, exist_ok=True)
-
-# Get a list of log files in the folder
-log_files = [f for f in os.listdir(log_folder) if f.endswith('.log')]
-
-# Sort the log files by modification time in ascending order
-log_files.sort(key=lambda x: os.path.getmtime(os.path.join(log_folder, x)))
-
-# Delete the oldest log file if there are more than 3 log files
-if len(log_files) > 3:
-    oldest_log_file = os.path.join(log_folder, log_files[0])
-    os.remove(oldest_log_file)
 
 log.basicConfig(
     level=log.INFO,
@@ -78,6 +68,15 @@ TEXT_COLOR = '#ffffff'  # WHITE
 SYNC_TEXT_COLOR = '#0F615B'  # DARK GREEN
 BUTTON_COLOR = '#0F615B'
 FONT = 'Calibri'
+
+
+# clear log if exist >3
+def clear_log():
+    log_files = [f for f in os.listdir(log_folder) if f.endswith('.log')]
+    log_files.sort(key=lambda x: os.path.getmtime(os.path.join(log_folder, x)))
+    if len(log_files) > 3:
+        oldest_log_file = os.path.join(log_folder, log_files[0])
+        os.remove(oldest_log_file)
 
 
 # check alive of program

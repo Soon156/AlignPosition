@@ -17,7 +17,7 @@ def overlayNotification():
 
     root.geometry(f'{win_width}x{win_height}+0+0')  # set window size
     # Create a photo image object of the image in the path
-    image1 = Image.open("./Resources/logo.ico").resize((100, 100))
+    image1 = Image.open("../Resources/logo.ico").resize((100, 100))
     icon_image = ImageTk.PhotoImage(image1)
     label = tk.Label(image=icon_image, bg='grey')
     # Position image

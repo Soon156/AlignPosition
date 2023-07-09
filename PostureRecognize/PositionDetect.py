@@ -1,7 +1,7 @@
 import time
 
 import cv2
-from Config import get_config, DETECTION_RATE
+from Funtionality.Config import get_config, DETECTION_RATE
 import logging as log
 import joblib
 from PostureRecognize.Model import model_file
