@@ -92,11 +92,10 @@ def check_process():
     for p in process_iter():
         if p.name() == "AlignPosition.exe":
             counter += 1
-            if counter >= 2:
-                log.error("Program is already run")
-                return True
-        else:
-            return False
+        if counter >= 2:
+            log.error("Program is already run")
+            return True
+    return False
 
 
 # get camera list

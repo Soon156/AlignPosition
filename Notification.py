@@ -15,6 +15,7 @@ notifier_thread = None
 sleep_time = 30
 shutdown_time = 30
 clear_time = 5
+notify = None
 
 try:
     notifier = winotify.Notifier(r)
@@ -58,7 +59,7 @@ try:
     def clear():
         log.info("Notification Clear")
         notifier.clear()
-except PermissionError as e:
+except Exception:
     pass
 
 
@@ -95,7 +96,7 @@ def notice_user():
                 os.system("shutdown /s /t 0")
                 break
             break
-        if time.time() - start_time >= clear_time:
+        if time.time() - start_time >= clear_time or notify:
             clear()
             break
 
@@ -105,6 +106,11 @@ def first_time():
                                          icon=abs_logo_path, launch=clear)
     toast.set_audio(winotify.audio.Default, loop=False)
     toast.show()
+
+
+def stop_notification():
+    global notify
+    notify = True
 
 
 '''
