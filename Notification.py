@@ -59,7 +59,8 @@ try:
     def clear():
         log.info("Notification Clear")
         notifier.clear()
-except Exception:
+except Exception as e:
+    log.info(f"Message: {e}")
     pass
 
 

@@ -14,7 +14,7 @@ counter = 0
 PSW_HASH = "hash.txt"
 
 # PATH
-logo_path = "Resources/logo.ico"
+logo_path = "Resources\logo.ico"
 appdata_path = os.getenv('APPDATA')
 app_folder = os.path.join(appdata_path, 'AlignPosition')
 log_folder = os.path.join(app_folder, 'logs')
@@ -25,7 +25,8 @@ userdata = os.path.join(app_folder, 'usr_data.csv')
 package_folder = os.path.dirname(os.path.abspath(__file__))
 library_in_production = os.path.dirname(package_folder)
 home_in_pro = os.path.dirname(library_in_production)
-abs_logo_path = os.path.join(home_in_pro, logo_path)
+abs_logo_path = os.path.join(library_in_production, logo_path)  # Test
+# abs_logo_path = os.path.join(home_in_pro, logo_path)  # Production
 
 # LOGGING
 X = datetime.datetime.now()
