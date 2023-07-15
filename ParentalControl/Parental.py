@@ -6,6 +6,8 @@ from tkinter import ttk
 import re
 import os
 
+from Funtionality.Config import PSW_HASH
+
 
 # TODO plan to add firebase/TPM for more secure storing
 

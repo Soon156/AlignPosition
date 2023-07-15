@@ -9,21 +9,22 @@ from pygrabber.dshow_graph import FilterGraph
 
 # ACCURACY AND PERFORMANCE
 DETECTION_RATE = 0.5  # second
-
+APP_NAME = "Align Position"
 
 # FILE
 PSW_HASH = "hash.txt"
-TEMP = 'temps'
-LOG_FOLDER = 'logs'
 
 # PATH
-ICON_PATH = "../Resources/logo.ico"
 appdata_path = os.getenv('APPDATA')
 app_folder = os.path.join(appdata_path, 'AlignPosition')
+log_folder = os.path.join(app_folder, 'logs')
+model_file = os.path.join(app_folder, 'trained_model.joblib')
+oldTemp_folder = os.path.join(app_folder, 'old_temps')
+temp_folder = os.path.join(app_folder, 'temps')
+userdata = os.path.join(app_folder, 'usr_data.csv')
 package_folder = os.path.dirname(os.path.abspath(__file__))
 main_folder = os.path.dirname(package_folder)
-log_folder = os.path.join(main_folder, LOG_FOLDER)
-model_file = os.path.join(main_folder, 'trained_model.joblib')
+logo_path = os.path.join(main_folder, 'Resources\logo.ico')
 
 # LOGGING
 X = datetime.datetime.now()
@@ -32,8 +33,10 @@ FORMAT = X.strftime("%Y") + '-' + X.strftime("%m") + '-' + X.strftime("%d") + ' 
 # Maximum number of log records allowed
 max_log_records = 10
 
-# Create log folders if they don't exist
+# Create folders if they don't exist
 os.makedirs(log_folder, exist_ok=True)
+os.makedirs(temp_folder, exist_ok=True)
+os.makedirs(oldTemp_folder, exist_ok=True)
 
 log.basicConfig(
     level=log.INFO,
@@ -46,7 +49,7 @@ log.basicConfig(
 )
 
 # DEFAULT
-CONFIG_PATH = f'{main_folder}/config.ini'
+CONFIG_PATH = f'{app_folder}/config.ini'
 DEFAULT_VAL = {
     'camera': 0,
     'speed': 1,
@@ -75,16 +78,19 @@ def clear_log():
     log_files = [f for f in os.listdir(log_folder) if f.endswith('.log')]
     log_files.sort(key=lambda x: os.path.getmtime(os.path.join(log_folder, x)))
     if len(log_files) > 3:
-        oldest_log_file = os.path.join(log_folder, log_files[0])
-        os.remove(oldest_log_file)
+        files_to_remove = log_files[:-3]  # Get the files to remove (excluding the newest 3)
+        for file_name in files_to_remove:
+            file_path = os.path.join(log_folder, file_name)
+            os.remove(file_path)
+            log.info(f"Log file remove: {file_path}")
 
 
 # check alive of program
 def check_process():
-    if "Align Position" in (p.name() for p in process_iter()):
-        return False
-    else:
+    if "AlignPosition.exe" in (p.name() for p in process_iter()):
         return True
+    else:
+        return False
 
 
 # get camera list
@@ -105,8 +111,8 @@ def write_config(dictionary_str):
     config.optionxform = str
     config['Option'] = ast.literal_eval(str(dictionary_str))
     with open(CONFIG_PATH, "w") as f:
-        log.info("Config updated")
         config.write(f)
+        log.info("Config updated")
 
 
 # create or reset config
@@ -114,8 +120,8 @@ def create_config():
     config = configparser.ConfigParser(allow_no_value=True)
     config['Option'] = DEFAULT_VAL
     with open(CONFIG_PATH, "w") as f:
-        log.info("Reset/create config")
         config.write(f)
+        log.info("Reset/create config")
 
 
 # read value from config
@@ -136,7 +142,7 @@ def get_config():
     try:
         check_condition()
     except Exception as e:
-        log.error(e)
+        log.warning(e)
         create_config()
     finally:
         var = read_config()
@@ -150,6 +156,7 @@ def check_condition():
         values = read_config()
         if len(values) != len(DEFAULT_VAL):
             raise Exception("Invalid config option")
+
         int(values.get('camera'))
         float(values.get('speed'))
         float(values.get('idle'))
@@ -158,6 +165,6 @@ def check_condition():
         b = values.get('notifications') == 'True' or values.get('notifications') == 'False'
         c = values.get('init') == 'True' or values.get('init') == 'False'
         if not (a and b and c):
-            raise Exception("Invalid config option")
+            raise Exception("Invalid config value")
     except Exception as e:
-        raise Exception("Invalid config values")
+        raise e

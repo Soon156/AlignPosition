@@ -1,59 +1,54 @@
 import os.path
 import time
-from winotify import audio, Registry, PYW_EXE, Notifier
+from Funtionality.Config import logo_path
+import winotify
 
 # instantiate Notifier and Registry class
-app_id = "align position"
+app_id = "alignposition"
 app_path = os.path.abspath(__file__)
 
-r = Registry(app_id, PYW_EXE, app_path, force_override=True)
-notifier = Notifier(r)
+r = winotify.Registry(app_id, winotify.PYW_EXE, app_path, force_override=True)
+notifier = winotify.Notifier(r)
 
-logo_path = os.getcwd() + "\Resources\logo.ico"
-
-condition1 = False
-condition2 = False
-condition_sleep = True
-condition_shutdown = True
-
+callback = None
+condition = False
+notifier_thread = None
 sleep_time = 30
 shutdown_time = 30
-
-
-@notifier.register_callback
-def clear():
-    notifier.clear()
-    print('clear')
+clear_time = 5
 
 
 @notifier.register_callback
 def change_condition():
-    global condition_sleep, condition_shutdown
-    condition_sleep = False
-    condition_shutdown = False
-
-
-@notifier.register_callback
-def sleep_callback():
-    global condition1
-    toast = notifier.create_notification("Sleep", "Your computer will be sleep in " + str(sleep_time) + " seconds!",
-                                         icon=logo_path, launch=clear)
-    toast.add_actions("Cancel", change_condition)
-    toast.set_audio(audio.Mail, loop=False)
-    toast.show()
-    condition1 = True
+    global condition
+    condition = False
 
 
 @notifier.register_callback
 def shutdown_callback():
-    global condition2
+    print("shutdown")
+    global callback, condition
+    condition = True
+    callback = "Shutdown"
     toast = notifier.create_notification("Shutdown",
                                          "Your computer will be shutdown in " + str(shutdown_time) + " seconds",
                                          icon=logo_path, launch=clear)
     toast.add_actions("Cancel", change_condition)
-    toast.set_audio(audio.Mail, loop=True)
+    toast.set_audio(winotify.audio.Mail, loop=True)
     toast.show()
-    condition2 = True
+
+
+@notifier.register_callback
+def sleep_callback():
+    print("Sleep")
+    global callback, condition
+    condition = True
+    callback = "Sleep"
+    toast = notifier.create_notification("Sleep", "Your computer will be sleep in " + str(sleep_time) + " seconds!",
+                                         icon=logo_path, launch=clear)
+    toast.add_actions("Cancel", change_condition)
+    toast.set_audio(winotify.audio.Mail, loop=False)
+    toast.show()
 
 
 def break_notification():
@@ -61,31 +56,50 @@ def break_notification():
                                          icon=logo_path, launch=clear)
     toast.add_actions("Sleep", sleep_callback)
     toast.add_actions("Shutdown", shutdown_callback)
-    toast.set_audio(audio.Default, loop=False)
+    toast.set_audio(winotify.audio.Default, loop=False)
     toast.show()
+
+    print(toast.script)
+
+
+@notifier.register_callback
+def clear():
+    print("Test")
+    notifier.clear()
 
 
 def notice_user():
-    notifier.start()
+    global notifier_thread
+    if notifier_thread is None:
+        notifier.start()
+        notifier_thread = True
+
     start_time = time.time()
     break_notification()
 
     while True:
         notifier.update()
-        time.sleep(1)
-        if condition1:
+        if callback == "Sleep":
             time.sleep(sleep_time)
-            if condition_sleep:
+            if condition:
                 os.system("rundll32.exe powrprof.dll,SetSuspendState 0,1,0")
                 break
-        if condition2:
+        if callback == "Shutdown":
             time.sleep(shutdown_time)
-            if condition_shutdown:
+            if condition:
                 os.system("shutdown /s /t 0")
                 break
             break
-        if time.time() - start_time >= 10:
+        if time.time() - start_time >= clear_time:
+            clear()
             break
+
+
+def first_time():
+    toast = notifier.create_notification("Hi There~", 'Your program now is run in background!',
+                                         icon=logo_path, launch=clear)
+    toast.set_audio(audio.Default, loop=False)
+    toast.show()
 
 
 '''

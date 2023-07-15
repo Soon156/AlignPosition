@@ -1,21 +1,42 @@
 import multiprocessing
+import shutil
 import threading
-
 import cv2
-from Funtionality.Config import get_config, TEMP, app_folder
+from PySide6.QtWidgets import QApplication
+from Funtionality.Config import oldTemp_folder, temp_folder
 import time
 import logging as log
 import os
 import mediapipe as mp
 import numpy as np
 import concurrent.futures
+
 DURATION = 5
 
 
-def calculate_brightness(image):
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    brightness = int(gray.mean())
-    return brightness
+def temp_backup_restore(condition):
+    if condition:
+        source_folder = oldTemp_folder
+        destination_folder = temp_folder
+        log_message = "Temp Restore"
+    else:
+        source_folder = temp_folder
+        destination_folder = oldTemp_folder
+        log_message = "Temp Backup"
+
+        # Clear the destination folder
+    shutil.rmtree(destination_folder, ignore_errors=True)
+
+    for item in os.listdir(source_folder):
+        source_item = os.path.join(source_folder, item)
+        destination_item = os.path.join(destination_folder, item)
+
+        if os.path.isdir(source_item):
+            shutil.copytree(source_item, destination_item)
+        else:
+            shutil.copy(source_item, destination_item)
+
+    log.info(log_message)
 
 
 def get_landmark(frame):
@@ -29,10 +50,7 @@ def get_landmark(frame):
             return None
 
 
-def buffer_frames():
-    values = get_config()
-    cap = cv2.VideoCapture(int(values.get('camera')), cv2.CAP_DSHOW)
-
+def buffer_frames(cap):
     frames = []
     start_time = time.time()
     end_time = start_time + DURATION
@@ -46,15 +64,6 @@ def buffer_frames():
 
         frames.append(frame)
 
-        # Display the frame with pose landmarks and labels
-        cv2.imshow("Pose Landmarks", frame)
-
-        # Break the loop if 'q' is pressed
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            pass
-    # Release the VideoCapture and close the OpenCV windows
-    cap.release()
-    cv2.destroyAllWindows()
     log.info("Frame buffering completed")
 
     return frames
@@ -81,18 +90,27 @@ class LandmarkExtractor:
         else:
             self.failed_count += 1
 
-        if self.failed_count > 30:
+        if self.failed_count > 50:
+            log.warning(f"Make sure your face is clearly visible in the preview. Failed Count: {self.failed_count}")
             self.failed_count = 0
-            log.warning("Make sure your face is clearly visible in the preview")
             raise Exception("Face Not Detected")
 
-    def extract_landmarks_and_buffer_frames(self, categories, append):
-        output_folder = os.path.join(app_folder, TEMP)
-        folder = os.path.join(output_folder, categories)
+    def extract_landmarks_and_buffer_frames(self, win, categories, append):
+
+        folder = os.path.join(temp_folder, categories)
 
         # Make sure folder exists
-        os.makedirs(output_folder, exist_ok=True)
         os.makedirs(folder, exist_ok=True)
+
+        # Make new bad folder for append
+        if append:
+            counter = 1
+            while True:
+                bad_folder = os.path.join(temp_folder, f"bad{counter}")
+                if not os.path.exists(bad_folder):
+                    os.makedirs(bad_folder, exist_ok=True)
+                    break
+                counter += 1
 
         if not append:
             # Iterate over the files in the folder
@@ -112,13 +130,14 @@ class LandmarkExtractor:
         counter = multiprocessing.Value('i', frame_count)
 
         try:
-            frames = buffer_frames()
+            frames = buffer_frames(win.camera)
+            win.hint_lbl.setText("Relax yourself, processing data....")  # Set the initial text
+            QApplication.processEvents()
             # Submit the extract_landmark function for each frame
             futures = [executor.submit(self.extract_landmark, frame, folder, lock, counter) for frame in frames]
 
             # Wait for all tasks to complete
             concurrent.futures.wait(futures)
             log.info("Frames extraction completed")
-
         except Exception as e:
             log.error(e)
