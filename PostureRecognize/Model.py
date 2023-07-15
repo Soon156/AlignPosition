@@ -40,7 +40,7 @@ def train_model():
 
     # Step 5: Evaluate the trained classifier
     accuracy = classifier.score(X_test, y_test)
-    log.info(f"Model Accuracy: {accuracy}")
+    log.info(f"Model Accuracy: {accuracy}")  # TODO add handler if accuracy < 0.6
 
     # Step 6: Save the trained classifier
     joblib.dump(classifier, model_file)

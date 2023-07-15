@@ -3,18 +3,18 @@ import configparser
 import os
 import logging as log
 import datetime
-
 from psutil import process_iter
 from pygrabber.dshow_graph import FilterGraph
 
 # ACCURACY AND PERFORMANCE
 DETECTION_RATE = 0.5  # second
-APP_NAME = "Align Position"
+counter = 0
 
 # FILE
 PSW_HASH = "hash.txt"
 
 # PATH
+logo_path = "Resources/logo.ico"
 appdata_path = os.getenv('APPDATA')
 app_folder = os.path.join(appdata_path, 'AlignPosition')
 log_folder = os.path.join(app_folder, 'logs')
@@ -23,8 +23,9 @@ oldTemp_folder = os.path.join(app_folder, 'old_temps')
 temp_folder = os.path.join(app_folder, 'temps')
 userdata = os.path.join(app_folder, 'usr_data.csv')
 package_folder = os.path.dirname(os.path.abspath(__file__))
-main_folder = os.path.dirname(package_folder)
-logo_path = os.path.join(main_folder, 'Resources\logo.ico')
+library_in_production = os.path.dirname(package_folder)
+home_in_pro = os.path.dirname(library_in_production)
+abs_logo_path = os.path.join(home_in_pro, logo_path)
 
 # LOGGING
 X = datetime.datetime.now()
@@ -87,10 +88,15 @@ def clear_log():
 
 # check alive of program
 def check_process():
-    if "AlignPosition.exe" in (p.name() for p in process_iter()):
-        return True
-    else:
-        return False
+    global counter
+    for p in process_iter():
+        if p.name() == "AlignPosition.exe":
+            counter += 1
+            if counter >= 2:
+                log.error("Program is already run")
+                return True
+        else:
+            return False
 
 
 # get camera list

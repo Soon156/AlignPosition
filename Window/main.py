@@ -1,11 +1,11 @@
 import os
 import threading
 import time
-
+import logging as log
 from PySide6.QtCore import Slot
 from PySide6.QtWidgets import QWidget, QApplication
 from Funtionality.Config import model_file, get_config, write_config, logo_path
-from Notification import first_time, notice_user
+from Notification import first_time, notice_user, clear
 from PostureRecognize.PositionDetect import PostureRecognizer, read_elapsed_time_data
 from PostureRecognize.FrameProcess import LandmarkExtractor
 from UI.ui_main import Ui_MainMenu
@@ -15,13 +15,12 @@ from pystray import Menu, Icon, MenuItem
 from PIL.Image import open
 
 # App logo
-image = open(logo_path)
+image = open(logo_path)  # TODO check if exist, and log
 
 
-class MainWindow(QWidget, Ui_MainMenu):
+class MainWindow(QWidget, Ui_MainMenu):  # TODO disable quick access when monitoring in progress
     def __init__(self):
         super().__init__()
-        self.system_icon = None
         self.w = None
         self.start_time = 0
         self.monitoring_state = False
@@ -33,21 +32,17 @@ class MainWindow(QWidget, Ui_MainMenu):
         self.system_icon = Icon("AlignPosition", image, menu=Menu(
             MenuItem("Show", lambda: self.show(), default=True),
             MenuItem("Detection", self.start_monitoring),
-            MenuItem("Calibrate", self.calibrate),
             MenuItem("Exit", self.exit_app)
         ))
-        thread = threading.Thread(target=self.show_window)
-        thread.start()
+        self.system_icon.run_detached()
         if os.path.exists(model_file):
             self.start_btn.clicked.connect(self.start_monitoring)
         else:
+            log.warning("Model file not found")  # TODO check is this repeated
             self.le = LandmarkExtractor()
             self.start_btn.setText("Calibrate")
             self.start_btn.clicked.connect(self.calibrate)
         self.posture_recognizer.elapsed_time_updated.connect(self.update_elapsed_time_label)
-
-    def show_window(self):
-        self.system_icon.run()
 
     def start_monitoring(self):
         if os.path.exists(model_file):
@@ -55,6 +50,7 @@ class MainWindow(QWidget, Ui_MainMenu):
                 self.monitoring_state = False
                 self.start_btn.setText("Start Monitoring")
                 self.posture_recognizer.stop_capture()
+                log.info("Monitoring stop")
 
             else:
                 self.monitoring_state = True
@@ -62,12 +58,13 @@ class MainWindow(QWidget, Ui_MainMenu):
                 posture_thread = threading.Thread(target=self.run_posture_recognizer)
                 self.start_time = time.time()
                 posture_thread.start()
+                log.info("Monitoring start")
         else:
-            self.calibrate()
+            self.show()
 
     def run_posture_recognizer(self):
-        self.posture_recognizer.load_model()
-        self.posture_recognizer.start_capture()
+        self.posture_recognizer.load_model()  # TODO Error Handler
+        self.posture_recognizer.start_capture()  # TODO Error Handler
 
     def quick_access(self):
         self.setEnabled(False)
@@ -80,7 +77,10 @@ class MainWindow(QWidget, Ui_MainMenu):
         w = WebcamWidget(self)
         w.exec_()
         if os.path.exists(model_file):
-            self.start_btn.clicked.disconnect(self.calibrate)
+            try:
+                self.start_btn.clicked.disconnect(self.calibrate)
+            except RuntimeError:
+                pass
             self.start_btn.clicked.connect(self.start_monitoring)
             self.start_btn.setText("Start Monitoring")
         self.setEnabled(True)
@@ -89,7 +89,9 @@ class MainWindow(QWidget, Ui_MainMenu):
     def update_elapsed_time_label(self, elapsed_time):
         var = get_config()
         self.usetime_lbl.setText(f"Today Use Time (s): {elapsed_time}")
-        if time.time() - self.start_time >= float(var.get('rest')) * 60:
+        a = time.time() - self.start_time
+        b = float(var.get('rest')) * 60
+        if a >= b:
             thread = threading.Thread(target=notice_user)
             thread.start()
             self.start_time = time.time()
@@ -106,14 +108,13 @@ class MainWindow(QWidget, Ui_MainMenu):
                 first_time()
             self.hide()
         else:
+            clear()
             self.exit_app()
 
     def exit_app(self):
+        self.system_icon.stop()
         if self.monitoring_state:
             self.monitoring_state = False
             self.posture_recognizer.stop_capture()
-        try:
-            self.system_icon.stop()
-        except AttributeError:
-            pass
-        QApplication.quit()
+        clear()
+        QApplication.exit()

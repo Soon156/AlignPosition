@@ -62,6 +62,7 @@ class WebcamWidget(QDialog, Ui_calibrate_win):
 
         if not os.path.exists(model_file):
             self.append_btn.setVisible(False)
+            self.calibrate_btn.setVisible(False)
         else:
             self.calibrate_btn_2.setVisible(False)
         # Create a timer to update the preview frames
@@ -119,11 +120,12 @@ class WebcamWidget(QDialog, Ui_calibrate_win):
         temp_backup_restore(True)
         self.proceed_btn.setVisible(False)
         self.cancel_btn.setVisible(False)
-        self.calibrate_btn.setVisible(True)
         if os.path.exists(model_file):
             self.append_btn.setVisible(True)
+            self.calibrate_btn.setVisible(True)
         else:
             self.calibrate_btn_2.setVisible(True)
+            self.calibrate_btn.setVisible(False)
         self.hint_lbl.setText(Cancel_Calibrate)
         self.is_capturing = False
 
