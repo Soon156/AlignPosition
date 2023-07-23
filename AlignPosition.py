@@ -1,6 +1,7 @@
 import sys
 import logging as log
 from PySide6 import QtWidgets
+
 from Funtionality.ErrorMessage import WarningMessageBox
 from Window.main import MainWindow
 from Funtionality import Config
