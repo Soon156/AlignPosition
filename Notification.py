@@ -7,7 +7,7 @@ import winotify
 # instantiate Notifier and Registry class
 app_id = "alignposition"
 app_path = os.path.abspath(__file__)
-
+log.info(abs_logo_path)  # Test
 r = winotify.Registry(app_id, winotify.PYW_EXE, app_path, force_override=True)
 callback = None
 condition = False

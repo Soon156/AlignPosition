@@ -1,64 +1,13 @@
-import csv
 import cv2
 import time
 import logging as log
 import joblib
 import numpy as np
-from datetime import date
 from PySide6.QtCore import Signal, QObject
-from Funtionality.Config import get_config, DETECTION_RATE, userdata
+from Funtionality.Config import get_config, DETECTION_RATE
+from PostureRecognize.ElapsedTime import read_elapsed_time_data, save_elapsed_time_data
 from PostureRecognize.Model import model_file
 from PostureRecognize.FrameProcess import get_landmark
-
-
-def read_elapsed_time_data():
-    current_date = date.today()
-    elapsed_time = 0
-    try:
-        with open(userdata, 'r', newline='') as file:
-            reader = csv.reader(file)
-            rows = list(reader)
-            rows.reverse()  # Reverse the rows to start from the latest record
-
-            for row in rows:
-                if row[0] == str(current_date):
-                    elapsed_time = int(row[1])
-                    break
-    except FileNotFoundError:
-        print("Usage time record not found.")
-
-    return elapsed_time
-
-
-# TODO still need to fix
-def save_elapsed_time_data(elapsed_time):
-    current_date = date.today()
-
-    try:
-        with open(userdata, 'r', newline='') as file:
-            reader = csv.reader(file)
-            rows = list(reader)
-
-        if len(rows) > 1:
-            last_date = date.fromisoformat(rows[-1][0])
-            if last_date != current_date:
-                rows.append([str(current_date), str(elapsed_time)])
-            else:
-                rows[-1][1] = str(elapsed_time)
-        else:
-            rows.append([str(current_date), str(elapsed_time)])
-
-        rows_sorted = sorted(rows, key=lambda x: date.fromisoformat(x[0]))
-
-        with open(userdata, 'w', newline='') as file:
-            writer = csv.writer(file)
-            writer.writerows(rows_sorted)
-
-    except FileNotFoundError:
-        rows = [[str(current_date), str(elapsed_time)]]
-        with open(userdata, 'w', newline='') as file:
-            writer = csv.writer(file)
-            writer.writerows(rows)
 
 
 class PostureRecognizer(QObject):
@@ -142,7 +91,6 @@ class PostureRecognizer(QObject):
 
         save_elapsed_time_data(self.new_time)
         self.old_time = self.new_time
-        log.info(f"Elapsed time saved: {self.new_time} s")
         # Release the VideoCapture and close the OpenCV windows
         cap.release()
         cv2.destroyAllWindows()

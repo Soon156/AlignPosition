@@ -5,13 +5,12 @@ import os
 import glob
 import joblib
 import logging as log
-from Funtionality.Config import app_folder, temp_folder, model_file
+from Funtionality.Config import temp_folder, model_file
 
 
 def load_landmarks(folder):
     landmarks_files = glob.glob(folder + '/*.npy')
     landmarks = []
-
     for file in landmarks_files:
         file_landmarks = np.load(file)
         landmarks.append(file_landmarks)

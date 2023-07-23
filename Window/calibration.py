@@ -15,6 +15,7 @@ Good_Posture = "Maintain your good posture 5 seconds\n clicked proceed to Start"
 Bad_Posture = "Maintain your bad posture 5 seconds\n clicked proceed to Start"
 Append_Posture = "Append bad posture\n clicked proceed to Start"
 Cancel_Calibrate = "Calibration Cancel"
+Append_Finish = "Append done"
 Model_Training = "Training model, please wait patiently...."
 Capture_Posture = "Capturing posture, stay still...."
 Cancel = "Cancelling..."
@@ -22,6 +23,7 @@ Cancel = "Cancelling..."
 
 class CalibrateThread(QThread):
     finished = Signal(str)  # Signal emitted when the task is finished
+    stop_signal = Signal()
 
     def __init__(self, parent, cat, cond):
         super().__init__()
@@ -33,6 +35,10 @@ class CalibrateThread(QThread):
         self.parent.hint_lbl.setText(Capture_Posture)
         le = LandmarkExtractor()
         le.extract_landmarks_and_buffer_frames(self.parent, self.cat, self.cond)
+
+        # Check if the stop signal is emitted
+        if self.isInterruptionRequested():
+            return  # Exit the thread gracefully
 
         if self.cat == "good":
             self.finished.emit("good")
@@ -109,25 +115,26 @@ class WebcamWidget(QDialog, Ui_calibrate_win):
             self.hint_lbl.setText(Append_Posture)
 
     def cancel(self):
-        log.info(Cancel_Calibrate)
         if self.calibrate_thread is not None and self.calibrate_thread.isRunning():
             self.calibrate_thread.finished.disconnect(self.calibrate_finished)
-            self.calibrate_thread.stop()  # Terminate the running thread
             self.calibrate_thread.wait()  # Wait for the thread to finish
         if self.training_thread is not None and self.training_thread.isRunning():
-            self.training_thread.stop()  # Terminate the running thread
             self.training_thread.join()  # Wait for the thread to finish
-        temp_backup_restore(True)
-        self.proceed_btn.setVisible(False)
-        self.cancel_btn.setVisible(False)
+
         if os.path.exists(model_file):
             self.append_btn.setVisible(True)
             self.calibrate_btn.setVisible(True)
         else:
             self.calibrate_btn_2.setVisible(True)
             self.calibrate_btn.setVisible(False)
-        self.hint_lbl.setText(Cancel_Calibrate)
+
+        temp_backup_restore(True)
+        self.proceed_btn.setVisible(False)
+        self.cancel_btn.setVisible(False)
+        self.proceed_btn.setEnabled(True)
         self.is_capturing = False
+        self.hint_lbl.setText(Cancel_Calibrate)
+        log.info(Cancel_Calibrate)
 
     def calibrate_finished(self, mode):
         if mode == "good":
@@ -145,13 +152,14 @@ class WebcamWidget(QDialog, Ui_calibrate_win):
         self.calibrate_btn_2.setVisible(False)
         self.calibrate_btn.setVisible(True)
         self.append_btn.setVisible(True)
+        self.proceed_btn.setEnabled(True)
+        self.is_capturing = False
         if arg1 == "calibrate":
             log.info("Calibrate Success")
             self.hint_lbl.setText("Calibrate finish")
         elif arg1 == "append":
             log.info("Append Success")
             self.hint_lbl.setText("Append finish")
-        self.is_capturing = False
 
     def update_preview(self):
         ret, frame = self.camera.read()

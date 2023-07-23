@@ -10,9 +10,6 @@ from pygrabber.dshow_graph import FilterGraph
 DETECTION_RATE = 0.5  # second
 counter = 0
 
-# FILE
-PSW_HASH = "hash.txt"
-
 # PATH
 logo_path = "Resources\logo.ico"
 appdata_path = os.getenv('APPDATA')
@@ -21,12 +18,20 @@ log_folder = os.path.join(app_folder, 'logs')
 model_file = os.path.join(app_folder, 'trained_model.joblib')
 oldTemp_folder = os.path.join(app_folder, 'old_temps')
 temp_folder = os.path.join(app_folder, 'temps')
-userdata = os.path.join(app_folder, 'usr_data.csv')
+userdata = os.path.join(app_folder, 'usr_data.bin')
 package_folder = os.path.dirname(os.path.abspath(__file__))
 library_in_production = os.path.dirname(package_folder)
 home_in_pro = os.path.dirname(library_in_production)
-abs_logo_path = os.path.join(library_in_production, logo_path)  # Test
-# abs_logo_path = os.path.join(home_in_pro, logo_path)  # Production
+# abs_logo_path = os.path.join(library_in_production, logo_path)  # Test
+abs_logo_path = os.path.join(home_in_pro, logo_path)  # Production
+psw_key_path = os.path.expanduser('~/.AlignPosition/psw.key')
+user_key_path = os.path.expanduser('~/.AlignPosition/usr_data.key')
+
+# Create folders if they don't exist
+os.makedirs(app_folder, exist_ok=True)
+os.makedirs(log_folder, exist_ok=True)
+os.makedirs(temp_folder, exist_ok=True)
+os.makedirs(oldTemp_folder, exist_ok=True)
 
 # LOGGING
 X = datetime.datetime.now()
@@ -34,11 +39,6 @@ FORMAT = X.strftime("%Y") + '-' + X.strftime("%m") + '-' + X.strftime("%d") + ' 
     "%M") + X.strftime("%S")
 # Maximum number of log records allowed
 max_log_records = 10
-
-# Create folders if they don't exist
-os.makedirs(log_folder, exist_ok=True)
-os.makedirs(temp_folder, exist_ok=True)
-os.makedirs(oldTemp_folder, exist_ok=True)
 
 log.basicConfig(
     level=log.INFO,
@@ -55,7 +55,7 @@ CONFIG_PATH = f'{app_folder}/config.ini'
 DEFAULT_VAL = {
     'camera': 0,
     'speed': 1,
-    'idle': 5,
+    'idle': 0.5,
     'rest': 5,
     'notifications': True,
     'background': True,

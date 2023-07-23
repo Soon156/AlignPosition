@@ -26,7 +26,7 @@ def temp_backup_restore(condition):
 
         # Clear the destination folder
     shutil.rmtree(destination_folder, ignore_errors=True)
-
+    # TODO if folder not exists
     for item in os.listdir(source_folder):
         source_item = os.path.join(source_folder, item)
         destination_item = os.path.join(destination_folder, item)
