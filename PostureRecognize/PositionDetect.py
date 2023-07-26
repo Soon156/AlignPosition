@@ -98,28 +98,23 @@ class PostureRecognizer(QObject):
         cv2.destroyAllWindows()
 
     def detect_posture(self, landmark):
-        # Reshape the landmarks array to have the correct shape
-        landmarks = np.array(landmark)
-        landmarks = landmarks.reshape(-1, 3)
-
         # Use the loaded model for predictions or other tasks
-        predictions = self.classifier.predict(landmarks)
+        predictions = self.classifier.predict(landmark)
 
-        # Count the number of good and bad posture predictions
-        num_good = np.count_nonzero(predictions == 0)
-        num_bad = np.count_nonzero(predictions == 1)
+        good_posture_count = np.count_nonzero(predictions == 0)
+        total_count = len(predictions)
+        percentage = (good_posture_count / total_count) * 100
 
-        # print(f" {num_good}   :   {num_bad}")
         result = "Detecting..."
         # Determine the majority and print the result
-        if num_good >= num_bad:
+        if percentage >= 50:
             self.goodCount += 1
             if self.goodCount >= 5:
-                result = "The majority is good posture."
+                result = "good"
                 self.badCount = 0
-        elif num_bad > num_good:
+        else:
             self.badCount += 1
             if self.badCount >= 5:
-                result = "The majority is bad posture."
+                result = "bad"
                 self.goodCount = 0
         return result

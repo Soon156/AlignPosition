@@ -1,14 +1,19 @@
 import os
+import sys
 import threading
 import cv2
 import logging as log
+
+from PySide6 import QtWidgets
 from PySide6.QtCore import QTimer, QThread, Signal
 from PySide6.QtGui import QImage, QPixmap
 from PySide6.QtWidgets import QDialog
+
+from Funtionality.ErrorMessage import WarningMessageBox
 from PostureRecognize.FrameProcess import LandmarkExtractor, temp_backup_restore
 from UI.ui_calibrate import Ui_calibrate_win
 from PostureRecognize.Model import train_model
-from Funtionality.Config import get_config, model_file
+from Funtionality.Config import get_config, model_file, temp_folder
 
 values = get_config()
 Good_Posture = "Maintain your good posture 5 seconds\n clicked proceed to Start"
@@ -25,16 +30,22 @@ class CalibrateThread(QThread):
     finished = Signal(str)  # Signal emitted when the task is finished
     stop_signal = Signal()
 
-    def __init__(self, parent, cat, cond):
+    def __init__(self, parent, cat):
         super().__init__()
         self.cat = cat
-        self.cond = cond
         self.parent = parent
 
     def run(self):
         self.parent.hint_lbl.setText(Capture_Posture)
         le = LandmarkExtractor()
-        le.extract_landmarks_and_buffer_frames(self.parent, self.cat, self.cond)
+        try:
+            le.extract_landmarks_and_buffer_frames(self.parent, self.cat)
+        except Exception as e:  # TODO
+            app = QtWidgets.QApplication(sys.argv)
+            title = "Error"
+            hint = e
+            error = "Something Wrong"
+            widget = WarningMessageBox(title, hint, error)
 
         # Check if the stop signal is emitted
         if self.isInterruptionRequested():
@@ -42,7 +53,7 @@ class CalibrateThread(QThread):
 
         if self.cat == "good":
             self.finished.emit("good")
-        elif self.cond:
+        elif self.cat == "append":
             self.finished.emit("append")
         else:
             self.finished.emit("calibrate")
@@ -93,11 +104,11 @@ class WebcamWidget(QDialog, Ui_calibrate_win):
             self.is_capturing = True
             self.proceed_btn.setEnabled(False)
             if self.hint_lbl.text() == Good_Posture:
-                self.calibrate_thread = CalibrateThread(self, "good", False)
+                self.calibrate_thread = CalibrateThread(self, "good")
             elif self.hint_lbl.text() == Bad_Posture:
-                self.calibrate_thread = CalibrateThread(self, "bad", False)
+                self.calibrate_thread = CalibrateThread(self, "bad")
             elif self.hint_lbl.text() == Append_Posture:
-                self.calibrate_thread = CalibrateThread(self, "bad", True)
+                self.calibrate_thread = CalibrateThread(self, "append")
             self.calibrate_thread.finished.connect(self.calibrate_finished)
             self.calibrate_thread.start()
 

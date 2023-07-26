@@ -20,7 +20,6 @@ def tracking():
     active_time = 0
     usage_time_for_specific_date = {}
     app_use_times = read_app_use_time()
-    print(app_use_times)
     specific_date = str(date.today())
 
     # Access the app usage data for the specific date
@@ -29,25 +28,27 @@ def tracking():
 
     while condition:
         pid = win32process.GetWindowThreadProcessId(win32gui.GetForegroundWindow())[1]
-        p = psutil.Process(pid)
-        ExecutablePath = p.exe()
-        langs = win32api.GetFileVersionInfo(ExecutablePath, r'\VarFileInfo\Translation')
-        key = r'StringFileInfo\%04x%04x\FileDescription' % (langs[0][0], langs[0][1])
-        app_name = (win32api.GetFileVersionInfo(ExecutablePath, key))
-        start_time = time.time()
+        try:
+            p = psutil.Process(pid)
+            ExecutablePath = p.exe()
+            langs = win32api.GetFileVersionInfo(ExecutablePath, r'\VarFileInfo\Translation')
+            key = r'StringFileInfo\%04x%04x\FileDescription' % (langs[0][0], langs[0][1])
+            app_name = (win32api.GetFileVersionInfo(ExecutablePath, key))
+            start_time = time.time()
 
-        if app_name != 'Windows Explorer' and app_name != 'Align Position':
-            while pid == win32process.GetWindowThreadProcessId(win32gui.GetForegroundWindow())[1]:
-                time.sleep(1)
-                active_time = int(time.time() - start_time)
-            # Add the new use time to the existing use time for the app
-            if app_name in usage_time_for_specific_date:
-                usage_time_for_specific_date[app_name] += active_time
-            else:
-                usage_time_for_specific_date[app_name] = active_time
+            if app_name != 'Windows Explorer' and app_name != 'Align Position':
+                while pid == win32process.GetWindowThreadProcessId(win32gui.GetForegroundWindow())[1]:
+                    time.sleep(1)
+                    active_time = int(time.time() - start_time)
+                # Add the new use time to the existing use time for the app
+                if app_name in usage_time_for_specific_date:
+                    usage_time_for_specific_date[app_name] += active_time
+                else:
+                    usage_time_for_specific_date[app_name] = active_time
+        except Exception:
+            pass
 
     app_use_times[specific_date] = usage_time_for_specific_date
-    print(app_use_times)
     write_app_use_time(app_use_times)
 
 

@@ -9,6 +9,7 @@ from Funtionality.Config import temp_folder, model_file
 
 
 def load_landmarks(folder):
+    # TODO check if the landmark file is > 30 or is not empty
     landmarks_files = glob.glob(folder + '/*.npy')
     landmarks = []
     for file in landmarks_files:
@@ -19,19 +20,30 @@ def load_landmarks(folder):
 
 
 def train_model():
-    # Step 1: Load the pose landmarks from the folder
     good_folder = os.path.join(temp_folder, 'good')
     bad_folder = os.path.join(temp_folder, 'bad')
 
     landmarks_good = load_landmarks(good_folder)
     landmarks_bad = load_landmarks(bad_folder)
 
-    # Step 2: Prepare your training data
+    # Prepare your training data with the existing classes
     features = np.concatenate((landmarks_good, landmarks_bad), axis=0)
     labels = np.concatenate((np.zeros(len(landmarks_good)), np.ones(len(landmarks_bad))), axis=0)
 
-    # Step 3: Split the data into training and testing sets
+    # Split the data into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(features, labels, test_size=0.2, random_state=42)
+
+    # Append multiple new classes
+    temp_folder_contents = os.listdir(temp_folder)
+    new_classes_folders = [folder for folder in temp_folder_contents if folder.startswith('append_')]
+
+    for idx, new_folder in enumerate(new_classes_folders):
+        folder_path = os.path.join(temp_folder, new_folder)
+        landmarks_new = load_landmarks(folder_path)
+        new_labels = np.full(len(landmarks_new), idx + 2)  # Assign unique labels to the new classes
+
+        X_train = np.concatenate((X_train, landmarks_new), axis=0)
+        y_train = np.concatenate((y_train, new_labels), axis=0)
 
     # Step 4: Choose and train your classifier
     classifier = SVC()
