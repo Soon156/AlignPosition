@@ -39,7 +39,7 @@ class PostureRecognizer(QObject):
     def capture_landmarks(self):
         # Create a VideoCapture object to capture video from the camera
         values = get_config()
-        cap = cv2.VideoCapture(int(values.get('camera')), cv2.CAP_DSHOW)  # 0 indicates the default camera
+        cap = cv2.VideoCapture(int(values.get('camera')), cv2.CAP_DSHOW)
         start_time = time.time()
         idle_time = 0
         temp_time = 0
@@ -48,21 +48,18 @@ class PostureRecognizer(QObject):
         while self.running:
             # Read the video frames
             ret, frame = cap.read()
+            frame = cv2.flip(frame, 1)
 
             if not ret:
                 log.error("Invalid video source, cap.read() failed")
                 raise Exception("cap.read() failed")
 
             # Get landmark of frame
-            landmark = get_landmark(frame)
+            frame, landmark = get_landmark(frame)
 
             if landmark is not None:
                 # Do further processing with the pose landmarks
                 labels = self.detect_posture(landmark)
-
-                # Display the labels on the frame
-                label_text = f"Posture: {labels}"
-                cv2.putText(frame, label_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
                 # Update the elapsed time only if landmark is not None
                 self.elapsed_time = int(time.time() - start_time)
@@ -71,6 +68,10 @@ class PostureRecognizer(QObject):
                 self.new_time = self.old_time + self.elapsed_time - total_time
                 self.elapsed_time_updated.emit(self.new_time)
                 counter = False
+
+                # Display the labels on the frame
+                label_text = f"Posture: {labels}"
+                cv2.putText(frame, label_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
             else:
                 if not counter:
@@ -82,8 +83,9 @@ class PostureRecognizer(QObject):
                     if pass_time >= float(values.get('idle')) * 60:
                         temp_time = pass_time
 
-            # Display the frame with pose landmarks and labels
-            cv2.imshow("Pose Landmarks", frame)
+            if values.get('dev') == "True":
+                # Display the frame with pose landmarks and labels
+                cv2.imshow("Pose Landmarks", frame)
 
             # Break the loop if 'q' is pressed
             if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -106,6 +108,7 @@ class PostureRecognizer(QObject):
         # Count the number of good and bad posture predictions
         num_good = np.count_nonzero(predictions == 0)
         num_bad = np.count_nonzero(predictions == 1)
+
         # print(f" {num_good}   :   {num_bad}")
         result = "Detecting..."
         # Determine the majority and print the result

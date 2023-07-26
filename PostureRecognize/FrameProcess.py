@@ -45,9 +45,10 @@ def get_landmark(frame):
         results = pose.process(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
         if results.pose_landmarks:
             landmarks = np.array([[landmark.x, landmark.y, landmark.z] for landmark in results.pose_landmarks.landmark])
-            return landmarks
+            mp.solutions.drawing_utils.draw_landmarks(frame, results.pose_landmarks, mp_pose.POSE_CONNECTIONS)
+            return frame, landmarks
         else:
-            return None
+            return frame, None
 
 
 def buffer_frames(cap):

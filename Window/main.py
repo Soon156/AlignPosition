@@ -2,10 +2,12 @@ import os
 import threading
 import time
 import logging as log
+
+import zroya
 from PySide6.QtCore import Slot
 from PySide6.QtWidgets import QWidget, QApplication
 from Funtionality.Config import model_file, get_config, write_config, logo_path
-from Notification import first_time, notice_user, stop_notification
+from Funtionality.Notification import first_notify, show_break
 from PostureRecognize.PositionDetect import PostureRecognizer, read_elapsed_time_data
 from PostureRecognize.FrameProcess import LandmarkExtractor
 from UI.ui_main import Ui_MainMenu
@@ -92,7 +94,7 @@ class MainWindow(QWidget, Ui_MainMenu):  # TODO disable quick access when monito
         a = time.time() - self.start_time
         b = float(var.get('rest')) * 60
         if a >= b:
-            thread = threading.Thread(target=notice_user)
+            thread = threading.Thread(target=show_break)
             thread.start()
             self.start_time = time.time()
 
@@ -105,14 +107,14 @@ class MainWindow(QWidget, Ui_MainMenu):  # TODO disable quick access when monito
             if var.get('init') == "True":
                 var['init'] = False
                 write_config(var)
-                first_time()
+                log.info("First Time Launch")
+                zroya.show(first_notify)
             self.hide()
         else:
             self.exit_app()
 
     def exit_app(self):
         self.system_icon.stop()
-        stop_notification()
         if self.monitoring_state:
             self.monitoring_state = False
             self.posture_recognizer.stop_capture()

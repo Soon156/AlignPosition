@@ -22,8 +22,8 @@ userdata = os.path.join(app_folder, 'usr_data.bin')
 package_folder = os.path.dirname(os.path.abspath(__file__))
 library_in_production = os.path.dirname(package_folder)
 home_in_pro = os.path.dirname(library_in_production)
-# abs_logo_path = os.path.join(library_in_production, logo_path)  # Test
-abs_logo_path = os.path.join(home_in_pro, logo_path)  # Production
+abs_logo_path = os.path.join(library_in_production, logo_path)  # Test
+# abs_logo_path = os.path.join(home_in_pro, logo_path)  # Production
 psw_key_path = os.path.expanduser('~/.AlignPosition/psw.key')
 user_key_path = os.path.expanduser('~/.AlignPosition/usr_data.key')
 
@@ -42,7 +42,7 @@ max_log_records = 10
 
 log.basicConfig(
     level=log.INFO,
-    format='%(asctime)s %(levelname)s %(name)s: %(message)s',
+    format='%(asctime)s %(levelname)s : %(message)s',
     datefmt='%Y-%m-%d %H:%M:%S',
     handlers=[
         log.FileHandler(os.path.join(log_folder, FORMAT + '.log')),
@@ -60,6 +60,7 @@ DEFAULT_VAL = {
     'notifications': True,
     'background': True,
     'init': True,
+    'dev': False
 }
 
 # COLORS
