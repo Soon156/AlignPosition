@@ -2,16 +2,9 @@ import json
 import os
 import logging as log
 import pickle
-from datetime import datetime
 
 from cryptography.fernet import Fernet
-from Funtionality.Config import user_key_path, userdata, app_folder
-
-# Get the current month and year
-now = datetime.now()
-current_month, current_year = now.month, now.year
-existing_filename = f"use_time_{current_month:02d}_{current_year}.bin"
-filename = os.path.join(app_folder, existing_filename)
+from Funtionality.Config import user_key_path, userdata, app_use_time
 
 
 def load_init_key():
@@ -51,14 +44,19 @@ def read_use_time():
 def write_app_use_time(data):
     json_data = json.dumps(data).encode('utf-8')
     encrypted_data = fernet.encrypt(json_data)
-    with open(filename, "wb") as file:
+    with open(app_use_time, "wb") as file:
         file.write(encrypted_data)
 
 
 def read_app_use_time():
     loaded_data = {}
-    with open(filename, "rb") as file:
-        loaded_data = file.read()
-    decrypted_data = fernet.decrypt(loaded_data)
-    json_data = decrypted_data.decode('utf-8')
-    return json.loads(json_data)
+    try:
+        with open(app_use_time, "rb") as file:
+            loaded_data = file.read()
+            decrypted_data = fernet.decrypt(loaded_data)
+            json_data = decrypted_data.decode('utf-8')
+            return json.loads(json_data)
+    except FileNotFoundError:
+        log.info("No app use time found")
+        return loaded_data
+

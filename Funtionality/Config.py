@@ -10,6 +10,10 @@ from pygrabber.dshow_graph import FilterGraph
 DETECTION_RATE = 0.5  # second
 counter = 0
 
+# Get the current month and year
+now = datetime.datetime.now()
+current_month, current_year = now.month, now.year
+
 # PATH
 logo_path = "Resources\logo.ico"
 appdata_path = os.getenv('APPDATA')
@@ -19,6 +23,8 @@ model_file = os.path.join(app_folder, 'trained_model.joblib')
 oldTemp_folder = os.path.join(app_folder, 'old_temps')
 temp_folder = os.path.join(app_folder, 'temps')
 userdata = os.path.join(app_folder, 'usr_data.bin')
+app_use_time_file = f"use_time_{current_month:02d}_{current_year}.bin"
+app_use_time = os.path.join(app_folder, app_use_time_file)
 package_folder = os.path.dirname(os.path.abspath(__file__))
 library_in_production = os.path.dirname(package_folder)
 home_in_pro = os.path.dirname(library_in_production)

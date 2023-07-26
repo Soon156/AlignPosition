@@ -1,29 +1,31 @@
 import time
-import csv
+from datetime import date
 import psutil
 import win32process
 import win32api
 import win32gui
 
-filename = 'app_use_times.csv'
+from Funtionality.EncryptData import read_app_use_time, write_app_use_time
+
 condition = True  # To control thread
-# Create a dictionary to store app use times
-app_use_times = {}
-active_time = 0
+current_date = str(date.today())
+
+
+def update_condition():
+    global condition
+    condition = False
 
 
 def tracking():
-    global active_time
-    # Load existing app use times from the CSV file, if it exists
-    try:
-        with open(filename, mode='r', newline='') as csv_file:
-            reader = csv.DictReader(csv_file)
-            for row in reader:
-                app_name = row['App Name']
-                use_time = int(row['Use Time (seconds)'])
-                app_use_times[app_name] = use_time
-    except FileNotFoundError:
-        print(f"No existing app use time data found in '{filename}'")  # link to GUI
+    active_time = 0
+    usage_time_for_specific_date = {}
+    app_use_times = read_app_use_time()
+    print(app_use_times)
+    specific_date = str(date.today())
+
+    # Access the app usage data for the specific date
+    if specific_date in app_use_times:
+        usage_time_for_specific_date = app_use_times[specific_date]
 
     while condition:
         pid = win32process.GetWindowThreadProcessId(win32gui.GetForegroundWindow())[1]
@@ -31,45 +33,23 @@ def tracking():
         ExecutablePath = p.exe()
         langs = win32api.GetFileVersionInfo(ExecutablePath, r'\VarFileInfo\Translation')
         key = r'StringFileInfo\%04x%04x\FileDescription' % (langs[0][0], langs[0][1])
-        name = (win32api.GetFileVersionInfo(ExecutablePath, key))
+        app_name = (win32api.GetFileVersionInfo(ExecutablePath, key))
         start_time = time.time()
-        print(name)  # Test purpose
 
-        if name in app_use_times:
-            last_active_time = app_use_times[name]
-            print(f"Recorded Time: {last_active_time}")  # Test purpose
-
-        if name != 'Windows Explorer':
+        if app_name != 'Windows Explorer' and app_name != 'Align Position':
             while pid == win32process.GetWindowThreadProcessId(win32gui.GetForegroundWindow())[1]:
                 time.sleep(1)
                 active_time = int(time.time() - start_time)
-                print(active_time)  # Test purpose
-            print(f"{name} was used for {active_time} seconds")  # Test purpose
             # Add the new use time to the existing use time for the app
-            if name in app_use_times:
-                app_use_times[name] += active_time
+            if app_name in usage_time_for_specific_date:
+                usage_time_for_specific_date[app_name] += active_time
             else:
-                app_use_times[name] = active_time
+                usage_time_for_specific_date[app_name] = active_time
 
-        update_app_use_time()
+    app_use_times[specific_date] = usage_time_for_specific_date
+    print(app_use_times)
+    write_app_use_time(app_use_times)
 
-        if name in app_use_times:
-            print(f"latest use time: {app_use_times[name]}")  # Test purpose
-
-        time.sleep(1)
-
-    update_app_use_time()  # Test Purpose
-
-
-def update_app_use_time():
-    # Write the updated app use times to the CSV file
-    with open(filename, mode='w', newline='', encoding='utf-8') as csv_file:
-        fieldnames = ['App Name', 'Use Time (seconds)']
-        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
-
-        writer.writeheader()
-        for app_name, use_time in app_use_times.items():
-            writer.writerow({'App Name': app_name, 'Use Time (seconds)': use_time})
 
 
 '''

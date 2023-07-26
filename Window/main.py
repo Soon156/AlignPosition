@@ -8,6 +8,7 @@ from PySide6.QtCore import Slot
 from PySide6.QtWidgets import QWidget, QApplication
 from Funtionality.Config import model_file, get_config, write_config, logo_path
 from Funtionality.Notification import first_notify, show_break, set_elapsed_time
+from ParentalControl.AppUseTime import update_condition
 from PostureRecognize.PositionDetect import PostureRecognizer, read_elapsed_time_data
 from PostureRecognize.FrameProcess import LandmarkExtractor
 from UI.ui_main import Ui_MainMenu
@@ -115,6 +116,7 @@ class MainWindow(QWidget, Ui_MainMenu):  # TODO disable quick access when monito
             self.exit_app()
 
     def exit_app(self):
+        update_condition()
         self.system_icon.stop()
         if self.monitoring_state:
             self.monitoring_state = False
