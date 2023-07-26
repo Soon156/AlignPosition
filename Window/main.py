@@ -7,7 +7,7 @@ import zroya
 from PySide6.QtCore import Slot
 from PySide6.QtWidgets import QWidget, QApplication
 from Funtionality.Config import model_file, get_config, write_config, logo_path
-from Funtionality.Notification import first_notify, show_break
+from Funtionality.Notification import first_notify, show_break, set_elapsed_time
 from PostureRecognize.PositionDetect import PostureRecognizer, read_elapsed_time_data
 from PostureRecognize.FrameProcess import LandmarkExtractor
 from UI.ui_main import Ui_MainMenu
@@ -91,6 +91,7 @@ class MainWindow(QWidget, Ui_MainMenu):  # TODO disable quick access when monito
     def update_elapsed_time_label(self, elapsed_time):
         var = get_config()
         self.usetime_lbl.setText(f"Today Use Time (s): {elapsed_time}")
+        set_elapsed_time(elapsed_time)
         a = time.time() - self.start_time
         b = float(var.get('rest')) * 60
         if a >= b:

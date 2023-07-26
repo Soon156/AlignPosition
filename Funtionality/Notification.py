@@ -3,6 +3,8 @@ import time
 import logging as log
 import zroya
 from Funtionality.Config import abs_logo_path
+from PostureRecognize.ElapsedTime import save_elapsed_time_data
+
 
 status = zroya.init(
     app_name="AlignPosition",
@@ -21,6 +23,7 @@ shutdown_time = 30
 clear_time = 10000  # millisecond
 logo = abs_logo_path
 notify = None
+elapsed_time = 0
 
 first_notify = zroya.Template(zroya.TemplateType.ImageAndText2)
 first_notify.setFirstLine("Hi There~")
@@ -51,7 +54,12 @@ shutdown_notify.addAction("Cancel")
 shutdown_notify.setExpiration(clear_time)
 
 
-def cancel_handler(nid, action_id):
+def set_elapsed_time(shared_elapsed_time):
+    global elapsed_time
+    elapsed_time = shared_elapsed_time
+
+
+def cancel_handler():
     log.info("Cancel operation shutdown/sleep")
     global condition
     condition = False
@@ -72,24 +80,31 @@ def callback_handler(nid, action_id):
 
 
 def show_break():
+    global condition, callback
     start_time = time.time()
     zroya.show(break_notify, on_action=callback_handler)
     while True:
         if callback == "Sleep":
+            callback = None
             time.sleep(sleep_time)
             if condition:
+                condition = False
                 log.info("System Sleep")
                 os.system("rundll32.exe powrprof.dll,SetSuspendState 0,1,0")
                 break
         if callback == "Shutdown":
+            callback = None
             time.sleep(shutdown_time)
             if condition:
+                condition = False
                 log.info("System Shutdown")
+                save_elapsed_time_data(elapsed_time)
                 os.system("shutdown /s /t 0")
                 break
             break
         if time.time() - start_time >= clear_time or notify:
             break
+
 
 '''
 # Notification list
