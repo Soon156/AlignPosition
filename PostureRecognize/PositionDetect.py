@@ -97,7 +97,7 @@ class PostureRecognizer(QObject):
         cap.release()
         cv2.destroyAllWindows()
 
-    def detect_posture(self, landmark):
+    def detect_posture(self, landmark, threshold=65):
         # Use the loaded model for predictions or other tasks
         predictions = self.classifier.predict(landmark)
 
@@ -107,7 +107,7 @@ class PostureRecognizer(QObject):
 
         result = "Detecting..."
         # Determine the majority and print the result
-        if percentage >= 50:
+        if percentage >= threshold:
             self.goodCount += 1
             if self.goodCount >= 5:
                 result = "good"

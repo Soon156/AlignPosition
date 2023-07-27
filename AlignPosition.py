@@ -22,7 +22,7 @@ if __name__ == '__main__':
         app = QtWidgets.QApplication(sys.argv)
 
         # Activate app use time tracker
-        use_time = threading.Thread(target=tracking)  # TODO need to move to parental control
+        use_time = threading.Thread(target=tracking)  # TODO need to move to parental control and add option to on/off
         use_time.start()
 
         # Create the main window

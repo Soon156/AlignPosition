@@ -35,7 +35,6 @@ def tracking():
             key = r'StringFileInfo\%04x%04x\FileDescription' % (langs[0][0], langs[0][1])
             app_name = (win32api.GetFileVersionInfo(ExecutablePath, key))
             start_time = time.time()
-
             if app_name != 'Windows Explorer' and app_name != 'Align Position':
                 while pid == win32process.GetWindowThreadProcessId(win32gui.GetForegroundWindow())[1]:
                     time.sleep(1)

@@ -1,3 +1,5 @@
+import random
+
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
@@ -8,10 +10,14 @@ import logging as log
 from Funtionality.Config import temp_folder, model_file
 
 
-def load_landmarks(folder):
-    # TODO check if the landmark file is > 30 or is not empty
+def load_landmarks(folder, num_samples=50):
     landmarks_files = glob.glob(folder + '/*.npy')
     landmarks = []
+
+    if len(landmarks_files) < num_samples:
+        log.warning("Warning: The number of samples in '{folder}' is less than {num_samples}.")
+        raise Exception("TOO LITTLE SAMPLE")
+
     for file in landmarks_files:
         file_landmarks = np.load(file)
         landmarks.append(file_landmarks)
@@ -19,7 +25,7 @@ def load_landmarks(folder):
     return np.concatenate(landmarks, axis=0)
 
 
-def train_model():
+def train_model(accuracy_conf=0.6):
     good_folder = os.path.join(temp_folder, 'good')
     bad_folder = os.path.join(temp_folder, 'bad')
 
@@ -51,8 +57,11 @@ def train_model():
 
     # Step 5: Evaluate the trained classifier
     accuracy = classifier.score(X_test, y_test)
-    log.info(f"Model Accuracy: {accuracy}")  # TODO add handler if accuracy < 0.6
-
-    # Step 6: Save the trained classifier
+    if accuracy <+ accuracy_conf:
+        log.warning(f"Model accuracy too low: {accuracy}")
+        raise Exception("LOW MODEL ACURACY")
+    else:
+        log.warning(f"Model Accuracy: {accuracy}")
+        # Step 6: Save the trained classifier
     joblib.dump(classifier, model_file)
     log.info(f"Trained model saved as {model_file}")
