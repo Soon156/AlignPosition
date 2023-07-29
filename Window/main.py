@@ -14,6 +14,7 @@ from PostureRecognize.FrameProcess import LandmarkExtractor
 from UI.ui_main import Ui_MainMenu
 from .calibration import WebcamWidget
 from .quickAccess import QuickWindow
+from .parentalControl import ParentalWindow
 from pystray import Menu, Icon, MenuItem
 from PIL.Image import open
 
@@ -45,6 +46,8 @@ class MainWindow(QWidget, Ui_MainMenu):  # TODO disable quick access when monito
             self.le = LandmarkExtractor()
             self.start_btn.setText("Calibrate")
             self.start_btn.clicked.connect(self.calibrate)
+
+        self.parental_btn.clicked.connect(self.parental_control)
         self.posture_recognizer.elapsed_time_updated.connect(self.update_elapsed_time_label)
 
     def start_monitoring(self):
@@ -72,6 +75,12 @@ class MainWindow(QWidget, Ui_MainMenu):  # TODO disable quick access when monito
     def quick_access(self):
         self.setEnabled(False)
         w = QuickWindow(self)
+        w.exec_()
+        self.setEnabled(True)
+
+    def parental_control(self):
+        self.setEnabled(False)
+        w = ParentalWindow(self)
         w.exec_()
         self.setEnabled(True)
 
