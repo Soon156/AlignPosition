@@ -1,0 +1,7 @@
+<RCC>
+  <qresource prefix="newPrefix">
+    <file>Small_title.png</file>
+    <file>logo.ico</file>
+    <file>Title.png</file>
+  </qresource>
+</RCC>

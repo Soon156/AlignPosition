@@ -1,5 +1,4 @@
 import sys
-import logging as log
 import threading
 
 from PySide6 import QtWidgets
@@ -12,10 +11,7 @@ from Funtionality import Config
 if __name__ == '__main__':
 
     if not Config.check_process():
-        try:
-            Config.check_condition()
-        except Exception as e:
-            log.warning(e)
+        Config.check_condition()
         Config.clear_log()
 
         # Create the application instance

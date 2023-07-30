@@ -3,14 +3,8 @@ from PySide6.QtCharts import QBarSet, QBarSeries, QBarCategoryAxis, QChart
 from PySide6.QtGui import QPainter
 from PySide6.QtWidgets import QDialog, QSizePolicy
 from PySide6.QtCore import Signal, Qt, QSize
-
 from Funtionality.EncryptData import read_use_time
 from UI.ui_parentalControl import Ui_ParentalControlDialog
-import logging as log
-
-# Import your data here (replace this with your actual data)
-data = [(1, 10), (2, 20), (3, 15), (4, 30)]
-# TODO different view, today, week, month
 
 rows = read_use_time()
 
@@ -46,7 +40,7 @@ class ParentalWindow(QDialog, Ui_ParentalControlDialog):
         categories = []
         # Add data values to the bar_set
         for item in rows[:7]:
-            bar_set.append(item[1]/60)
+            bar_set.append(int(item[1])/60)
             categories.append(item[0])
 
         # Create a QBarSeries and add the bar_set to it

@@ -5,35 +5,45 @@ import logging as log
 
 import zroya
 from PySide6.QtCore import Slot
-from PySide6.QtWidgets import QWidget, QApplication
+from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox
 from Funtionality.Config import model_file, get_config, write_config, logo_path
 from Funtionality.Notification import first_notify, show_break, set_elapsed_time
 from ParentalControl.AppUseTime import update_condition
 from PostureRecognize.PositionDetect import PostureRecognizer, read_elapsed_time_data
 from PostureRecognize.FrameProcess import LandmarkExtractor
-from UI.ui_main import Ui_MainMenu
+from UI.ui_MainMenu import Ui_MainWindow
+from .auth import Authentication
 from .calibration import WebcamWidget
 from .quickAccess import QuickWindow
-from .parentalControl import ParentalWindow
 from pystray import Menu, Icon, MenuItem
 from PIL.Image import open
 
-# App logo
-image = open(logo_path)  # TODO check if exist, and log
 
 
-class MainWindow(QWidget, Ui_MainMenu):  # TODO disable quick access when monitoring in progress
+
+def seconds_to_hms(seconds):
+    hours = seconds // 3600
+    minutes = (seconds % 3600) // 60
+    remaining_seconds = seconds % 60
+    temp_time = f"{hours}:{minutes}:{remaining_seconds}"
+    return temp_time
+
+
+class MainWindow(QMainWindow, Ui_MainWindow):
+    # App logo
+
     def __init__(self):
         super().__init__()
         self.w = None
         self.start_time = 0
         self.monitoring_state = False
         self.setupUi(self)
+        self.image = open(logo_path)
         self.quick_btn.clicked.connect(self.quick_access)
-        self.usetime_lbl.setText(f"Today Use Time (s): {read_elapsed_time_data()}")
-        self.msg_label.setText("Good Morning MFK")  # TODO add hint here
+        self.usetime_lbl.setText(f"Today Use Time (hh:mm:ss): {seconds_to_hms(read_elapsed_time_data())}")
+        # self.msg_label.setText("Good Morning MFK")  # TODO add hint here
         self.posture_recognizer = PostureRecognizer()
-        self.system_icon = Icon("AlignPosition", image, menu=Menu(
+        self.system_icon = Icon("AlignPosition", self.image, menu=Menu(
             MenuItem("Show", lambda: self.show(), default=True),
             MenuItem("Detection", self.start_monitoring),
             MenuItem("Exit", self.exit_app)
@@ -69,8 +79,12 @@ class MainWindow(QWidget, Ui_MainMenu):  # TODO disable quick access when monito
             self.show()
 
     def run_posture_recognizer(self):
-        self.posture_recognizer.load_model()  # TODO Error Handler
-        self.posture_recognizer.start_capture()  # TODO Error Handler
+        self.posture_recognizer.load_model()
+        try:
+            self.posture_recognizer.start_capture()
+        except Exception as e:
+            QMessageBox.critical(self, "Error", f"An error occurred: {str(e)}")
+            self.exit_app()
 
     def quick_access(self):
         self.setEnabled(False)
@@ -80,7 +94,7 @@ class MainWindow(QWidget, Ui_MainMenu):  # TODO disable quick access when monito
 
     def parental_control(self):
         self.setEnabled(False)
-        w = ParentalWindow(self)
+        w = Authentication(self)
         w.exec_()
         self.setEnabled(True)
 
@@ -100,7 +114,7 @@ class MainWindow(QWidget, Ui_MainMenu):  # TODO disable quick access when monito
     @Slot(int)
     def update_elapsed_time_label(self, elapsed_time):
         var = get_config()
-        self.usetime_lbl.setText(f"Today Use Time (s): {elapsed_time}")
+        self.usetime_lbl.setText(f"Today Use Time (hh:mm:ss): {seconds_to_hms(elapsed_time)}")
         set_elapsed_time(elapsed_time)
         a = time.time() - self.start_time
         b = float(var.get('rest')) * 60

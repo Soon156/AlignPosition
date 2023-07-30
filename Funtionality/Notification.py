@@ -1,8 +1,12 @@
 import os
+import sys
 import time
 import logging as log
 import zroya
+from PySide6 import QtWidgets
+
 from Funtionality.Config import abs_logo_path
+from Funtionality.ErrorMessage import WarningMessageBox
 from PostureRecognize.ElapsedTime import save_elapsed_time_data
 
 
@@ -25,33 +29,41 @@ logo = abs_logo_path
 notify = None
 elapsed_time = 0
 
-first_notify = zroya.Template(zroya.TemplateType.ImageAndText2)
-first_notify.setFirstLine("Hi There~")
-first_notify.setSecondLine("Your program now is run in background!")
-first_notify.setImage(logo)
-first_notify.setExpiration(clear_time)
+try:
+    first_notify = zroya.Template(zroya.TemplateType.ImageAndText2)
+    first_notify.setFirstLine("Hi There~")
+    first_notify.setSecondLine("Your program now is run in background!")
+    first_notify.setImage(logo)
+    first_notify.setExpiration(clear_time)
 
-break_notify = zroya.Template(zroya.TemplateType.ImageAndText2)
-break_notify.setFirstLine("It's Break Time!!!")
-break_notify.setSecondLine("Take a coffee break in a busy day!")
-break_notify.setImage(logo)
-break_notify.addAction("Sleep")
-break_notify.addAction("Shutdown")
-break_notify.setExpiration(clear_time)
+    break_notify = zroya.Template(zroya.TemplateType.ImageAndText2)
+    break_notify.setFirstLine("It's Break Time!!!")
+    break_notify.setSecondLine("Take a coffee break in a busy day!")
+    break_notify.setImage(logo)
+    break_notify.addAction("Sleep")
+    break_notify.addAction("Shutdown")
+    break_notify.setExpiration(clear_time)
 
-sleep_notify = zroya.Template(zroya.TemplateType.ImageAndText2)
-sleep_notify.setFirstLine("Sleep")
-sleep_notify.setSecondLine("Your computer will be sleep in " + str(sleep_time) + " seconds!")
-sleep_notify.setImage(logo)
-sleep_notify.addAction("Cancel")
-break_notify.setExpiration(clear_time)
+    sleep_notify = zroya.Template(zroya.TemplateType.ImageAndText2)
+    sleep_notify.setFirstLine("Sleep")
+    sleep_notify.setSecondLine("Your computer will be sleep in " + str(sleep_time) + " seconds!")
+    sleep_notify.setImage(logo)
+    sleep_notify.addAction("Cancel")
+    break_notify.setExpiration(clear_time)
 
-shutdown_notify = zroya.Template(zroya.TemplateType.ImageAndText2)
-shutdown_notify.setFirstLine("Shutdown")
-shutdown_notify.setSecondLine("Your computer will be shutdown in " + str(shutdown_time) + " seconds")
-shutdown_notify.setImage(logo)
-shutdown_notify.addAction("Cancel")
-shutdown_notify.setExpiration(clear_time)
+    shutdown_notify = zroya.Template(zroya.TemplateType.ImageAndText2)
+    shutdown_notify.setFirstLine("Shutdown")
+    shutdown_notify.setSecondLine("Your computer will be shutdown in " + str(shutdown_time) + " seconds")
+    shutdown_notify.setImage(logo)
+    shutdown_notify.addAction("Cancel")
+    shutdown_notify.setExpiration(clear_time)
+except Exception as e:
+    app = QtWidgets.QApplication(sys.argv)
+    title = "Error"
+    hint = "Missing Icon Resources, reinstall the application"
+    error = "File Not Found"
+    widget = WarningMessageBox(title, hint, error)
+    sys.exit()
 
 
 def set_elapsed_time(shared_elapsed_time):

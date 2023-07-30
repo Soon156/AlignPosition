@@ -31,7 +31,10 @@ class PostureRecognizer(QObject):
 
     def start_capture(self):
         self.running = True
-        self.capture_landmarks()
+        try:
+            self.capture_landmarks()
+        except Exception as e:
+            raise e
 
     def stop_capture(self):
         self.running = False
@@ -49,7 +52,6 @@ class PostureRecognizer(QObject):
             # Read the video frames
             ret, frame = cap.read()
             frame = cv2.flip(frame, 1)
-
             if not ret:
                 log.error("Invalid video source, cap.read() failed")
                 raise Exception("cap.read() failed")
@@ -90,6 +92,8 @@ class PostureRecognizer(QObject):
             # Break the loop if 'q' is pressed
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
+
+            # time.sleep(DETECTION_RATE)  # TODO If want need to fix the lag when update use time
 
         save_elapsed_time_data(self.new_time)
         self.old_time = self.new_time

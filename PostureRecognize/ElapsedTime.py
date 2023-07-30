@@ -17,6 +17,7 @@ def read_elapsed_time_data():
 
 
 def save_elapsed_time_data(elapsed_time):
+    log.info(f"Time: {elapsed_time}")
     current_date = str(date.today())
     elapsed_time = str(elapsed_time)
     try:

@@ -1,6 +1,7 @@
 from PySide6 import QtWidgets, QtCore
 from PySide6.QtWidgets import QMessageBox
 
+
 """
 Stadard button
 QMessageBox.Ok
@@ -40,3 +41,5 @@ class WarningMessageBox(QtWidgets.QMainWindow):
             message_box.setStandardButtons(QMessageBox.Ok)
             message_box.buttonClicked.connect(button_clicked)
         message_box.exec()
+
+

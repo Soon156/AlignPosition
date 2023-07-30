@@ -14,7 +14,7 @@
    <string>Parental Control</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../resource.qrc">
+   <iconset resource="resource.qrc">
     <normaloff>:/newPrefix/logo.ico</normaloff>:/newPrefix/logo.ico</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -85,6 +85,19 @@
            </property>
           </widget>
          </item>
+         <item>
+          <widget class="QCheckBox" name="checkBox">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string> App Use Time Tracking</string>
+           </property>
+          </widget>
+         </item>
         </layout>
        </widget>
       </item>
@@ -147,7 +160,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../resource.qrc"/>
+  <include location="resource.qrc"/>
  </resources>
  <connections/>
 </ui>

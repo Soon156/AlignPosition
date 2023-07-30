@@ -8,7 +8,7 @@ from pygrabber.dshow_graph import FilterGraph
 
 # ACCURACY AND PERFORMANCE
 DETECTION_RATE = 0.5  # second
-counter = 0
+counter = 0  # To check the program exist
 
 # Get the current month and year
 now = datetime.datetime.now()
@@ -60,11 +60,11 @@ log.basicConfig(
 CONFIG_PATH = f'{app_folder}/config.ini'
 DEFAULT_VAL = {
     'camera': 0,
-    'speed': 1,
-    'idle': 0.5,
-    'rest': 5,
+    'rest': 60,
+    'idle': 0.1,
     'notifications': True,
     'background': True,
+    'auto': True,
     'init': True,
     'dev': False
 }
@@ -168,16 +168,17 @@ def check_condition():
         read_config()  # to make sure the file is initialized
         values = read_config()
         if len(values) != len(DEFAULT_VAL):
+            create_config()
             raise Exception("Invalid config option")
 
         int(values.get('camera'))
-        float(values.get('speed'))
         float(values.get('idle'))
         float(values.get('rest'))
         a = values.get('background') == 'True' or values.get('background') == 'False'
         b = values.get('notifications') == 'True' or values.get('notifications') == 'False'
         c = values.get('init') == 'True' or values.get('init') == 'False'
-        if not (a and b and c):
+        e = values.get('auto') == 'True' or values.get('auto') == 'False'
+        if not (a and b and c and e):
             raise Exception("Invalid config value")
     except Exception as e:
-        raise e
+        log.warning(e)
