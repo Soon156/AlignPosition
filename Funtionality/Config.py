@@ -7,6 +7,8 @@ from psutil import process_iter
 from pygrabber.dshow_graph import FilterGraph
 import winreg
 
+VERSION = "0.0.1"
+
 # ACCURACY AND PERFORMANCE
 DETECTION_RATE = 0.5  # second
 counter = 0  # To check the program exist
@@ -41,7 +43,7 @@ fernet_file_path = os.path.expanduser('~/.AlignPosition/fernet.key')
 desktop_path = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
 key_path = r"Software\Microsoft\Windows\CurrentVersion\Run"
 app_name = "Align Position"
-exe_path = os.path.join(app_folder, "Align Position.exe")
+exe_path = os.path.join(library_in_production, "Align Position.exe")
 
 # Create folders if they don't exist
 os.makedirs(app_folder, exist_ok=True)
@@ -78,7 +80,7 @@ DEFAULT_VAL = {
     'app_tracking': False,
     'overlay': "Right",
     'overlay_enable': True,
-    'auto': True,
+    'auto': False,
     'init': True,
     'dev': False
 }
@@ -133,7 +135,8 @@ def get_available_cameras():
 
 # update value
 def write_config(dictionary_str):
-    if dictionary_str["auto"] == "True" or dictionary_str["auto"]:  # TODO check working
+    print(dictionary_str["auto"])
+    if dictionary_str["auto"] == "True":  # TODO check working
         try:
             with winreg.OpenKey(winreg.HKEY_CURRENT_USER, key_path, 0, winreg.KEY_WRITE) as key:
                 winreg.SetValueEx(key, app_name, 0, winreg.REG_SZ, exe_path)

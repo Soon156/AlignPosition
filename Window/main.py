@@ -286,12 +286,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.w1.hide()
 
     def check_model(self):  # If model file exist
+        try:
+            self.monitor_btn.clicked.disconnect(self.calibration_page)
+            self.monitor_btn.clicked.disconnect(self.start_monitoring)
+        except:
+            pass
         if os.path.exists(model_file):
-            try:
-                self.monitor_btn.clicked.disconnect(self.calibration_page)
-                self.monitor_btn.clicked.disconnect(self.start_monitoring)
-            except:
-                pass
             self.monitor_btn.clicked.connect(self.start_monitoring)
             if self.monitoring_state:
                 self.monitor_btn.setText("Stop")

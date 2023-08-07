@@ -25,9 +25,10 @@ def tracking():
     app_use_times = read_app_use_time()
     specific_date = str(date.today())
     values = get_config()
-    # Access the app usage data for the specific date
-    if specific_date in app_use_times:
-        usage_time_for_specific_date = app_use_times[specific_date]
+    # Access the app usage data for the specific
+    if app_use_times is not None:
+        if specific_date in app_use_times:
+            usage_time_for_specific_date = app_use_times[specific_date]
 
     while condition and values['app_tracking'] == "True":
         values = get_config()  # keep track update

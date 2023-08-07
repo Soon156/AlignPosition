@@ -13,7 +13,6 @@ class OverlayWidget(QWidget):
     def __init__(self):
         super().__init__()
         self.width_geo, self.pos = self.win_geometry()
-        print(self.width_geo, self.pos)
         if self.pos == "left":
             self.setGeometry(-30, -50, 100, 100)
         else:

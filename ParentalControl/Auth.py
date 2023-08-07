@@ -42,6 +42,8 @@ def save_derived_key(derived_key, salt):
 
 # Function to retrieve the derived key from the file
 def retrieve_key_salt():
+    key = None
+    salt = None
     try:
         # Read the derived key from the file
         with open(key_file_path, 'rb') as f:
@@ -51,7 +53,7 @@ def retrieve_key_salt():
         return key, salt
     except FileNotFoundError:
         log.warning("Key not found")
-        return None
+        return key, salt
 
 
 # Simulate user login
@@ -86,55 +88,59 @@ def change_password(old_password, new_password):
 
 def write_use_time(data):
     key, salt = retrieve_key_salt()
-    pickled_row = pickle.dumps(data)
-    encrypted_data = encrypt_data(pickled_row, key)
-    with open(userdata, 'wb') as file:
-        file.write(encrypted_data)
-    log.info("Elapsed time saved")
+    if key is not None:
+        pickled_row = pickle.dumps(data)
+        encrypted_data = encrypt_data(pickled_row, key)
+        with open(userdata, 'wb') as file:
+            file.write(encrypted_data)
+        log.info("Elapsed time saved")
 
 
 def read_use_time():
     unpicked_row = []
-    try:
-        key, salt = retrieve_key_salt()
+    key, salt = retrieve_key_salt()
+    if key is not None:
+        try:
 
-        with open(userdata, 'rb') as file:
-            encrypted_data = file.read()
-            iv = encrypted_data[:16]
-            encrypted_data = encrypted_data[16:]
-            decrypted_data = decrypt_data(encrypted_data, key, iv)
-            unpicked_row = pickle.loads(decrypted_data)
+            with open(userdata, 'rb') as file:
+                encrypted_data = file.read()
+                iv = encrypted_data[:16]
+                encrypted_data = encrypted_data[16:]
+                decrypted_data = decrypt_data(encrypted_data, key, iv)
+                unpicked_row = pickle.loads(decrypted_data)
 
-    except pickle.UnpicklingError:
-        log.warning("User file modified/corrupted")  # TODO error handler
-    except FileNotFoundError:
-        log.warning("No use time record found")
+        except pickle.UnpicklingError:
+            log.warning("User file modified/corrupted")  # TODO error handler
+        except FileNotFoundError:
+            log.warning("No use time record found")
     return unpicked_row
 
 
 def write_app_use_time(data):
     log.info("App use time recorded")
     key, salt = retrieve_key_salt()
-    json_data = json.dumps(data).encode('utf-8')
-    encrypted_data = encrypt_data(json_data, key)
-    with open(app_use_time, "wb") as file:
-        file.write(encrypted_data)
+    if key is not None:
+        json_data = json.dumps(data).encode('utf-8')
+        encrypted_data = encrypt_data(json_data, key)
+        with open(app_use_time, "wb") as file:
+            file.write(encrypted_data)
 
 
 def read_app_use_time():
     encrypted_data = {}
     key, salt = retrieve_key_salt()
-    try:
-        with open(app_use_time, "rb") as file:
-            encrypted_data = file.read()
-            iv = encrypted_data[:16]
-            encrypted_data = encrypted_data[16:]
-            decrypted_data = decrypt_data(encrypted_data, key, iv)
-            json_data = decrypted_data.decode('utf-8')
-            return json.loads(json_data)
-    except FileNotFoundError:
-        log.info("No app use time found")
-    return encrypted_data
+    if key is not None:
+        try:
+            with open(app_use_time, "rb") as file:
+                encrypted_data = file.read()
+                iv = encrypted_data[:16]
+                encrypted_data = encrypted_data[16:]
+                decrypted_data = decrypt_data(encrypted_data, key, iv)
+                json_data = decrypted_data.decode('utf-8')
+                return json.loads(json_data)
+        except FileNotFoundError:
+            log.info("No app use time found")
+        return encrypted_data
 
 
 def encrypt_data(data, key):
