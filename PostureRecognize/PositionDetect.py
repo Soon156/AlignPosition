@@ -3,15 +3,17 @@ import time
 import logging as log
 import joblib
 import numpy as np
-from PySide6.QtCore import Signal, QObject
+from PySide6.QtCore import Signal, QObject, QThread
 from Funtionality.Config import get_config, DETECTION_RATE
 from PostureRecognize.ElapsedTime import read_elapsed_time_data, save_elapsed_time_data
 from PostureRecognize.Model import model_file
 from PostureRecognize.FrameProcess import get_landmark
 
 
-class PostureRecognizer(QObject):
+class PostureRecognizerThread(QThread):
     elapsed_time_updated = Signal(int)
+    error_msg = Signal(str)
+    update_overlay = Signal(str)
 
     def __init__(self):
         super().__init__()
@@ -22,6 +24,13 @@ class PostureRecognizer(QObject):
         self.new_time = 0
         self.badCount = 0
         self.goodCount = 0
+
+    def run(self):
+        try:
+            self.load_model()
+            self.start_capture()
+        except Exception as e:
+            self.error_msg.emit(str(e))
 
     def load_model(self):
         try:
@@ -34,7 +43,7 @@ class PostureRecognizer(QObject):
         try:
             self.capture_landmarks()
         except Exception as e:
-            raise e
+            self.error_msg.emit(str(e))
 
     def stop_capture(self):
         self.running = False
@@ -51,6 +60,7 @@ class PostureRecognizer(QObject):
         while self.running:
             # Read the video frames
             ret, frame = cap.read()
+
             frame = cv2.flip(frame, 1)
             if not ret:
                 log.error("Invalid video source, cap.read() failed")
@@ -58,7 +68,6 @@ class PostureRecognizer(QObject):
 
             # Get landmark of frame
             frame, landmark = get_landmark(frame)
-
             if landmark is not None:
                 # Do further processing with the pose landmarks
                 labels = self.detect_posture(landmark)
@@ -113,12 +122,14 @@ class PostureRecognizer(QObject):
         # Determine the majority and print the result
         if percentage >= threshold:
             self.goodCount += 1
-            if self.goodCount >= 5:
+            if self.goodCount >= 10:
                 result = "good"
+                self.update_overlay.emit(result)
                 self.badCount = 0
         else:
             self.badCount += 1
-            if self.badCount >= 5:
+            if self.badCount >= 10:
                 result = "bad"
+                self.update_overlay.emit(result)
                 self.goodCount = 0
         return result

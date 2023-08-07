@@ -5,6 +5,7 @@ import logging as log
 import datetime
 from psutil import process_iter
 from pygrabber.dshow_graph import FilterGraph
+import winreg
 
 # ACCURACY AND PERFORMANCE
 DETECTION_RATE = 0.5  # second
@@ -13,6 +14,10 @@ counter = 0  # To check the program exist
 # Get the current month and year
 now = datetime.datetime.now()
 current_month, current_year = now.month, now.year
+
+# App_Use_Time Filter List
+filter_list = ["Windows Explorer", "Align Position", "null", "Application Frame Host", "Windows Problem Reporting",
+               "Desktop Window Manager", ""]
 
 # PATH
 logo_path = "Resources\logo.ico"
@@ -30,14 +35,20 @@ library_in_production = os.path.dirname(package_folder)
 home_in_pro = os.path.dirname(library_in_production)
 abs_logo_path = os.path.join(library_in_production, logo_path)  # Test
 # abs_logo_path = os.path.join(home_in_pro, logo_path)  # Production
-psw_key_path = os.path.expanduser('~/.AlignPosition/psw.key')
-user_key_path = os.path.expanduser('~/.AlignPosition/usr_data.key')
+key_file_path = os.path.expanduser('~/.AlignPosition/user.key')
+salt_file_path = os.path.expanduser('~/.AlignPosition/salt.bin')
+fernet_file_path = os.path.expanduser('~/.AlignPosition/fernet.key')
+desktop_path = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
+key_path = r"Software\Microsoft\Windows\CurrentVersion\Run"
+app_name = "Align Position"
+exe_path = os.path.join(app_folder, "Align Position.exe")
 
 # Create folders if they don't exist
 os.makedirs(app_folder, exist_ok=True)
 os.makedirs(log_folder, exist_ok=True)
 os.makedirs(temp_folder, exist_ok=True)
 os.makedirs(oldTemp_folder, exist_ok=True)
+os.makedirs(os.path.dirname(key_file_path), exist_ok=True)  # Create the directory if it doesn't exist
 
 # LOGGING
 X = datetime.datetime.now()
@@ -64,6 +75,9 @@ DEFAULT_VAL = {
     'idle': 0.1,
     'notifications': True,
     'background': True,
+    'app_tracking': False,
+    'overlay': "Right",
+    'overlay_enable': True,
     'auto': True,
     'init': True,
     'dev': False
@@ -119,6 +133,19 @@ def get_available_cameras():
 
 # update value
 def write_config(dictionary_str):
+    if dictionary_str["auto"] == "True" or dictionary_str["auto"]:  # TODO check working
+        try:
+            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, key_path, 0, winreg.KEY_WRITE) as key:
+                winreg.SetValueEx(key, app_name, 0, winreg.REG_SZ, exe_path)
+        except FileNotFoundError:
+            with winreg.CreateKey(winreg.HKEY_CURRENT_USER, key_path) as key:
+                winreg.SetValueEx(key, app_name, 0, winreg.REG_SZ, exe_path)
+        log.info("Auto-start Enable")
+        pass
+    else:
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, key_path, 0, winreg.KEY_WRITE) as key:
+            winreg.DeleteValue(key, app_name)
+        log.info("Auto-start Disable")
     config = configparser.ConfigParser(allow_no_value=True)
     config.read(CONFIG_PATH)
     config.optionxform = str
@@ -173,12 +200,14 @@ def check_condition():
 
         int(values.get('camera'))
         float(values.get('idle'))
-        float(values.get('rest'))
         a = values.get('background') == 'True' or values.get('background') == 'False'
         b = values.get('notifications') == 'True' or values.get('notifications') == 'False'
         c = values.get('init') == 'True' or values.get('init') == 'False'
         e = values.get('auto') == 'True' or values.get('auto') == 'False'
-        if not (a and b and c and e):
+        f = values.get('app_tracking') == 'True' or values.get('app_tracking') == 'False'
+        g = values.get('overlay') == 'Right' or values.get('overlay') == 'Left'
+        h = values.get('overlay_enable') == 'True' or values.get('overlay_enable') == 'False'
+        if not (a and b and c and e and f and g and h and float(values.get('rest')) >= 1):
             raise Exception("Invalid config value")
     except Exception as e:
         log.warning(e)

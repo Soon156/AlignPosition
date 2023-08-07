@@ -1,5 +1,3 @@
-import random
-
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
@@ -8,15 +6,16 @@ import glob
 import joblib
 import logging as log
 from Funtionality.Config import temp_folder, model_file
+from PostureRecognize.FrameProcess import temp_backup_restore
 
 
-def load_landmarks(folder, num_samples=50):
+def load_landmarks(folder, num_samples=50, msg="The number of samples in '{folder}' is less than {num_samples}."):
     landmarks_files = glob.glob(folder + '/*.npy')
     landmarks = []
 
     if len(landmarks_files) < num_samples:
-        log.warning("Warning: The number of samples in '{folder}' is less than {num_samples}.")
-        raise Exception("TOO LITTLE SAMPLE")
+        log.warning(msg)
+        raise Exception(msg)
 
     for file in landmarks_files:
         file_landmarks = np.load(file)
@@ -57,11 +56,12 @@ def train_model(accuracy_conf=0.6):
 
     # Step 5: Evaluate the trained classifier
     accuracy = classifier.score(X_test, y_test)
-    if accuracy <+ accuracy_conf:
+    if accuracy <= accuracy_conf:
         log.warning(f"Model accuracy too low: {accuracy}")
-        raise Exception("LOW MODEL ACURACY")
+        temp_backup_restore("True")
+        raise Exception(f"Model accuracy too low: {accuracy}")
     else:
-        log.warning(f"Model Accuracy: {accuracy}")
+        log.info(f"Model Accuracy: {accuracy}")
         # Step 6: Save the trained classifier
     joblib.dump(classifier, model_file)
     log.info(f"Trained model saved as {model_file}")

@@ -1,6 +1,6 @@
 import logging as log
 from datetime import date
-from Funtionality.EncryptData import write_use_time, read_use_time
+from ParentalControl.Auth import write_use_time, read_use_time
 
 
 def read_elapsed_time_data():
@@ -13,6 +13,9 @@ def read_elapsed_time_data():
             elapsed_time = int(rows[0][1])
     except FileNotFoundError:
         log.warning("Usage time record not found.")
+    except Exception as e:
+        print(e)
+        pass
     return elapsed_time
 
 
@@ -41,3 +44,10 @@ def save_elapsed_time_data(elapsed_time):
         rows = [[current_date, elapsed_time]]
         write_use_time(rows)
 
+
+def seconds_to_hms(seconds):
+    hours = seconds // 3600
+    minutes = (seconds % 3600) // 60
+    remaining_seconds = seconds % 60
+    temp_time = f"{hours:02d}:{minutes:02d}:{remaining_seconds:02d}"
+    return temp_time

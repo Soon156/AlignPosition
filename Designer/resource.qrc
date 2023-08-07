@@ -1,7 +1,43 @@
 <RCC>
-  <qresource prefix="newPrefix">
-    <file>Small_title.png</file>
+  <qresource prefix="icon">
+    <file>icons8-stop-48 (2).png</file>
+    <file>icons8-popup-window-48.png</file>
+    <file>icons8-control-48.png</file>
+    <file>icons8-play-48.png</file>
+    <file>icons8-setting-48.png</file>
+    <file>icons8-stop-48.png</file>
+    <file>little_logo.png</file>
+    <file>icons8-tune-48.png</file>
+    <file>icons8-switches-48.png</file>
+    <file>icons8-tools-48.png</file>
+    <file>icons8-checked-radio-button-48.png</file>
+    <file>icons8-close-48.png</file>
+    <file>icons8-close-pane-48.png</file>
+    <file>icons8-close-window-48.png</file>
+    <file>icons8-dashboard-layout-48.png</file>
+    <file>icons8-doorbell-48.png</file>
+    <file>icons8-download-48.png</file>
+    <file>icons8-help-48.png</file>
+    <file>icons8-info-48.png</file>
+    <file>icons8-information-48.png</file>
+    <file>icons8-internal-48.png</file>
+    <file>icons8-left-docking-48.png</file>
+    <file>icons8-logout-48.png</file>
+    <file>icons8-maximize-window-48.png</file>
+    <file>icons8-menu-48.png</file>
+    <file>icons8-minimize-window-48.png</file>
+    <file>icons8-open-pane-48.png</file>
+    <file>icons8-password-48.png</file>
+    <file>icons8-restore-48.png</file>
+    <file>icons8-tasks-48.png</file>
+    <file>icons8-terms-and-conditions-48.png</file>
+    <file>icons8-toggle-off-48.png</file>
+    <file>icons8-toggle-on-48.png</file>
+    <file>icons8-unchecked-radio-button-48.png</file>
     <file>logo.ico</file>
+    <file>eyes.png</file>
+    <file>ezgif.com-gif-maker.gif</file>
+    <file>Small_title.png</file>
     <file>Title.png</file>
   </qresource>
 </RCC>

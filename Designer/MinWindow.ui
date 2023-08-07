@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>minDialog</class>
+ <widget class="QDialog" name="minDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>195</width>
+    <height>46</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Align Position</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="resource.qrc">
+    <normaloff>:/icon/logo.ico</normaloff>:/icon/logo.ico</iconset>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(0, 28, 48);
+color: rgb(255, 255, 255);</string>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <property name="spacing">
+    <number>10</number>
+   </property>
+   <item alignment="Qt::AlignVCenter">
+    <widget class="QLabel" name="use_time_lbl">
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>00:00:00</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="stop_btn">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="resource.qrc">
+       <normaloff>:/icon/icons8-stop-48.png</normaloff>:/icon/icons8-stop-48.png</iconset>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="start_btn">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="resource.qrc">
+       <normaloff>:/icon/icons8-play-48.png</normaloff>:/icon/icons8-play-48.png</iconset>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="close_btn">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="resource.qrc">
+       <normaloff>:/icon/icons8-close-48.png</normaloff>:/icon/icons8-close-48.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>20</width>
+       <height>20</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="resource.qrc"/>
+ </resources>
+ <connections/>
+</ui>

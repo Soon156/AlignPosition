@@ -11,12 +11,9 @@ import mediapipe as mp
 import numpy as np
 import concurrent.futures
 
-DURATION = 5
-threshold = 50
 
-
-def temp_backup_restore(condition):
-    if condition:
+def temp_backup_restore(condition="False"):  # True: restore, False: backup
+    if condition == "True":
         source_folder = oldTemp_folder
         destination_folder = temp_folder
         log_message = "Temp Restore"
@@ -24,17 +21,19 @@ def temp_backup_restore(condition):
         source_folder = temp_folder
         destination_folder = oldTemp_folder
         log_message = "Temp Backup"
-
+    try:
         # Clear the destination folder
-    shutil.rmtree(destination_folder, ignore_errors=True)
-    for item in os.listdir(source_folder):
-        source_item = os.path.join(source_folder, item)
-        destination_item = os.path.join(destination_folder, item)
+        shutil.rmtree(destination_folder, ignore_errors=True)
+        for item in os.listdir(source_folder):
+            source_item = os.path.join(source_folder, item)
+            destination_item = os.path.join(destination_folder, item)
 
-        if os.path.isdir(source_item):
-            shutil.copytree(source_item, destination_item)
-        else:
-            shutil.copy(source_item, destination_item)
+            if os.path.isdir(source_item):
+                shutil.copytree(source_item, destination_item)
+            else:
+                shutil.copy(source_item, destination_item)
+    except:
+        pass
 
     log.info(log_message)
 
@@ -51,10 +50,10 @@ def get_landmark(frame):
             return frame, None
 
 
-def buffer_frames(cap):
+def buffer_frames(cap, duration=5):
     frames = []
     start_time = time.time()
-    end_time = start_time + DURATION
+    end_time = start_time + duration
 
     while time.time() <= end_time:
         ret, frame = cap.read()
@@ -70,11 +69,12 @@ def buffer_frames(cap):
     return frames
 
 
+# TODO change to QThread, concurrent have issue with PYQT
 class LandmarkExtractor:
     def __init__(self):
         self.failed_count = 0
 
-    def extract_landmark(self, frame, folder, lock, counter):
+    def extract_landmark(self, frame, folder, lock, counter, threshold=50, ):
         frame_count = 0
         # Make exception for black image
         mean_intensity = frame.mean()
@@ -135,3 +135,4 @@ class LandmarkExtractor:
             log.info("Frames extraction completed")
         except Exception as e:
             log.error(e)
+            raise Exception
