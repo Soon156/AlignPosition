@@ -15,13 +15,13 @@ def read_elapsed_time_data():
     except FileNotFoundError:
         log.warning("Usage time record not found.")
     except Exception as e:
-        print(e)
         pass
     return elapsed_time
 
 
 def save_elapsed_time_data(elapsed_time, current_date):
     elapsed_time = str(elapsed_time)
+    current_date = str(current_date)
     try:
         rows = read_use_time()
         rows.reverse()
@@ -38,7 +38,6 @@ def save_elapsed_time_data(elapsed_time, current_date):
             rows.append([current_date, elapsed_time])
         log.debug(f"Elapsed Time: {current_date}, {elapsed_time}")
         write_use_time(rows)
-
     except FileNotFoundError:
         rows = [[current_date, elapsed_time]]
         write_use_time(rows)

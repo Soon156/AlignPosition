@@ -147,6 +147,7 @@ class PostureRecognizerThread(QThread):
                 cv2.imshow("Pose Landmarks", frame)
 
             if date.today() != self.date_today:
+
                 save_elapsed_time_data(self.new_time, self.date_today)
                 self.new_time = 0
                 self.old_time = self.new_time
@@ -154,7 +155,6 @@ class PostureRecognizerThread(QThread):
             # Break the loop if 'q' is pressed
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
-
         save_elapsed_time_data(self.new_time, self.date_today)
         self.old_time = self.new_time
         # Release the VideoCapture and close the OpenCV windows

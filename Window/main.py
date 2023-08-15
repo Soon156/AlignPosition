@@ -11,9 +11,9 @@ from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox, QSizePolic
     QTableWidgetItem
 from PySide6.QtCharts import QBarSet, QBarSeries, QBarCategoryAxis, QChart, QChartView
 from PySide6.QtGui import QPainter, QColor, QDesktopServices
-from Funtionality.Config import model_file, get_config, write_config, logo_path, get_available_cameras, create_config, \
+from Funtionality.Config import model_file, get_config, write_config, get_available_cameras, create_config, \
     key_file_path, desktop_path, Bad_Posture, Good_Posture, Append_Posture, Cancel_Calibrate, Capture_Posture, \
-    Model_Training
+    Model_Training, abs_logo_path
 from Funtionality.Notification import first_notify, show_break, set_elapsed_time, show_control
 from ParentalControl.AppUseTime import update_condition
 from ParentalControl.Auth import change_password, login_user, read_use_time, \
@@ -119,7 +119,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.dashboard_page()  # Set the page
         # System tray icon
-        self.image = open(logo_path)
+        self.image = open(abs_logo_path)
         self.system_icon = Icon("AlignPosition", self.image, menu=Menu(
             MenuItem("Show", self.if_visible, default=True),
             MenuItem("Detection", self.start_monitoring),

@@ -70,7 +70,7 @@ FORMAT = X.strftime("%Y") + '-' + X.strftime("%m") + '-' + X.strftime("%d") + ' 
 max_log_records = 10
 
 log.basicConfig(
-    level=log.DEBUG,
+    level=log.INFO,
     format='%(asctime)s %(levelname)s : %(message)s',
     datefmt='%Y-%m-%d %H:%M:%S',
     handlers=[

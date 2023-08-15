@@ -18,19 +18,21 @@ if __name__ == '__main__':
         cond = False
         data = retrieve_table_data()
         use_time = read_elapsed_time_data()
-        limit_time = data[0]
-        limit_time_in_sec = limit_time * 60 * 60
-        current_date = datetime.now()
-        current_hour = current_date.hour
-        day_of_week_int = current_date.weekday()
-        print(data[1])
-        if data and not data[1]:
-            for day, hour in data[2:]:
-                if day == day_of_week_int:
-                    if hour == current_hour:
-                        cond = True
-            if limit_time != 24 and use_time > limit_time_in_sec:
-                cond = True
+        if data:
+            limit_time = data[0]
+            limit_time_in_sec = limit_time * 60 * 60
+            current_date = datetime.now()
+            current_hour = current_date.hour
+            day_of_week_int = current_date.weekday()
+            if not data[1]:
+                for day, hour in data[2:]:
+                    if day == day_of_week_int:
+                        if hour == current_hour:
+                            cond = True
+                if limit_time != 24 and use_time > limit_time_in_sec:
+                    cond = True
+                else:
+                    state = True
             else:
                 state = True
         else:
