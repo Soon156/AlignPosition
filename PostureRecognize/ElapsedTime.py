@@ -1,6 +1,7 @@
 import logging as log
+import time
 from datetime import date
-from ParentalControl.Auth import write_use_time, read_use_time
+from ParentalControl.Auth import write_use_time, read_use_time, retrieve_table_data
 
 
 def read_elapsed_time_data():
@@ -19,9 +20,7 @@ def read_elapsed_time_data():
     return elapsed_time
 
 
-def save_elapsed_time_data(elapsed_time):
-    log.info(f"Time: {elapsed_time}")
-    current_date = str(date.today())
+def save_elapsed_time_data(elapsed_time, current_date):
     elapsed_time = str(elapsed_time)
     try:
         rows = read_use_time()
@@ -37,7 +36,7 @@ def save_elapsed_time_data(elapsed_time):
         else:
             rows.reverse()
             rows.append([current_date, elapsed_time])
-        log.debug(f"Elapsed Time: {current_date},{elapsed_time}")
+        log.debug(f"Elapsed Time: {current_date}, {elapsed_time}")
         write_use_time(rows)
 
     except FileNotFoundError:
@@ -51,3 +50,8 @@ def seconds_to_hms(seconds):
     remaining_seconds = seconds % 60
     temp_time = f"{hours:02d}:{minutes:02d}:{remaining_seconds:02d}"
     return temp_time
+
+
+
+
+

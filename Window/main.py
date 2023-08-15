@@ -4,148 +4,33 @@ import time
 import logging as log
 from datetime import datetime
 
-import cv2
 import zroya
 from PySide6 import QtCharts
-from PySide6.QtCore import Slot, Qt, QSize, QThread, Signal
-from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox, QSizePolicy, QLineEdit, QFileDialog
+from PySide6.QtCore import Slot, Qt, QSize
+from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox, QSizePolicy, QLineEdit, QFileDialog, \
+    QTableWidgetItem
 from PySide6.QtCharts import QBarSet, QBarSeries, QBarCategoryAxis, QChart, QChartView
-from PySide6.QtGui import QPainter, QPixmap, QImage
+from PySide6.QtGui import QPainter, QColor, QDesktopServices
 from Funtionality.Config import model_file, get_config, write_config, logo_path, get_available_cameras, create_config, \
-    key_file_path, desktop_path
-from Funtionality.Notification import first_notify, show_break, set_elapsed_time
+    key_file_path, desktop_path, Bad_Posture, Good_Posture, Append_Posture, Cancel_Calibrate, Capture_Posture, \
+    Model_Training
+from Funtionality.Notification import first_notify, show_break, set_elapsed_time, show_control
 from ParentalControl.AppUseTime import update_condition
 from ParentalControl.Auth import change_password, login_user, read_use_time, \
-    read_app_use_time, user_register
+    read_app_use_time, user_register, save_table_data, retrieve_table_data
 from ParentalControl.Backup_Restore import extract_zip, zip_files
 from PostureRecognize.ElapsedTime import seconds_to_hms
-from PostureRecognize.FrameProcess import LandmarkExtractor, temp_backup_restore
-from PostureRecognize.Model import train_model
-from PostureRecognize.PositionDetect import PostureRecognizerThread, read_elapsed_time_data
+from PostureRecognize.FrameProcess import temp_backup_restore
+from PostureRecognize.Model import TrainModel
+from PostureRecognize.PositionDetect import PostureRecognizerThread, read_elapsed_time_data, StartPreview, \
+    CalibrateThread
 from .OverlayWindow import OverlayWidget
 from .ui_MainMenu import Ui_MainWindow
 from .minWindow import MinWindow
 from pystray import Menu, Icon, MenuItem
 from PIL.Image import open
 
-Good_Posture = "Maintain your good posture 5 seconds, clicked proceed to Start"
-Bad_Posture = "Maintain your bad posture 5 seconds, clicked proceed to Start"
-Append_Posture = "Append bad posture, clicked proceed to Start"
-Cancel_Calibrate = "Calibration Cancel"
-Append_Finish = "Append done"
-Model_Training = "Training model, please wait patiently...."
-Capture_Posture = "Capturing posture, stay still...."
-Cancel = "Cancelling..."
-
-
-class TrainModel(QThread):
-    error_msg = Signal(str)
-
-    def __init__(self, arg):
-        super().__init__()
-        self.arg = arg
-
-    def run(self):
-        try:
-            train_model()
-            self.train_finished()
-        except Exception as e:
-            self.error_msg.emit(str(e))
-
-    def train_finished(self):
-        self.parent().recalibrate_btn.setText("Re-Calibrate")
-        self.parent().append_btn.show()
-        if self.arg == "calibrate":
-            log.info("Calibrate Success")
-            self.parent().hint_lbl.setText("Calibrate finish")
-        elif self.arg == "append":
-            log.info("Append Success")
-            self.parent().hint_lbl.setText("Append finish")
-        self.parent().monitor_btn.setText("Start")
-        self.parent().check_model()
-        self.parent().proceed_btn.hide()
-        self.parent().proceed_btn.setEnabled(True)
-        self.parent().cancel_btn.hide()
-        self.parent().is_capturing = False
-
-
-class StartPreview(QThread):
-    error_msg = Signal(str)
-
-    def __init__(self, index):
-        super().__init__()
-        self.index = index
-        self.condition = True
-
-    def run(self):
-        try:
-            self.parent().camera = cv2.VideoCapture(self.index, cv2.CAP_DSHOW)
-            while self.condition:
-
-                ret, frame = self.parent().camera.read()
-                if ret:
-                    # Flip the frame horizontally
-                    frame = cv2.flip(frame, 1)
-
-                    # Resize the frame to fit the label
-                    frame = cv2.resize(frame, (640, 360))
-
-                    # Convert the OpenCV frame to QImage
-                    rgb_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                    h, w, ch = frame.shape
-                    bytes_per_line = ch * w
-                    q_image = QImage(rgb_image.data, w, h, bytes_per_line, QImage.Format.Format_RGB888)
-
-                    # Convert the QImage to QPixmap for display
-                    pixmap = QPixmap.fromImage(q_image)
-
-                    # Set the pixmap on the image label
-                    self.parent().calibrate_preview_lbl.setPixmap(pixmap)
-                else:
-                    raise Exception("Camera read failed")
-        except Exception as e:
-            log.error(e)
-            self.error_msg.emit(str(e))
-
-    def stop_preview(self):
-        self.condition = False
-        self.parent().camera.release()
-
-
-class CalibrateThread(QThread):
-    finish = Signal(str)
-    error_msg = Signal(str)
-
-    def __init__(self, cat):
-        super().__init__()
-        self.cat = cat
-
-    def run(self):
-        self.parent().hint_lbl.setText(Capture_Posture)
-        le = LandmarkExtractor()
-        try:
-            le.extract_landmarks_and_buffer_frames(self.parent(), self.cat)
-        except Exception as e:
-            self.error_msg.emit(str(e))
-
-        # Check if the stop signal is emitted
-        if self.isInterruptionRequested():
-            return
-
-        if self.cat == "good":
-            self.calibrate_finished("good")
-        elif self.cat == "append":
-            self.calibrate_finished("append")
-        else:
-            self.calibrate_finished("calibrate")
-
-    def calibrate_finished(self, mode):
-        if mode == "good":
-            self.parent().hint_lbl.setText(Bad_Posture)
-            self.parent().proceed_btn.setEnabled(True)
-        else:
-            self.parent().hint_lbl.setText(Model_Training)
-            self.finish.emit(mode)
+day_names = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -161,16 +46,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # Connect object
         self.min_btn.clicked.connect(self.showMinimized)
         self.close_btn.clicked.connect(self.close)
-        self.max_btn.clicked.connect(self.keyPressEvent)
         self.dashboard_btn.clicked.connect(self.dashboard_page)
         self.parental_btn.clicked.connect(self.parental_page)
         self.calibrate_btn.clicked.connect(self.calibration_page)
         self.settings_btn.clicked.connect(self.settings_page)
+        self.parental_box.clicked.connect(self.update_parental_box)
 
         # Dashboard page
         self.popout_btn.clicked.connect(self.min_window)
         self.use_time_btn.clicked.connect(self.show_chart)
         self.use_time_btn.setText("Program Use Time")
+        self.refresh_chart_btn.clicked.connect(lambda: self.show_chart(True))
 
         # Calibrate page
         self.recalibrate_btn.clicked.connect(lambda: self.calibrate(True))
@@ -186,6 +72,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.reset_btn.clicked.connect(create_config)
         self.apply_btn.clicked.connect(self.update_setting)
         self.values = get_config()
+        self.usetime_table.cellClicked.connect(self.toggle_cell)
+        self.web_btn.clicked.connect(lambda: QDesktopServices.openUrl("www.google.com"))
 
         # Authenticate page
         self.PIN_line.setEchoMode(QLineEdit.Password)
@@ -200,13 +88,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.restore_btn.clicked.connect(self.restore_data)
         self.restore_btn.setEnabled(True)
 
+        for day in range(7):
+            for hour in range(24):
+                item = QTableWidgetItem(day, hour)
+                item.setFlags(Qt.ItemIsEnabled)
+                self.usetime_table.setItem(day, hour, item)
+        self.usetime_btn.clicked.connect(self.handle_submit)
+
         # Init variable
         self.w = None
         self.w1 = None
         self.dragPos = None
         self.start_time = 0
         self.monitoring_state = False
-        self.dashboard_page()  # Set the page
         self.posture_recognizer = PostureRecognizerThread()
         self.posture_recognizer.error_msg.connect(self.error_handler)
         self.posture_recognizer.elapsed_time_updated.connect(self.update_elapsed_time_label)
@@ -219,18 +113,23 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.login_state = False
         self.temp = None
         self.training_thread = None
+        self.notify_state = False
+        self.data = retrieve_table_data()
+        self.authorize_state = False
 
+        self.dashboard_page()  # Set the page
         # System tray icon
         self.image = open(logo_path)
         self.system_icon = Icon("AlignPosition", self.image, menu=Menu(
             MenuItem("Show", self.if_visible, default=True),
-            MenuItem("Detection", None),
+            MenuItem("Detection", self.start_monitoring),
             MenuItem("Exit", self.exit_app)
         ))
         self.system_icon.run_detached()
 
     def if_visible(self):
         if self.isVisible():
+            self.stop_preview()
             self.hide()
         else:
             self.show()
@@ -239,17 +138,20 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def dashboard_page(self):
         self.stop_preview()
         self.page_title_lbl.setText("Dashboard")
-        self.cont_stackedwidget.setCurrentIndex(0)
-        self.use_time_lbl.setText(seconds_to_hms(read_elapsed_time_data()))
-        self.tut_chart()
-        self.check_model()
+        if os.path.exists(key_file_path):
+            self.cont_stackedwidget.setCurrentIndex(0)
+            self.use_time_lbl.setText(seconds_to_hms(read_elapsed_time_data()))
+            self.tut_chart()
+            self.check_model()
+        else:
+            self.parental_page()
 
     def parental_page(self):
         self.stop_preview()
         self.page_title_lbl.setText("Parental Control")
         self.cont_stackedwidget.setCurrentIndex(4)
         if self.login_state:
-            self.cont_stackedwidget.setCurrentIndex(1)
+            self.valid_pin(True)
         else:
             if os.path.exists(key_file_path):
                 self.PIN_stackedwidget.setCurrentIndex(1)
@@ -260,6 +162,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self.change_PIN_btn.clicked.connect(lambda: self.change_pin(True))
         self.change_PIN_hint_lbl.hide()
         self.PIN_hint_lbl.hide()
+        self.PIN_line.clear()
 
     def calibration_page(self):
         self.hint_lbl.hide()
@@ -279,6 +182,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def min_window(self):
         self.w = MinWindow(self)
         self.w.show()
+        self.popout_btn.setEnabled(False)
 
     def overlay_win(self):
         self.w1 = OverlayWidget()
@@ -298,16 +202,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             else:
                 self.monitor_btn.setText("Start")
             self.recalibrate_btn.setText("Recalibrate")
+            self.recalibrate_btn.show()
             self.append_btn.show()
         else:
             log.warning("Model file not found")
             self.monitor_btn.setText("Calibrate")
             self.recalibrate_btn.setText("Calibrate")
             self.append_btn.hide()
+            self.recalibrate_btn.show()
             self.monitor_btn.clicked.connect(self.calibration_page)
 
     # Monitoring
     def start_monitoring(self):
+        self.stop_preview()
         if self.monitoring_state:
             self.monitoring_state = False
             self.monitor_btn.setText("Start")
@@ -331,7 +238,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     @Slot(int)
     def update_elapsed_time_label(self, elapsed_time):
-        var = get_config()
+        cond = None
         self.use_time_lbl.setText(seconds_to_hms(elapsed_time))
         try:
             self.w.use_time_lbl.setText(seconds_to_hms(elapsed_time))
@@ -339,24 +246,63 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             pass
         set_elapsed_time(elapsed_time)
         a = time.time() - self.start_time
-        b = float(var.get('rest')) * 60
+        b = float(self.values.get('rest')) * 60
         if a >= b:
-            thread = threading.Thread(target=show_break)
-            thread.start()
+            show_break()
             self.start_time = time.time()
+
+        if self.data:
+            use_time = self.data[0]
+            use_time_in_sec = use_time * 60 * 60
+            current_date = datetime.now()
+            current_hour = current_date.hour
+            day_of_week_int = current_date.weekday()
+
+            if use_time != 24 and elapsed_time > use_time_in_sec:
+                cond = True
+            for day, hour in self.data[2:]:
+                if day == day_of_week_int:
+                    if hour == current_hour:
+                        cond = True
+            if cond and not self.notify_state and not self.data[1]:
+                self.notify_state = True
+                show_control()
 
     def update_overlay(self, posture):
         self.w1.change_state(posture)
 
     # Parental Control
-    def valid_pin(self):
-        if login_user(self.PIN_line.text()):
-            if self.PIN_checkbox.isChecked():
-                self.login_state = True
-            self.cont_stackedwidget.setCurrentIndex(1)
+    def valid_pin(self, cond=False):
+        if not cond:
+            if login_user(self.PIN_line.text()):
+                cond = True
+                if self.PIN_checkbox.isChecked():
+                    self.login_state = True
+            else:
+                self.PIN_hint_lbl.setText("Incorrect PIN")
+                self.PIN_hint_lbl.show()
         else:
-            self.PIN_hint_lbl.setText("Incorrect PIN")
-            self.PIN_hint_lbl.show()
+            cond = True
+        if cond:
+            use_time = 8
+            data = retrieve_table_data()
+            self.parental_box.setChecked(False)
+            if data:
+                if data[1]:
+                    self.parental_box.setChecked(True)
+                use_time = data[0]
+                for day, hour in data[2:]:
+                    table_item = self.usetime_table.item(day, hour)
+                    table_item.setBackground(QColor(220, 20, 60))
+            self.update_parental_box()
+            self.usetime_box.setValue(use_time)
+            self.cont_stackedwidget.setCurrentIndex(1)
+
+    def update_parental_box(self):
+        if self.parental_box.isChecked():
+            self.parental_box.setText("Parental Control Activated")
+        else:
+            self.parental_box.setText("Parental Control Deactivated")
 
     def change_pin(self, cond=False):  # True: create new PIN for first time user
         old = self.old_PIN_line.text()
@@ -454,10 +400,22 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     self.calibrate_thread = CalibrateThread("append")
             except Exception as e:
                 QMessageBox.critical(self, "Error", f"An error occurred: {str(e)}")
-            self.calibrate_thread.finish.connect(self.start_train)
-            self.calibrate_thread.error_msg.connect(self.error_handler)
+            self.hint_lbl.setText(Capture_Posture)
             self.calibrate_thread.setParent(self)
+            self.calibrate_thread.finished.connect(self.calibrate_finished)
+            self.calibrate_thread.error_msg.connect(self.error_handler)
             self.calibrate_thread.start()
+
+    def calibrate_finished(self, mode):
+        if mode != "good" and mode != "append":
+            mode = "calibrate"
+
+        if mode == "good":
+            self.hint_lbl.setText(Bad_Posture)
+            self.proceed_btn.setEnabled(True)
+        else:
+            self.hint_lbl.setText(Model_Training)
+            self.start_train(mode)
 
     def error_handler(self, msg):
         QMessageBox.warning(self, "Warning", f"An error occurred: {msg}")
@@ -466,10 +424,28 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def start_train(self, mode):
         self.training_thread = TrainModel(mode)
-        self.training_thread.setParent(self)
         self.training_thread.error_msg.connect(self.error_handler)
+        self.training_thread.finished.connect(self.train_finished)
         self.training_thread.start()
         self.calibrate_thread = None
+
+    def train_finished(self, arg):
+        self.recalibrate_btn.setText("Re-Calibrate")
+        self.append_btn.show()
+        if arg == "calibrate":
+            log.info("Calibrate Success")
+            self.hint_lbl.setText("Calibrate finish")
+        elif arg == "append":
+            log.info("Append Success")
+            self.hint_lbl.setText("Append finish")
+        self.monitor_btn.setText("Start")
+        self.check_model()
+        self.proceed_btn.hide()
+        self.proceed_btn.setEnabled(True)
+        self.cancel_btn.hide()
+        self.recalibrate_btn.show()
+        self.is_capturing = False
+        log.debug("GUI after train updated")
 
     def calibrate(self, cond):  # False: append, True: calibrate/recalibrate
         log.info("Calibration start")
@@ -691,14 +667,20 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         chart_view.setSizePolicy(size_policy)
         self.update_chart(chart_view)
 
-    def show_chart(self):
+    def show_chart(self, state=False):
         # Update UI
         if self.use_time_btn.text() == "Program Use Time":
-            self.use_time_btn.setText("Total Use Time")
-            self.put_chart()
+            if not state:
+                self.use_time_btn.setText("Total Use Time")
+                self.put_chart()
+            else:
+                self.tut_chart()
         else:
-            self.use_time_btn.setText("Program Use Time")
-            self.tut_chart()
+            if not state:
+                self.use_time_btn.setText("Program Use Time")
+                self.tut_chart()
+            else:
+                self.put_chart()
 
     def update_chart(self, chart_view=None):
         chart_view.setMinimumSize(QSize(900, 300))
@@ -707,6 +689,29 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             if item.widget():
                 item.widget().deleteLater()
         self.chart_cont.addWidget(chart_view)
+
+    # Table view
+    def handle_submit(self):
+        value = self.usetime_box.value()
+        if value > 24 or value < 1:
+            QMessageBox.warning(self, "Not allowed", "Usetime cannot be larger than 24 or smaller than 1")
+        else:
+            selected_cells = [self.usetime_box.value(), self.parental_box.isChecked()]
+            for day in range(7):
+                for hour in range(24):
+                    item = self.usetime_table.item(day, hour)
+                    if item.background() == QColor(220, 20, 60):
+                        selected_cells.append((day, hour))
+            save_table_data(selected_cells)
+            print(selected_cells)
+            self.data = selected_cells
+
+    def toggle_cell(self, row, column):
+        item = self.usetime_table.item(row, column)
+        if item.background() == QColor(220, 20, 60):
+            item.setBackground(QColor(0, 0, 0, 0))
+        else:
+            item.setBackground(QColor(220, 20, 60))
 
     # Draggable handler
     def center(self):
@@ -722,13 +727,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.move(self.pos() + event.globalPosition().toPoint() - self.dragPos)
         self.dragPos = event.globalPosition().toPoint()
         event.accept()
-
-    # Maximize handler
-    def keyPressEvent(self, e):
-        if self.isMaximized():
-            self.showNormal()
-        else:
-            self.showMaximized()
 
     # Close Event handler
     def closeEvent(self, event):
@@ -754,6 +752,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.posture_recognizer.stop_capture()
         try:
             self.w.close()
-        except:
-            pass
+            self.w1.close()
+        except Exception as e:
+            log.info(str(e))
         QApplication.exit()

@@ -19,7 +19,7 @@ class OverlayWidget(QWidget):
             self.setGeometry(self.width_geo - 80, -50, 100, 100)
 
         self.setWindowFlags(
-            Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint | Qt.WindowTransparentForInput
+            Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint | Qt.WindowTransparentForInput | Qt.SplashScreen
         )
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setWindowOpacity(0.5)

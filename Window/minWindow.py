@@ -1,10 +1,9 @@
 from PySide6.QtCore import Signal
-from PySide6.QtWidgets import QDialog, QMessageBox, QLineEdit
+from PySide6.QtWidgets import QDialog
 
 from PostureRecognize.ElapsedTime import read_elapsed_time_data, seconds_to_hms
 from .ui_MinWindow import Ui_minDialog
 from PySide6.QtCore import Qt
-import logging as log
 
 
 class MinWindow(QDialog, Ui_minDialog):
@@ -27,7 +26,10 @@ class MinWindow(QDialog, Ui_minDialog):
         self.close_btn.clicked.connect(self.close_me)
 
     def close_me(self):
+        self.parent.popout_btn.setEnabled(True)
         self.hide()
+        if not self.parent.isVisible():
+            self.parent.show()
 
     def start_monitor(self):
         self.start_btn.hide()

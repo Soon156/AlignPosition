@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>696</width>
-    <height>548</height>
+    <width>1038</width>
+    <height>512</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -62,84 +62,115 @@ color: rgb(255, 255, 255);</string>
        <property name="bottomMargin">
         <number>0</number>
        </property>
-       <item alignment="Qt::AlignLeft">
-        <widget class="QPushButton" name="dashboard_btn">
+       <item>
+        <widget class="QLabel" name="logo_with_title_lbl">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="text">
-          <string>  Dashboard</string>
+          <string/>
          </property>
-         <property name="icon">
-          <iconset resource="resource.qrc">
-           <normaloff>:/icon/icons8-dashboard-layout-48.png</normaloff>:/icon/icons8-dashboard-layout-48.png</iconset>
+         <property name="pixmap">
+          <pixmap resource="resource.qrc">:/icon/little_logo.png</pixmap>
          </property>
-         <property name="iconSize">
-          <size>
-           <width>25</width>
-           <height>25</height>
-          </size>
-         </property>
-         <property name="flat">
-          <bool>true</bool>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
          </property>
         </widget>
        </item>
-       <item alignment="Qt::AlignLeft">
-        <widget class="QPushButton" name="parental_btn">
-         <property name="text">
-          <string>  Parental Control</string>
+       <item>
+        <widget class="QFrame" name="frame_4">
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
          </property>
-         <property name="icon">
-          <iconset resource="resource.qrc">
-           <normaloff>:/icon/icons8-switches-48.png</normaloff>:/icon/icons8-switches-48.png</iconset>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
          </property>
-         <property name="iconSize">
-          <size>
-           <width>25</width>
-           <height>25</height>
-          </size>
-         </property>
-         <property name="flat">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item alignment="Qt::AlignLeft">
-        <widget class="QPushButton" name="calibrate_btn">
-         <property name="text">
-          <string>  Calibration</string>
-         </property>
-         <property name="icon">
-          <iconset resource="resource.qrc">
-           <normaloff>:/icon/icons8-tasks-48.png</normaloff>:/icon/icons8-tasks-48.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>25</width>
-           <height>25</height>
-          </size>
-         </property>
-         <property name="flat">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item alignment="Qt::AlignLeft">
-        <widget class="QPushButton" name="settings_btn">
-         <property name="text">
-          <string>  Settings</string>
-         </property>
-         <property name="icon">
-          <iconset resource="resource.qrc">
-           <normaloff>:/icon/icons8-setting-48.png</normaloff>:/icon/icons8-setting-48.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>25</width>
-           <height>25</height>
-          </size>
-         </property>
-         <property name="flat">
-          <bool>true</bool>
-         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_7">
+          <item alignment="Qt::AlignLeft">
+           <widget class="QPushButton" name="dashboard_btn">
+            <property name="text">
+             <string>  Dashboard</string>
+            </property>
+            <property name="icon">
+             <iconset resource="resource.qrc">
+              <normaloff>:/icon/icons8-dashboard-layout-48.png</normaloff>:/icon/icons8-dashboard-layout-48.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>25</width>
+              <height>25</height>
+             </size>
+            </property>
+            <property name="flat">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item alignment="Qt::AlignLeft">
+           <widget class="QPushButton" name="parental_btn">
+            <property name="text">
+             <string>  Parental Control</string>
+            </property>
+            <property name="icon">
+             <iconset resource="resource.qrc">
+              <normaloff>:/icon/icons8-switches-48.png</normaloff>:/icon/icons8-switches-48.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>25</width>
+              <height>25</height>
+             </size>
+            </property>
+            <property name="flat">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item alignment="Qt::AlignLeft">
+           <widget class="QPushButton" name="calibrate_btn">
+            <property name="text">
+             <string>  Calibration</string>
+            </property>
+            <property name="icon">
+             <iconset resource="resource.qrc">
+              <normaloff>:/icon/icons8-tasks-48.png</normaloff>:/icon/icons8-tasks-48.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>25</width>
+              <height>25</height>
+             </size>
+            </property>
+            <property name="flat">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item alignment="Qt::AlignLeft">
+           <widget class="QPushButton" name="settings_btn">
+            <property name="text">
+             <string>  Settings</string>
+            </property>
+            <property name="icon">
+             <iconset resource="resource.qrc">
+              <normaloff>:/icon/icons8-setting-48.png</normaloff>:/icon/icons8-setting-48.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>25</width>
+              <height>25</height>
+             </size>
+            </property>
+            <property name="flat">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
       </layout>
@@ -181,34 +212,16 @@ color: rgb(255, 255, 255);</string>
           <property name="spacing">
            <number>0</number>
           </property>
-          <property name="leftMargin">
-           <number>0</number>
-          </property>
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <property name="rightMargin">
-           <number>0</number>
-          </property>
           <property name="bottomMargin">
            <number>0</number>
           </property>
           <item>
-           <widget class="QLabel" name="logo_with_title_lbl">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
+           <widget class="QFrame" name="frame_5">
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
             </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="pixmap">
-             <pixmap resource="resource.qrc">:/icon/little_logo.png</pixmap>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
             </property>
            </widget>
           </item>
@@ -269,23 +282,6 @@ color: rgb(255, 255, 255);</string>
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="max_btn">
-               <property name="text">
-                <string/>
-               </property>
-               <property name="icon">
-                <iconset resource="resource.qrc">
-                 <normaloff>:/icon/icons8-maximize-window-48.png</normaloff>:/icon/icons8-maximize-window-48.png</iconset>
-               </property>
-               <property name="iconSize">
-                <size>
-                 <width>20</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </widget>
-             </item>
-             <item>
               <widget class="QPushButton" name="close_btn">
                <property name="text">
                 <string/>
@@ -310,8 +306,14 @@ color: rgb(255, 255, 255);</string>
        </item>
        <item>
         <widget class="QStackedWidget" name="cont_stackedwidget">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="currentIndex">
-          <number>3</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="Dashboard">
           <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -534,32 +536,42 @@ color: rgb(255, 255, 255);</string>
               <item>
                <layout class="QGridLayout" name="chart_cont"/>
               </item>
-              <item alignment="Qt::AlignHCenter">
-               <widget class="QPushButton" name="use_time_btn">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
+              <item>
+               <widget class="QFrame" name="frame_3">
+                <property name="frameShape">
+                 <enum>QFrame::StyledPanel</enum>
                 </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>120</width>
-                  <height>25</height>
-                 </size>
+                <property name="frameShadow">
+                 <enum>QFrame::Raised</enum>
                 </property>
-                <property name="styleSheet">
-                 <string notr="true">background-color: rgb(23, 107, 135);</string>
-                </property>
-                <property name="text">
-                 <string>Use Time</string>
-                </property>
-                <property name="default">
-                 <bool>false</bool>
-                </property>
-                <property name="flat">
-                 <bool>false</bool>
-                </property>
+                <layout class="QHBoxLayout" name="horizontalLayout_9">
+                 <item alignment="Qt::AlignHCenter">
+                  <widget class="QPushButton" name="use_time_btn">
+                   <property name="styleSheet">
+                    <string notr="true">background-color: rgb(23, 107, 135);</string>
+                   </property>
+                   <property name="text">
+                    <string>Use Time</string>
+                   </property>
+                   <property name="default">
+                    <bool>false</bool>
+                   </property>
+                   <property name="flat">
+                    <bool>false</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item alignment="Qt::AlignHCenter">
+                  <widget class="QPushButton" name="refresh_chart_btn">
+                   <property name="styleSheet">
+                    <string notr="true">background-color: rgb(23, 107, 135);</string>
+                   </property>
+                   <property name="text">
+                    <string>Refresh</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
                </widget>
               </item>
              </layout>
@@ -569,28 +581,342 @@ color: rgb(255, 255, 255);</string>
          </widget>
          <widget class="QWidget" name="ParentalControl">
           <layout class="QVBoxLayout" name="verticalLayout_5">
+           <property name="spacing">
+            <number>0</number>
+           </property>
            <item>
-            <widget class="QPushButton" name="changePIN_btn">
-             <property name="text">
-              <string>Change PIN</string>
+            <widget class="QFrame" name="UsetimeFame_2">
+             <property name="frameShape">
+              <enum>QFrame::StyledPanel</enum>
              </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_10">
+              <property name="spacing">
+               <number>12</number>
+              </property>
+              <item>
+               <widget class="QLabel" name="table_lbl">
+                <property name="text">
+                 <string>Computer Access Time</string>
+                </property>
+               </widget>
+              </item>
+              <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+               <widget class="QTableWidget" name="usetime_table">
+                <property name="minimumSize">
+                 <size>
+                  <width>803</width>
+                  <height>234</height>
+                 </size>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">QTableWidget { background-color: transparent; color: white;}
+QTableWidget QHeaderView::section { background-color: rgb(23, 107, 135); color: white;}
+QTableWidget QTableCornerButton::section {background-color: rgb(23, 107, 135) }
+QTableWidget { border: none; }</string>
+                </property>
+                <property name="lineWidth">
+                 <number>0</number>
+                </property>
+                <property name="cornerButtonEnabled">
+                 <bool>false</bool>
+                </property>
+                <attribute name="horizontalHeaderDefaultSectionSize">
+                 <number>32</number>
+                </attribute>
+                <row>
+                 <property name="text">
+                  <string>Mon</string>
+                 </property>
+                </row>
+                <row>
+                 <property name="text">
+                  <string>Tue</string>
+                 </property>
+                </row>
+                <row>
+                 <property name="text">
+                  <string>Wed</string>
+                 </property>
+                </row>
+                <row>
+                 <property name="text">
+                  <string>Thu</string>
+                 </property>
+                </row>
+                <row>
+                 <property name="text">
+                  <string>Fri</string>
+                 </property>
+                </row>
+                <row>
+                 <property name="text">
+                  <string>Sat</string>
+                 </property>
+                </row>
+                <row>
+                 <property name="text">
+                  <string>Sun</string>
+                 </property>
+                </row>
+                <column>
+                 <property name="text">
+                  <string>0</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>1</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>2</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>3</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>4</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>5</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>6</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>7</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>8</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>9</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>10</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>11</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>12</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>13</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>14</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>15</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>16</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>17</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>18</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>19</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>20</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>21</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>22</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>23</string>
+                 </property>
+                </column>
+               </widget>
+              </item>
+              <item>
+               <widget class="QFrame" name="TotalUsetimeFame">
+                <property name="frameShape">
+                 <enum>QFrame::StyledPanel</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Raised</enum>
+                </property>
+                <layout class="QHBoxLayout" name="horizontalLayout_10">
+                 <property name="spacing">
+                  <number>0</number>
+                 </property>
+                 <item alignment="Qt::AlignLeft">
+                  <widget class="QFrame" name="frame_6">
+                   <property name="frameShape">
+                    <enum>QFrame::StyledPanel</enum>
+                   </property>
+                   <property name="frameShadow">
+                    <enum>QFrame::Raised</enum>
+                   </property>
+                   <layout class="QHBoxLayout" name="horizontalLayout_12">
+                    <item>
+                     <widget class="QLabel" name="usetime_lbl">
+                      <property name="text">
+                       <string>Total Use Time per day (h)</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QDoubleSpinBox" name="usetime_box"/>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                 <item alignment="Qt::AlignHCenter">
+                  <widget class="QCheckBox" name="parental_box">
+                   <property name="text">
+                    <string>Parental Option</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item alignment="Qt::AlignRight">
+                  <widget class="QPushButton" name="usetime_btn">
+                   <property name="styleSheet">
+                    <string notr="true">background-color: rgb(100, 204, 197);</string>
+                   </property>
+                   <property name="text">
+                    <string>Apply</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+             </layout>
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="exct_data_btn">
-             <property name="text">
-              <string>Extract All Data</string>
+            <widget class="QFrame" name="OtherFrame">
+             <property name="frameShape">
+              <enum>QFrame::StyledPanel</enum>
              </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="restore_btn">
-             <property name="enabled">
-              <bool>false</bool>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
              </property>
-             <property name="text">
-              <string>Restore Data</string>
-             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_13">
+              <property name="spacing">
+               <number>0</number>
+              </property>
+              <item alignment="Qt::AlignHCenter">
+               <widget class="QLabel" name="other_lbl">
+                <property name="text">
+                 <string>Others</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QFrame" name="ButtonFrame_2">
+                <property name="frameShape">
+                 <enum>QFrame::StyledPanel</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Raised</enum>
+                </property>
+                <layout class="QHBoxLayout" name="horizontalLayout_14">
+                 <item>
+                  <widget class="QFrame" name="DataFrame">
+                   <property name="frameShape">
+                    <enum>QFrame::StyledPanel</enum>
+                   </property>
+                   <property name="frameShadow">
+                    <enum>QFrame::Raised</enum>
+                   </property>
+                   <layout class="QHBoxLayout" name="horizontalLayout_11">
+                    <item alignment="Qt::AlignRight">
+                     <widget class="QPushButton" name="exct_data_btn">
+                      <property name="styleSheet">
+                       <string notr="true">background-color: rgb(23, 107, 135);</string>
+                      </property>
+                      <property name="text">
+                       <string>Extract All Data</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item alignment="Qt::AlignLeft">
+                     <widget class="QPushButton" name="restore_btn">
+                      <property name="enabled">
+                       <bool>true</bool>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">background-color: rgb(23, 107, 135);</string>
+                      </property>
+                      <property name="text">
+                       <string>Restore Data</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                 <item alignment="Qt::AlignHCenter">
+                  <widget class="QPushButton" name="changePIN_btn">
+                   <property name="styleSheet">
+                    <string notr="true">background-color: rgb(23, 107, 135);</string>
+                   </property>
+                   <property name="text">
+                    <string>Change PIN</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+             </layout>
             </widget>
            </item>
           </layout>
@@ -669,6 +995,9 @@ color: rgb(255, 255, 255);</string>
              <layout class="QHBoxLayout" name="horizontalLayout_29">
               <item>
                <widget class="QPushButton" name="recalibrate_btn">
+                <property name="styleSheet">
+                 <string notr="true">background-color: rgb(100, 204, 197);</string>
+                </property>
                 <property name="text">
                  <string>Calibrate</string>
                 </property>
@@ -676,6 +1005,9 @@ color: rgb(255, 255, 255);</string>
               </item>
               <item>
                <widget class="QPushButton" name="proceed_btn">
+                <property name="styleSheet">
+                 <string notr="true">background-color: rgb(100, 204, 197);</string>
+                </property>
                 <property name="text">
                  <string>Proceed</string>
                 </property>
@@ -683,6 +1015,9 @@ color: rgb(255, 255, 255);</string>
               </item>
               <item>
                <widget class="QPushButton" name="append_btn">
+                <property name="styleSheet">
+                 <string notr="true">background-color: rgb(23, 107, 135);</string>
+                </property>
                 <property name="text">
                  <string>Add Posture</string>
                 </property>
@@ -690,6 +1025,9 @@ color: rgb(255, 255, 255);</string>
               </item>
               <item>
                <widget class="QPushButton" name="cancel_btn">
+                <property name="styleSheet">
+                 <string notr="true">background-color: rgb(23, 107, 135);</string>
+                </property>
                 <property name="text">
                  <string>Cancel</string>
                 </property>
@@ -1038,6 +1376,9 @@ color: rgb(255, 255, 255);</string>
                  </property>
                  <item>
                   <widget class="QPushButton" name="reset_btn">
+                   <property name="styleSheet">
+                    <string notr="true">background-color: rgb(23, 107, 135);</string>
+                   </property>
                    <property name="text">
                     <string>Reset</string>
                    </property>
@@ -1045,8 +1386,54 @@ color: rgb(255, 255, 255);</string>
                  </item>
                  <item>
                   <widget class="QPushButton" name="apply_btn">
+                   <property name="styleSheet">
+                    <string notr="true">background-color: rgb(100, 204, 197);</string>
+                   </property>
                    <property name="text">
                     <string>Apply</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QFrame" name="frame_7">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="frameShape">
+                 <enum>QFrame::StyledPanel</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Raised</enum>
+                </property>
+                <layout class="QHBoxLayout" name="horizontalLayout_13">
+                 <property name="spacing">
+                  <number>0</number>
+                 </property>
+                 <property name="leftMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
+                 <item alignment="Qt::AlignHCenter">
+                  <widget class="QPushButton" name="web_btn">
+                   <property name="text">
+                    <string>Website</string>
+                   </property>
+                   <property name="flat">
+                    <bool>true</bool>
                    </property>
                   </widget>
                  </item>
@@ -1078,7 +1465,7 @@ color: rgb(255, 255, 255);</string>
            <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
             <widget class="QStackedWidget" name="PIN_stackedwidget">
              <property name="currentIndex">
-              <number>0</number>
+              <number>1</number>
              </property>
              <widget class="QWidget" name="ChangePINPage">
               <layout class="QVBoxLayout" name="verticalLayout">
@@ -1215,6 +1602,9 @@ color: rgb(255, 255, 255);</string>
                    <verstretch>0</verstretch>
                   </sizepolicy>
                  </property>
+                 <property name="styleSheet">
+                  <string notr="true">background-color: rgb(100, 204, 197);</string>
+                 </property>
                  <property name="text">
                   <string>OK</string>
                  </property>
@@ -1239,7 +1629,7 @@ color: rgb(255, 255, 255);</string>
                <property name="bottomMargin">
                 <number>0</number>
                </property>
-               <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+               <item alignment="Qt::AlignVCenter">
                 <widget class="QFrame" name="PINValidationFrame">
                  <property name="frameShape">
                   <enum>QFrame::StyledPanel</enum>
@@ -1293,6 +1683,9 @@ color: rgb(255, 255, 255);</string>
                      </item>
                      <item>
                       <widget class="QPushButton" name="PIN_btn">
+                       <property name="styleSheet">
+                        <string notr="true">background-color: rgb(100, 204, 197);</string>
+                       </property>
                        <property name="text">
                         <string>OK</string>
                        </property>
@@ -1339,6 +1732,7 @@ color: rgb(255, 255, 255);</string>
   </widget>
  </widget>
  <resources>
+  <include location="resource.qrc"/>
   <include location="resource.qrc"/>
  </resources>
  <connections/>

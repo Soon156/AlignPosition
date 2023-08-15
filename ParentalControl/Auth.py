@@ -6,7 +6,7 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.primitives import hashes
-from Funtionality.Config import key_file_path, salt_file_path, userdata, app_use_time
+from Funtionality.Config import key_file_path, salt_file_path, userdata, app_use_time, allow_use_time
 import logging as log
 
 
@@ -52,7 +52,6 @@ def retrieve_key_salt():
             salt = f.read()
         return key, salt
     except FileNotFoundError:
-        log.warning("Key not found")
         return key, salt
 
 
@@ -163,3 +162,33 @@ def decrypt_data(encrypted_data, key, iv):
     decryptor = cipher.decryptor()
     decrypted_data = decryptor.update(encrypted_data) + decryptor.finalize()
     return decrypted_data
+
+
+def save_table_data(data):
+    key, salt = retrieve_key_salt()
+    if key is not None:
+        pickled_row = pickle.dumps(data)
+        encrypted_data = encrypt_data(pickled_row, key)
+        with open(allow_use_time, 'wb') as file:
+            file.write(encrypted_data)
+        log.info("Allowed time updated")
+
+
+def retrieve_table_data():
+    unpicked_row = []
+    key, salt = retrieve_key_salt()
+    if key is not None:
+        try:
+
+            with open(allow_use_time, 'rb') as file:
+                encrypted_data = file.read()
+                iv = encrypted_data[:16]
+                encrypted_data = encrypted_data[16:]
+                decrypted_data = decrypt_data(encrypted_data, key, iv)
+                unpicked_row = pickle.loads(decrypted_data)
+
+        except pickle.UnpicklingError:
+            log.warning("User file modified/corrupted")  # TODO error handler
+        except FileNotFoundError:
+            log.warning("No table data found")
+    return unpicked_row

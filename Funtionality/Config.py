@@ -8,6 +8,15 @@ from pygrabber.dshow_graph import FilterGraph
 import winreg
 
 VERSION = "0.0.1"
+Good_Posture = "Maintain your good posture 5 seconds, clicked proceed to start"
+Bad_Posture = "Maintain your bad posture 5 seconds, clicked proceed to start"
+Append_Posture = "Append bad posture, clicked proceed to start"
+Cancel_Calibrate = "Calibration Cancel"
+Append_Finish = "Append done"
+Model_Training = "Training model, please wait patiently...."
+Cancel = "Cancelling..."
+Capture_Posture = "Capturing posture, stay still...."
+
 
 # ACCURACY AND PERFORMANCE
 DETECTION_RATE = 0.5  # second
@@ -19,7 +28,7 @@ current_month, current_year = now.month, now.year
 
 # App_Use_Time Filter List
 filter_list = ["Windows Explorer", "Align Position", "null", "Application Frame Host", "Windows Problem Reporting",
-               "Desktop Window Manager", ""]
+               "Desktop Window Manager", "", "Pick an app", "Windows Start Experience Host"]
 
 # PATH
 logo_path = "Resources\logo.ico"
@@ -32,6 +41,7 @@ temp_folder = os.path.join(app_folder, 'temps')
 userdata = os.path.join(app_folder, 'usr_data.bin')
 app_use_time_file = f"use_time_{current_month:02d}_{current_year}.bin"
 app_use_time = os.path.join(app_folder, app_use_time_file)
+allow_use_time = os.path.join(app_folder, "table_time.bin")
 package_folder = os.path.dirname(os.path.abspath(__file__))
 library_in_production = os.path.dirname(package_folder)
 home_in_pro = os.path.dirname(library_in_production)
@@ -60,7 +70,7 @@ FORMAT = X.strftime("%Y") + '-' + X.strftime("%m") + '-' + X.strftime("%d") + ' 
 max_log_records = 10
 
 log.basicConfig(
-    level=log.INFO,
+    level=log.DEBUG,
     format='%(asctime)s %(levelname)s : %(message)s',
     datefmt='%Y-%m-%d %H:%M:%S',
     handlers=[
@@ -135,8 +145,7 @@ def get_available_cameras():
 
 # update value
 def write_config(dictionary_str):
-    print(dictionary_str["auto"])
-    if dictionary_str["auto"] == "True":  # TODO check working
+    if dictionary_str["auto"] == "True":
         try:
             with winreg.OpenKey(winreg.HKEY_CURRENT_USER, key_path, 0, winreg.KEY_WRITE) as key:
                 winreg.SetValueEx(key, app_name, 0, winreg.REG_SZ, exe_path)
@@ -146,8 +155,11 @@ def write_config(dictionary_str):
         log.info("Auto-start Enable")
         pass
     else:
-        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, key_path, 0, winreg.KEY_WRITE) as key:
-            winreg.DeleteValue(key, app_name)
+        try:
+            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, key_path, 0, winreg.KEY_WRITE) as key:
+                winreg.DeleteValue(key, app_name)
+        except FileNotFoundError:
+            pass
         log.info("Auto-start Disable")
     config = configparser.ConfigParser(allow_no_value=True)
     config.read(CONFIG_PATH)

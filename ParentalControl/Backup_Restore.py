@@ -81,7 +81,6 @@ def extract_zip(zip_file_path):
         zip_ref.extractall(desktop_path)
     for file in files:
         path = os.path.join(desktop_path, file)
-        print(path)
         if file == "use_time.csv":
             use_time = retrieve_use_time(path)
             write_use_time(use_time)

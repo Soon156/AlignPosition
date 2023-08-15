@@ -1,13 +1,60 @@
+import os
+from datetime import date
+
 import cv2
 import time
 import logging as log
 import joblib
 import numpy as np
-from PySide6.QtCore import Signal, QObject, QThread
-from Funtionality.Config import get_config, DETECTION_RATE
+from PySide6.QtCore import Signal, QThread, QRunnable, QObject, QThreadPool
+from PySide6.QtGui import QImage, QPixmap
+from Funtionality.Config import get_config, Model_Training, Bad_Posture, Capture_Posture, temp_folder
 from PostureRecognize.ElapsedTime import read_elapsed_time_data, save_elapsed_time_data
 from PostureRecognize.Model import model_file
-from PostureRecognize.FrameProcess import get_landmark
+from PostureRecognize.FrameProcess import get_landmark, buffer_frames
+
+
+class StartPreview(QThread):
+    error_msg = Signal(str)
+
+    def __init__(self, index):
+        super().__init__()
+        self.index = index
+        self.condition = True
+
+    def run(self):
+        try:
+            self.parent().camera = cv2.VideoCapture(self.index, cv2.CAP_DSHOW)
+            while self.condition:
+
+                ret, frame = self.parent().camera.read()
+                if ret:
+                    # Flip the frame horizontally
+                    frame = cv2.flip(frame, 1)
+
+                    # Resize the frame to fit the label
+                    frame = cv2.resize(frame, (640, 360))
+
+                    # Convert the OpenCV frame to QImage
+                    rgb_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                    h, w, ch = frame.shape
+                    bytes_per_line = ch * w
+                    q_image = QImage(rgb_image.data, w, h, bytes_per_line, QImage.Format.Format_RGB888)
+
+                    # Convert the QImage to QPixmap for display
+                    pixmap = QPixmap.fromImage(q_image)
+
+                    # Set the pixmap on the image label
+                    self.parent().calibrate_preview_lbl.setPixmap(pixmap)
+                else:
+                    raise Exception("Camera read failed")
+        except Exception as e:
+            log.error(e)
+            self.error_msg.emit(str(e))
+
+    def stop_preview(self):
+        self.condition = False
+        self.parent().camera.release()
 
 
 class PostureRecognizerThread(QThread):
@@ -21,9 +68,10 @@ class PostureRecognizerThread(QThread):
         self.classifier = None
         self.old_time = read_elapsed_time_data()
         self.elapsed_time = 0
-        self.new_time = 0
+        self.new_time = self.old_time
         self.badCount = 0
         self.goodCount = 0
+        self.date_today = date.today()
 
     def run(self):
         try:
@@ -98,13 +146,16 @@ class PostureRecognizerThread(QThread):
                 # Display the frame with pose landmarks and labels
                 cv2.imshow("Pose Landmarks", frame)
 
+            if date.today() != self.date_today:
+                save_elapsed_time_data(self.new_time, self.date_today)
+                self.new_time = 0
+                self.old_time = self.new_time
+
             # Break the loop if 'q' is pressed
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
 
-            # time.sleep(DETECTION_RATE)  # TODO If want need to fix the lag when update use time
-
-        save_elapsed_time_data(self.new_time)
+        save_elapsed_time_data(self.new_time, self.date_today)
         self.old_time = self.new_time
         # Release the VideoCapture and close the OpenCV windows
         cap.release()
@@ -133,3 +184,95 @@ class PostureRecognizerThread(QThread):
                 self.update_overlay.emit(result)
                 self.goodCount = 0
         return result
+
+
+class WorkerSignals(QObject):
+    counter = Signal()
+
+
+class CalibrateThread(QThread):  # TODO still need debug memory
+    finished = Signal(str)
+    error_msg = Signal(str)
+
+    def __init__(self, cat):
+        super().__init__()
+        self.cat = cat
+        self.new_frame_count = 0
+        self.thread_pool = QThreadPool()
+
+    def run(self):
+        if self.cat == "append":
+            counter = 1
+            while True:
+                folder = os.path.join(temp_folder, f"append_{counter}")
+                if not os.path.exists(folder):
+                    os.makedirs(folder, exist_ok=True)
+                    break
+                counter += 1
+        else:
+            folder = os.path.join(temp_folder, self.cat)
+            # Make sure folder exists
+            os.makedirs(folder, exist_ok=True)
+
+        try:
+            # Iterate over the files in the folder
+            for file_name in os.listdir(folder):
+                file_path = os.path.join(folder, file_name)
+                os.remove(file_path)
+            log.info("Temp folder cleared")
+
+            # Create a shared counter
+            files = os.listdir(folder)
+            frame_count = len(files) + 1
+
+            try:
+                frames = buffer_frames(self.parent().camera)
+                self.parent().hint_lbl.setText("Relax yourself, processing data....")
+
+                log.debug("start pool")
+                for frame in frames:
+                    worker = ExtractLandmark(frame, folder, frame_count)
+                    worker.signals.counter.connect(self.counter_handler)
+                    frame_count += 1
+                    self.thread_pool.start(worker)
+                self.thread_pool.waitForDone()
+                log.debug("finish thread pool")
+                self.finished.emit(self.cat)
+                log.debug(self.new_frame_count)
+                if self.new_frame_count < 10:
+                    log.warning(f"Available frame count low.\nFrame_count: {self.new_frame_count}")
+                    self.error_msg.emit("Make sure your face can be clearly see in the preview window")
+                    self.new_frame_count = 0
+                log.info("Frames extraction completed")
+
+            except Exception as e:
+                self.error_msg.emit(str(e))
+                log.critical(e)
+                raise Exception
+
+        except PermissionError as e:
+            log.warning(e)
+            self.error_msg.emit(str(e))
+
+    def counter_handler(self):
+        self.new_frame_count += 1
+
+
+class ExtractLandmark(QRunnable):
+    def __init__(self, frame, folder, frame_count):
+        super().__init__()
+        self.frame = frame
+        self.folder = folder
+        self.signals = WorkerSignals()
+        self.frame_count = frame_count
+
+    def run(self):
+        threshold = 50
+        # Make exception for black image
+        mean_intensity = self.frame.mean()
+        if (255 - threshold) > mean_intensity > threshold:
+            frame, frame_landmark = get_landmark(self.frame)
+            if frame_landmark is not None:
+                frame_path = os.path.join(self.folder, f"frame_{self.frame_count}.npy")
+                np.save(frame_path, frame_landmark)
+                self.signals.counter.emit()

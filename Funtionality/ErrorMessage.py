@@ -1,29 +1,6 @@
 from PySide6 import QtWidgets, QtCore
 from PySide6.QtWidgets import QMessageBox
 
-
-"""
-Stadard button
-QMessageBox.Ok
-QMessageBox.Open
-QMessageBox.Save
-QMessageBox.Cancel
-QMessageBox.Close
-QMessageBox.Yes
-QMessageBox.No
-QMessageBox.Abort
-QMessageBox.Retry
-QMessageBox.Ignore
-
-Icon
-QMessageBox::NoIcon
-QMessageBox::Question
-QMessageBox::Information
-QMessageBox::Warning
-QMessageBox::Critical
-"""
-
-
 def button_clicked(button):
     if button.text() == "OK":
         print("OK button clicked")
