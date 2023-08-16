@@ -61,6 +61,7 @@ class PostureRecognizerThread(QThread):
     elapsed_time_updated = Signal(int)
     error_msg = Signal(str)
     update_overlay = Signal(str)
+    finished = Signal(bool)
 
     def __init__(self):
         super().__init__()
@@ -76,7 +77,70 @@ class PostureRecognizerThread(QThread):
     def run(self):
         try:
             self.load_model()
-            self.start_capture()
+            self.running = True
+            # Create a VideoCapture object to capture video from the camera
+            values = get_config()
+            cap = cv2.VideoCapture(int(values.get('camera')), cv2.CAP_DSHOW)
+            start_time = time.time()
+            idle_time = 0
+            temp_time = 0
+            total_time = 0
+            counter = False
+            while self.running:
+                # Read the video frames
+                ret, frame = cap.read()
+
+                frame = cv2.flip(frame, 1)
+                if not ret:
+                    log.error("Invalid video source, cap.read() failed")
+                    raise Exception("cap.read() failed")
+
+                # Get landmark of frame
+                frame, landmark = get_landmark(frame)
+                if landmark is not None:
+                    # Do further processing with the pose landmarks
+                    labels = self.detect_posture(landmark)
+
+                    # Update the elapsed time only if landmark is not None
+                    self.elapsed_time = int(time.time() - start_time)
+                    if counter:
+                        total_time += temp_time
+                    self.new_time = self.old_time + self.elapsed_time - total_time
+                    self.elapsed_time_updated.emit(self.new_time)
+                    counter = False
+
+                    # Display the labels on the frame
+                    label_text = f"Posture: {labels}"
+                    cv2.putText(frame, label_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+
+                else:
+                    if not counter:
+                        idle_time = time.time()
+                        counter = True
+                    else:
+                        pass_time = int(time.time() - idle_time)
+                        # Check if the counter should be updated
+                        if pass_time >= float(values.get('idle')) * 60:
+                            temp_time = pass_time
+
+                if values.get('dev') == "True":
+                    # Display the frame with pose landmarks and labels
+                    cv2.imshow("Pose Landmarks", frame)
+
+                if date.today() != self.date_today:
+                    save_elapsed_time_data(self.new_time, self.date_today)
+                    self.new_time = 0
+                    self.old_time = self.new_time
+
+                # Break the loop if 'q' is pressed
+                if cv2.waitKey(1) & 0xFF == ord('q'):
+                    break
+            save_elapsed_time_data(self.new_time, self.date_today)
+            self.old_time = self.new_time
+            # Release the VideoCapture and close the OpenCV windows
+            cap.release()
+            cv2.destroyAllWindows()
+            self.finished.emit(self.running)
         except Exception as e:
             self.error_msg.emit(str(e))
 
@@ -86,80 +150,11 @@ class PostureRecognizerThread(QThread):
         except FileNotFoundError as e:
             log.error(e)
 
-    def start_capture(self):
-        self.running = True
-        try:
-            self.capture_landmarks()
-        except Exception as e:
-            self.error_msg.emit(str(e))
-
     def stop_capture(self):
         self.running = False
 
-    def capture_landmarks(self):
-        # Create a VideoCapture object to capture video from the camera
-        values = get_config()
-        cap = cv2.VideoCapture(int(values.get('camera')), cv2.CAP_DSHOW)
-        start_time = time.time()
-        idle_time = 0
-        temp_time = 0
-        total_time = 0
-        counter = False
-        while self.running:
-            # Read the video frames
-            ret, frame = cap.read()
-
-            frame = cv2.flip(frame, 1)
-            if not ret:
-                log.error("Invalid video source, cap.read() failed")
-                raise Exception("cap.read() failed")
-
-            # Get landmark of frame
-            frame, landmark = get_landmark(frame)
-            if landmark is not None:
-                # Do further processing with the pose landmarks
-                labels = self.detect_posture(landmark)
-
-                # Update the elapsed time only if landmark is not None
-                self.elapsed_time = int(time.time() - start_time)
-                if counter:
-                    total_time += temp_time
-                self.new_time = self.old_time + self.elapsed_time - total_time
-                self.elapsed_time_updated.emit(self.new_time)
-                counter = False
-
-                # Display the labels on the frame
-                label_text = f"Posture: {labels}"
-                cv2.putText(frame, label_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-
-            else:
-                if not counter:
-                    idle_time = time.time()
-                    counter = True
-                else:
-                    pass_time = int(time.time() - idle_time)
-                    # Check if the counter should be updated
-                    if pass_time >= float(values.get('idle')) * 60:
-                        temp_time = pass_time
-
-            if values.get('dev') == "True":
-                # Display the frame with pose landmarks and labels
-                cv2.imshow("Pose Landmarks", frame)
-
-            if date.today() != self.date_today:
-
-                save_elapsed_time_data(self.new_time, self.date_today)
-                self.new_time = 0
-                self.old_time = self.new_time
-
-            # Break the loop if 'q' is pressed
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+    def save_usetime(self):
         save_elapsed_time_data(self.new_time, self.date_today)
-        self.old_time = self.new_time
-        # Release the VideoCapture and close the OpenCV windows
-        cap.release()
-        cv2.destroyAllWindows()
 
     def detect_posture(self, landmark, threshold=65):
         # Use the loaded model for predictions or other tasks
@@ -190,7 +185,7 @@ class WorkerSignals(QObject):
     counter = Signal()
 
 
-class CalibrateThread(QThread):  # TODO still need debug memory
+class CalibrateThread(QThread):
     finished = Signal(str)
     error_msg = Signal(str)
 

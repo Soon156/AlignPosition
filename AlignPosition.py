@@ -3,16 +3,17 @@ import threading
 from datetime import datetime
 
 from PySide6 import QtWidgets
+
+import Funtionality.UpdateConfig
 from Funtionality.ErrorMessage import WarningMessageBox
-from ParentalControl.AppUseTime import tracking
 from ParentalControl.Auth import retrieve_table_data
 from PostureRecognize.ElapsedTime import read_elapsed_time_data
 from Window.Authorize import PINDialog
 from Window.main import MainWindow
-from Funtionality import Config
+from Funtionality import Config, UpdateConfig
 
 if __name__ == '__main__':
-
+    values = Config.get_config()
     if not Config.check_process():
         state = False
         cond = False
@@ -24,7 +25,11 @@ if __name__ == '__main__':
             current_date = datetime.now()
             current_hour = current_date.hour
             day_of_week_int = current_date.weekday()
-            if not data[1]:
+            if data[1]:
+                if values['auto'] != "True":
+                    values['auto'] = "True"
+                    Funtionality.UpdateConfig.write_config(values)
+
                 for day, hour in data[2:]:
                     if day == day_of_week_int:
                         if hour == current_hour:
@@ -44,16 +49,15 @@ if __name__ == '__main__':
             window.show()
             app.exec()
 
-        if state:
+        if state and not cond:
             # Create the application instance
             app = QtWidgets.QApplication(sys.argv)
 
             Config.get_config()
             Config.clear_log()
 
-            values = Config.get_config()
             if values['app_tracking'] == "True":
-                use_time = threading.Thread(target=tracking)
+                use_time = threading.Thread(target=UpdateConfig.tracking_instance.run)
                 use_time.start()
 
             # Create the main window

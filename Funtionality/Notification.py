@@ -64,12 +64,12 @@ def cancel_handler():
 
 
 def show_control():
-    global condition, callback
+    global callback
     start_time = time.time()
     zroya.show(sleep_notify, on_action=cancel_handler)
     while True:
         time.sleep(sleep_time)
-        get_condition()
+        condition = get_condition()
         if condition:
             change_condition()
             log.info("System Sleep")

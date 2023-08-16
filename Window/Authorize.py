@@ -3,7 +3,7 @@ import threading
 from PySide6 import QtWidgets
 from PySide6.QtWidgets import QDialog
 from Funtionality.Config import get_config, clear_log
-from ParentalControl.AppUseTime import tracking
+from Funtionality.UpdateConfig import use_time
 from ParentalControl.Auth import login_user
 from Window.main import MainWindow
 from Window.ui_Authorize import Ui_PINDialog
@@ -26,7 +26,6 @@ class PINDialog(QDialog, Ui_PINDialog):
 
             values = get_config()
             if values['app_tracking'] == "True":
-                use_time = threading.Thread(target=tracking)
                 use_time.start()
 
             # Create the main window

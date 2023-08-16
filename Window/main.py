@@ -11,11 +11,11 @@ from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox, QSizePolic
     QTableWidgetItem
 from PySide6.QtCharts import QBarSet, QBarSeries, QBarCategoryAxis, QChart, QChartView
 from PySide6.QtGui import QPainter, QColor, QDesktopServices
-from Funtionality.Config import model_file, get_config, write_config, get_available_cameras, create_config, \
+from Funtionality.Config import model_file, get_config, get_available_cameras, create_config, \
     key_file_path, desktop_path, Bad_Posture, Good_Posture, Append_Posture, Cancel_Calibrate, Capture_Posture, \
     Model_Training, abs_logo_path
+from Funtionality.UpdateConfig import write_config, tracking_instance
 from Funtionality.Notification import first_notify, show_break, set_elapsed_time, show_control
-from ParentalControl.AppUseTime import update_condition
 from ParentalControl.Auth import change_password, login_user, read_use_time, \
     read_app_use_time, user_register, save_table_data, retrieve_table_data
 from ParentalControl.Backup_Restore import extract_zip, zip_files
@@ -24,6 +24,7 @@ from PostureRecognize.FrameProcess import temp_backup_restore
 from PostureRecognize.Model import TrainModel
 from PostureRecognize.PositionDetect import PostureRecognizerThread, read_elapsed_time_data, StartPreview, \
     CalibrateThread
+from .Authorize_2 import PINDialog2, get_condition
 from .OverlayWindow import OverlayWidget
 from .ui_MainMenu import Ui_MainWindow
 from .minWindow import MinWindow
@@ -44,7 +45,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # SET DEFAULT STATE
         # Connect object
-        self.min_btn.clicked.connect(self.showMinimized)
+        self.min_btn.clicked.connect(self.min_window_visible)
         self.close_btn.clicked.connect(self.close)
         self.dashboard_btn.clicked.connect(self.dashboard_page)
         self.parental_btn.clicked.connect(self.parental_page)
@@ -105,6 +106,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.posture_recognizer.error_msg.connect(self.error_handler)
         self.posture_recognizer.elapsed_time_updated.connect(self.update_elapsed_time_label)
         self.posture_recognizer.update_overlay.connect(self.update_overlay)
+        self.posture_recognizer.finished.connect(self.change_monitoring_state)
         self.calibrate_thread = None
         self.preview_thread = None
         self.camera = None
@@ -127,6 +129,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         ))
         self.system_icon.run_detached()
 
+    def min_window_visible(self):
+        if self.w.isVisible():
+            self.hide()
+        else:
+            self.showMinimized()
+
     def if_visible(self):
         if self.isVisible():
             self.stop_preview()
@@ -142,6 +150,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.cont_stackedwidget.setCurrentIndex(0)
             self.use_time_lbl.setText(seconds_to_hms(read_elapsed_time_data()))
             self.tut_chart()
+            self.use_time_btn.setText("Program Use Time")
             self.check_model()
         else:
             self.parental_page()
@@ -213,15 +222,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.monitor_btn.clicked.connect(self.calibration_page)
 
     # Monitoring
+    def change_monitoring_state(self, state):
+        self.monitoring_state = state
+        self.monitor_btn.setText("Start")
+        self.w1.hide()
+        log.info("Monitoring stop")
+
     def start_monitoring(self):
         self.stop_preview()
-        if self.monitoring_state:
-            self.monitoring_state = False
-            self.monitor_btn.setText("Start")
-            self.posture_recognizer.stop_capture()
-            self.w1.hide()
-            log.info("Monitoring stop")
-        else:
+        if not self.monitoring_state:
             self.monitoring_state = True
             self.monitor_btn.setText("Stop")
             self.start_time = time.time()
@@ -235,16 +244,18 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 QMessageBox.critical(self, "Error", f"An error occurred: {str(e)}")
                 self.exit_app()
             log.info("Monitoring start")
+        else:
+            self.posture_recognizer.stop_capture()
 
     @Slot(int)
     def update_elapsed_time_label(self, elapsed_time):
-        cond = None
         self.use_time_lbl.setText(seconds_to_hms(elapsed_time))
         try:
             self.w.use_time_lbl.setText(seconds_to_hms(elapsed_time))
         except:
             pass
         set_elapsed_time(elapsed_time)
+
         a = time.time() - self.start_time
         b = float(self.values.get('rest')) * 60
         if a >= b:
@@ -252,21 +263,25 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.start_time = time.time()
 
         if self.data:
-            use_time = self.data[0]
-            use_time_in_sec = use_time * 60 * 60
-            current_date = datetime.now()
-            current_hour = current_date.hour
-            day_of_week_int = current_date.weekday()
+            self.over_usetime(elapsed_time)
 
-            if use_time != 24 and elapsed_time > use_time_in_sec:
-                cond = True
-            for day, hour in self.data[2:]:
-                if day == day_of_week_int:
-                    if hour == current_hour:
-                        cond = True
-            if cond and not self.notify_state and not self.data[1]:
-                self.notify_state = True
-                show_control()
+    def over_usetime(self, elapsed_time):
+        cond = False
+        use_time = self.data[0]
+        use_time_in_sec = use_time * 60 * 60
+        current_date = datetime.now()
+        current_hour = current_date.hour
+        day_of_week_int = current_date.weekday()
+
+        if use_time != 24 and elapsed_time > use_time_in_sec:
+            cond = True
+        for day, hour in self.data[2:]:
+            if day == day_of_week_int:
+                if hour == current_hour:
+                    cond = True
+        if cond and not self.notify_state and not self.data[1]:
+            self.notify_state = True
+            show_control()
 
     def update_overlay(self, posture):
         self.w1.change_state(posture)
@@ -668,6 +683,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.update_chart(chart_view)
 
     def show_chart(self, state=False):
+        try:
+            self.posture_recognizer.save_usetime()
+            tracking_instance.save_app_usetime()
+        except Exception as e:
+            log.warning(e)
+
         # Update UI
         if self.use_time_btn.text() == "Program Use Time":
             if not state:
@@ -697,14 +718,21 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             QMessageBox.warning(self, "Not allowed", "Usetime cannot be larger than 24 or smaller than 1")
         else:
             selected_cells = [self.usetime_box.value(), self.parental_box.isChecked()]
+            if self.parental_box.isChecked():
+                self.values['auto'] = "True"
+                log.info(f"Startup Enable")
+                write_config(self.values)
+                self.values = get_config()
             for day in range(7):
                 for hour in range(24):
                     item = self.usetime_table.item(day, hour)
                     if item.background() == QColor(220, 20, 60):
                         selected_cells.append((day, hour))
             save_table_data(selected_cells)
-            print(selected_cells)
             self.data = selected_cells
+        if self.data and self.data[1]:
+            elapsed_time = read_elapsed_time_data()
+            self.over_usetime(elapsed_time)
 
     def toggle_cell(self, row, column):
         item = self.usetime_table.item(row, column)
@@ -745,7 +773,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.exit_app()
 
     def exit_app(self):
-        update_condition()
+        if self.data and self.data[1]:
+            window = PINDialog2()
+            window.show()
+            if not get_condition():
+                self.exit_main()
+        else:
+            self.exit_main()
+
+    def exit_main(self):
+        self.destroy()
+        tracking_instance.update_condition()
         self.system_icon.stop()
         if self.monitoring_state:
             self.monitoring_state = False

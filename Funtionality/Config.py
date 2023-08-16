@@ -1,11 +1,10 @@
-import ast
 import configparser
 import os
 import logging as log
 import datetime
+
 from psutil import process_iter
 from pygrabber.dshow_graph import FilterGraph
-import winreg
 
 VERSION = "0.0.1"
 Good_Posture = "Maintain your good posture 5 seconds, clicked proceed to start"
@@ -17,7 +16,6 @@ Model_Training = "Training model, please wait patiently...."
 Cancel = "Cancelling..."
 Capture_Posture = "Capturing posture, stay still...."
 
-
 # ACCURACY AND PERFORMANCE
 DETECTION_RATE = 0.5  # second
 counter = 0  # To check the program exist
@@ -28,7 +26,8 @@ current_month, current_year = now.month, now.year
 
 # App_Use_Time Filter List
 filter_list = ["Windows Explorer", "Align Position", "null", "Application Frame Host", "Windows Problem Reporting",
-               "Desktop Window Manager", "", "Pick an app", "Windows Start Experience Host"]
+               "Desktop Window Manager", "", "Pick an app", "Windows Start Experience Host",
+               "Windows Shell Experience Host"]
 
 # PATH
 logo_path = "Resources\logo.ico"
@@ -143,33 +142,6 @@ def get_available_cameras():
         return available_cameras
 
 
-# update value
-def write_config(dictionary_str):
-    if dictionary_str["auto"] == "True":
-        try:
-            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, key_path, 0, winreg.KEY_WRITE) as key:
-                winreg.SetValueEx(key, app_name, 0, winreg.REG_SZ, exe_path)
-        except FileNotFoundError:
-            with winreg.CreateKey(winreg.HKEY_CURRENT_USER, key_path) as key:
-                winreg.SetValueEx(key, app_name, 0, winreg.REG_SZ, exe_path)
-        log.info("Auto-start Enable")
-        pass
-    else:
-        try:
-            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, key_path, 0, winreg.KEY_WRITE) as key:
-                winreg.DeleteValue(key, app_name)
-        except FileNotFoundError:
-            pass
-        log.info("Auto-start Disable")
-    config = configparser.ConfigParser(allow_no_value=True)
-    config.read(CONFIG_PATH)
-    config.optionxform = str
-    config['Option'] = ast.literal_eval(str(dictionary_str))
-    with open(CONFIG_PATH, "w") as f:
-        config.write(f)
-        log.info("Config updated")
-
-
 # create or reset config
 def create_config():
     config = configparser.ConfigParser(allow_no_value=True)
@@ -212,7 +184,6 @@ def check_condition():
         if len(values) != len(DEFAULT_VAL):
             create_config()
             raise Exception("Invalid config option")
-
         int(values.get('camera'))
         float(values.get('idle'))
         a = values.get('background') == 'True' or values.get('background') == 'False'

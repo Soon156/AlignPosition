@@ -3,17 +3,16 @@ import logging as log
 from ParentalControl.Auth import login_user
 from Window.ui_Authorize import Ui_PINDialog
 
-condition = True
+cond_valid = True
 
 
 def change_condition():
-    global condition
-    condition = False
+    global cond_valid
+    cond_valid = False
 
 
 def get_condition():
-    print(condition)
-    return condition
+    return cond_valid
 
 
 class PINDialog2(QDialog, Ui_PINDialog):
