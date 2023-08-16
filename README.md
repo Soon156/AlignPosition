@@ -44,4 +44,4 @@ Contributions from the open-source community are highly encouraged. Developers c
  Align Position is released under the [GNU General Public License (GPL)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html), ensuring that the software remains free and open-source for all.
 
 ## Get Involved:
-Join the  Align Position community on GitHub and contribute to building a safer and more productive digital world for all. Your ideas and contributions are invaluable to us.****
+Join the  Align Position community on GitHub and contribute to building a safer and more productive digital world for all. Your ideas and contributions are invaluable to us.
