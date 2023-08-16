@@ -41,7 +41,7 @@ Facilitate easy settings reset for user convenience.
 Contributions from the open-source community are highly encouraged. Developers can enhance existing features, add new functionalities, improve UI/UX, or contribute to documentation, ensuring the continuous improvement of Align Position.
 
 ## License:
- Align Position is released under the [GNU General Public License (GPL)](https://www.gnu.org/licenses/gpl-3.0.en.html), ensuring that the software remains free and open-source for all.
+ Align Position is released under the [GNU General Public License (GPL)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html), ensuring that the software remains free and open-source for all.
 
 ## Get Involved:
 Join the  Align Position community on GitHub and contribute to building a safer and more productive digital world for all. Your ideas and contributions are invaluable to us.****
