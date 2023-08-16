@@ -328,7 +328,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 if len(new1) >= 6 and new1.isdigit():
                     if cond:
                         user_register(self.new_PIN_line.text())
-                        self.cont_stackedwidget.setCurrentIndex(1)
+                        self.cont_stackedwidget.setCurrentIndex(0)
                     else:
                         if change_password(old, new1):
                             QMessageBox.information(self, "PIN changed", "Password changed successfully")
