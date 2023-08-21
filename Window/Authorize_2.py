@@ -20,6 +20,7 @@ class PINDialog2(QDialog, Ui_PINDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)
+        self.PIN_line.returnPressed.connect(self.PIN_btn.click)
 
     def valid_pin(self):
         if login_user(self.PIN_line.text()):
