@@ -1,40 +1,23 @@
-import sys
-from PySide6 import QtWidgets
-from PySide6.QtWidgets import QDialog
-from Funtionality.Config import get_config, clear_log
-from Funtionality.UpdateConfig import use_time
+from PySide6.QtWidgets import QDialog, QLineEdit
+from Funtionality.Notification import update_cancel_cond
 from ParentalControl.Auth import login_user
-from Window.main import MainWindow
 from Window.ui_Authorize import Ui_PINDialog
 
 
 class PINDialog(QDialog, Ui_PINDialog):
 
-    def __init__(self, parent=None):
-        super().__init__(parent)
+    def __init__(self):
+        super().__init__()
         self.setupUi(self)
+        self.PIN_line.setEchoMode(QLineEdit.Password)
+        self.PIN_hint_lbl.hide()
+        self.PIN_line.returnPressed.connect(self.PIN_btn.click)
+        self.PIN_btn.clicked.connect(self.valid_pin)
 
     def valid_pin(self):
         if login_user(self.PIN_line.text()):
-            self.close()
-            # Create the application instance
-            app = QtWidgets.QApplication(sys.argv)
-            self.PIN_line.returnPressed.connect(self.PIN_btn.click)
-            get_config()
-            clear_log()
-
-            values = get_config()
-            if values['app_tracking'] == "True":
-                use_time.start()
-
-            # Create the main window
-            window = MainWindow()
-            window.setScreen(app.primaryScreen())
-            window.notify_state = True
-            window.show()
-
-            # Start the event loop
-            app.exec()
+            update_cancel_cond()
+            self.hide()
 
         else:
             self.PIN_hint_lbl.setText("Incorrect PIN")
