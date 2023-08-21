@@ -518,15 +518,16 @@ class Ui_MainWindow(object):
         self.usetime_table.setVerticalHeaderItem(6, __qtablewidgetitem30)
         self.usetime_table.setObjectName(u"usetime_table")
         self.usetime_table.setMinimumSize(QSize(803, 234))
-        self.usetime_table.setStyleSheet(u"QTableWidget { background-color: transparent;}\n"
-"QTableWidget QHeaderView::section { background-color: rgb(23, 107, 135);}\n"
-"QTableWidget QTableCornerButton::section {background-color: rgb(23, 107, 135) }\n"
-"QTableWidget { border: none; }")
+        self.usetime_table.setStyleSheet(u"QTableWidget { background-color: transparent; border: none;\n"
+"}\n"
+"QTableWidget QHeaderView::section ,QTableCornerButton::section{\n"
+"    background-color: #A4BAFE;\n"
+"}")
         self.usetime_table.setLineWidth(0)
         self.usetime_table.setCornerButtonEnabled(False)
         self.usetime_table.horizontalHeader().setDefaultSectionSize(32)
 
-        self.verticalLayout_10.addWidget(self.usetime_table, 0, Qt.AlignHCenter|Qt.AlignVCenter)
+        self.verticalLayout_10.addWidget(self.usetime_table, 0, Qt.AlignLeft|Qt.AlignTop)
 
         self.TotalUsetimeFame = QFrame(self.UsetimeFame_2)
         self.TotalUsetimeFame.setObjectName(u"TotalUsetimeFame")
@@ -917,14 +918,14 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_27.addWidget(self.background_box)
 
-        self.app_time_track_box = QCheckBox(self.OptionFrame)
+
+        self.verticalLayout_26.addWidget(self.OptionFrame)
+
+        self.app_time_track_box = QCheckBox(self.SettingOptionFrame)
         self.app_time_track_box.setObjectName(u"app_time_track_box")
         self.app_time_track_box.setFont(font)
 
-        self.horizontalLayout_27.addWidget(self.app_time_track_box)
-
-
-        self.verticalLayout_26.addWidget(self.OptionFrame)
+        self.verticalLayout_26.addWidget(self.app_time_track_box, 0, Qt.AlignHCenter)
 
         self.BreakFrame = QFrame(self.SettingOptionFrame)
         self.BreakFrame.setObjectName(u"BreakFrame")
@@ -1325,8 +1326,8 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.cont_stackedwidget.setCurrentIndex(4)
-        self.PIN_stackedwidget.setCurrentIndex(1)
+        self.cont_stackedwidget.setCurrentIndex(0)
+        self.PIN_stackedwidget.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(MainWindow)

@@ -514,7 +514,7 @@ border-radius: 25px;
           <string notr="true">background-color: transparent;</string>
          </property>
          <property name="currentIndex">
-          <number>4</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="Dashboard">
           <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -824,7 +824,7 @@ background: #a200ff;
                 </property>
                </widget>
               </item>
-              <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+              <item alignment="Qt::AlignLeft|Qt::AlignTop">
                <widget class="QTableWidget" name="usetime_table">
                 <property name="minimumSize">
                  <size>
@@ -833,10 +833,11 @@ background: #a200ff;
                  </size>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">QTableWidget { background-color: transparent;}
-QTableWidget QHeaderView::section { background-color: rgb(23, 107, 135);}
-QTableWidget QTableCornerButton::section {background-color: rgb(23, 107, 135) }
-QTableWidget { border: none; }</string>
+                 <string notr="true">QTableWidget { background-color: transparent; border: none;
+}
+QTableWidget QHeaderView::section ,QTableCornerButton::section{
+    background-color: #A4BAFE;
+}</string>
                 </property>
                 <property name="lineWidth">
                  <number>0</number>
@@ -1617,20 +1618,20 @@ QComboBox::down-arrow:on { /* shift the arrow when popup is open */
                    </property>
                   </widget>
                  </item>
-                 <item>
-                  <widget class="QCheckBox" name="app_time_track_box">
-                   <property name="font">
-                    <font>
-                     <family>Roboto</family>
-                     <pointsize>12</pointsize>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string> App Use Time Tracking</string>
-                   </property>
-                  </widget>
-                 </item>
                 </layout>
+               </widget>
+              </item>
+              <item alignment="Qt::AlignHCenter">
+               <widget class="QCheckBox" name="app_time_track_box">
+                <property name="font">
+                 <font>
+                  <family>Roboto</family>
+                  <pointsize>12</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string> App Use Time Tracking</string>
+                </property>
                </widget>
               </item>
               <item>
@@ -2056,7 +2057,7 @@ background: #d10000;
            <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
             <widget class="QStackedWidget" name="PIN_stackedwidget">
              <property name="currentIndex">
-              <number>1</number>
+              <number>0</number>
              </property>
              <widget class="QWidget" name="ChangePINPage">
               <layout class="QVBoxLayout" name="verticalLayout">

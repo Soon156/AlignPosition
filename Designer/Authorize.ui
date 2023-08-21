@@ -84,7 +84,11 @@ font-family: &quot;Roboto&quot;, sans-serif;</string>
           <number>0</number>
          </property>
          <item>
-          <widget class="QLineEdit" name="PIN_line"/>
+          <widget class="QLineEdit" name="PIN_line">
+           <property name="styleSheet">
+            <string notr="true">background-color: transparent;</string>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QPushButton" name="PIN_btn">
