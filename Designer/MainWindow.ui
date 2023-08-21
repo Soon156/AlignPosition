@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1038</width>
-    <height>512</height>
+    <width>1051</width>
+    <height>513</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,13 +18,18 @@
     <normaloff>:/icon/logo.ico</normaloff>:/icon/logo.ico</iconset>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(0, 28, 48);
-color: rgb(255, 255, 255);</string>
+   <string notr="true">#widget {background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 rgb(26, 16, 57), stop:0.5 rgb(41, 14, 47), stop:1 rgb(26, 16, 57))}
+
+</string>
   </property>
   <property name="unifiedTitleAndToolBarOnMac">
    <bool>false</bool>
   </property>
   <widget class="QWidget" name="widget">
+   <property name="styleSheet">
+    <string notr="true">color: white;
+font-family: &quot;Roboto&quot;, sans-serif;</string>
+   </property>
    <layout class="QHBoxLayout" name="horizontalLayout_2">
     <property name="spacing">
      <number>0</number>
@@ -53,16 +58,19 @@ color: rgb(255, 255, 255);</string>
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_9">
-       <property name="topMargin">
+       <property name="leftMargin">
         <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>6</number>
        </property>
        <property name="rightMargin">
         <number>6</number>
        </property>
        <property name="bottomMargin">
-        <number>0</number>
+        <number>20</number>
        </property>
-       <item>
+       <item alignment="Qt::AlignLeft">
         <widget class="QLabel" name="logo_with_title_lbl">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -74,100 +82,312 @@ color: rgb(255, 255, 255);</string>
           <string/>
          </property>
          <property name="pixmap">
-          <pixmap resource="resource.qrc">:/icon/little_logo.png</pixmap>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
+          <pixmap resource="resource.qrc">:/icon/new-title-resize.png</pixmap>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QFrame" name="frame_4">
+        <widget class="QFrame" name="frame">
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
+	background-color: transparent;
+}
+
+QPushButton:hover {
+background-color: transparent;
+}
+
+QPushButton:pressed{
+background-color: transparent;}</string>
+         </property>
          <property name="frameShape">
           <enum>QFrame::StyledPanel</enum>
          </property>
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_7">
-          <item alignment="Qt::AlignLeft">
-           <widget class="QPushButton" name="dashboard_btn">
-            <property name="text">
-             <string>  Dashboard</string>
+         <layout class="QVBoxLayout" name="verticalLayout_11">
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QFrame" name="frame1">
+            <property name="styleSheet">
+             <string notr="true">QFrame {background: rgba(46, 2, 102, 0.5);
+border-radius: 25px;
+};
+
+</string>
             </property>
-            <property name="icon">
-             <iconset resource="resource.qrc">
-              <normaloff>:/icon/icons8-dashboard-layout-48.png</normaloff>:/icon/icons8-dashboard-layout-48.png</iconset>
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
             </property>
-            <property name="iconSize">
-             <size>
-              <width>25</width>
-              <height>25</height>
-             </size>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
             </property>
-            <property name="flat">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item alignment="Qt::AlignLeft">
-           <widget class="QPushButton" name="parental_btn">
-            <property name="text">
-             <string>  Parental Control</string>
-            </property>
-            <property name="icon">
-             <iconset resource="resource.qrc">
-              <normaloff>:/icon/icons8-switches-48.png</normaloff>:/icon/icons8-switches-48.png</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>25</width>
-              <height>25</height>
-             </size>
-            </property>
-            <property name="flat">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item alignment="Qt::AlignLeft">
-           <widget class="QPushButton" name="calibrate_btn">
-            <property name="text">
-             <string>  Calibration</string>
-            </property>
-            <property name="icon">
-             <iconset resource="resource.qrc">
-              <normaloff>:/icon/icons8-tasks-48.png</normaloff>:/icon/icons8-tasks-48.png</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>25</width>
-              <height>25</height>
-             </size>
-            </property>
-            <property name="flat">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item alignment="Qt::AlignLeft">
-           <widget class="QPushButton" name="settings_btn">
-            <property name="text">
-             <string>  Settings</string>
-            </property>
-            <property name="icon">
-             <iconset resource="resource.qrc">
-              <normaloff>:/icon/icons8-setting-48.png</normaloff>:/icon/icons8-setting-48.png</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>25</width>
-              <height>25</height>
-             </size>
-            </property>
-            <property name="flat">
-             <bool>true</bool>
-            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_8">
+             <property name="spacing">
+              <number>0</number>
+             </property>
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QWidget" name="a_2" native="true">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="styleSheet">
+                <string notr="true"/>
+               </property>
+               <layout class="QHBoxLayout" name="horizontalLayout_28">
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QPushButton" name="dashboard_btn_2">
+                  <property name="font">
+                   <font>
+                    <family>Roboto</family>
+                    <pointsize>12</pointsize>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>  Dashboard</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="resource.qrc">
+                    <normaloff>:/icon/icons8-dashboard-layout-48.png</normaloff>:/icon/icons8-dashboard-layout-48.png</iconset>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>30</width>
+                    <height>30</height>
+                   </size>
+                  </property>
+                  <property name="flat">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="Line" name="line_4">
+               <property name="styleSheet">
+                <string notr="true">border: 3px dotted white;</string>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QWidget" name="d_2" native="true">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <layout class="QHBoxLayout" name="horizontalLayout_31">
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QPushButton" name="parental_btn_2">
+                  <property name="font">
+                   <font>
+                    <family>Roboto</family>
+                    <pointsize>12</pointsize>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>  Parental
+  Control</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="resource.qrc">
+                    <normaloff>:/icon/icons8-switches-48.png</normaloff>:/icon/icons8-switches-48.png</iconset>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>25</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="flat">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="Line" name="line_6">
+               <property name="styleSheet">
+                <string notr="true">border: 3px dotted white;</string>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QWidget" name="b_2" native="true">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <layout class="QHBoxLayout" name="horizontalLayout_32">
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QPushButton" name="calibrate_btn_2">
+                  <property name="font">
+                   <font>
+                    <family>Roboto</family>
+                    <pointsize>12</pointsize>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>  Calibration</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="resource.qrc">
+                    <normaloff>:/icon/icons8-tasks-48.png</normaloff>:/icon/icons8-tasks-48.png</iconset>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>25</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="flat">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="Line" name="line_7">
+               <property name="styleSheet">
+                <string notr="true">border: 3px dotted white;</string>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QWidget" name="c_2" native="true">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <layout class="QHBoxLayout" name="horizontalLayout_33">
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QPushButton" name="settings_btn_2">
+                  <property name="font">
+                   <font>
+                    <family>Roboto</family>
+                    <pointsize>12</pointsize>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>  Settings</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="resource.qrc">
+                    <normaloff>:/icon/icons8-setting-48.png</normaloff>:/icon/icons8-setting-48.png</iconset>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>25</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="flat">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+            </layout>
            </widget>
           </item>
          </layout>
@@ -215,28 +435,6 @@ color: rgb(255, 255, 255);</string>
           <property name="bottomMargin">
            <number>0</number>
           </property>
-          <item>
-           <widget class="QFrame" name="frame_5">
-            <property name="frameShape">
-             <enum>QFrame::StyledPanel</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
-            </property>
-           </widget>
-          </item>
-          <item alignment="Qt::AlignHCenter">
-           <widget class="QLabel" name="page_title_lbl">
-            <property name="font">
-             <font>
-              <pointsize>12</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>Page Title</string>
-            </property>
-           </widget>
-          </item>
           <item alignment="Qt::AlignRight|Qt::AlignTop">
            <widget class="QFrame" name="ActionFrame">
             <property name="styleSheet">
@@ -312,8 +510,11 @@ color: rgb(255, 255, 255);</string>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: transparent;</string>
+         </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>4</number>
          </property>
          <widget class="QWidget" name="Dashboard">
           <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -342,6 +543,7 @@ color: rgb(255, 255, 255);</string>
              </property>
              <property name="font">
               <font>
+               <family>Roboto</family>
                <kerning>true</kerning>
               </font>
              </property>
@@ -382,19 +584,86 @@ color: rgb(255, 255, 255);</string>
                     <enum>QFrame::Raised</enum>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_23">
+                    <property name="spacing">
+                     <number>0</number>
+                    </property>
                     <item>
-                     <widget class="QLabel" name="label_3">
-                      <property name="font">
-                       <font>
-                        <pointsize>12</pointsize>
-                        <kerning>true</kerning>
-                       </font>
+                     <widget class="QFrame" name="frame_8">
+                      <property name="frameShape">
+                       <enum>QFrame::StyledPanel</enum>
                       </property>
-                      <property name="text">
-                       <string>Today Use Time:</string>
+                      <property name="frameShadow">
+                       <enum>QFrame::Raised</enum>
                       </property>
-                      <property name="alignment">
-                       <set>Qt::AlignCenter</set>
+                      <layout class="QHBoxLayout" name="horizontalLayout_15">
+                       <property name="spacing">
+                        <number>0</number>
+                       </property>
+                       <property name="leftMargin">
+                        <number>0</number>
+                       </property>
+                       <property name="topMargin">
+                        <number>0</number>
+                       </property>
+                       <property name="rightMargin">
+                        <number>0</number>
+                       </property>
+                       <property name="bottomMargin">
+                        <number>0</number>
+                       </property>
+                       <item>
+                        <widget class="QLabel" name="label_3">
+                         <property name="font">
+                          <font>
+                           <family>Roboto</family>
+                           <pointsize>12</pointsize>
+                           <kerning>true</kerning>
+                          </font>
+                         </property>
+                         <property name="text">
+                          <string/>
+                         </property>
+                         <property name="pixmap">
+                          <pixmap resource="resource.qrc">:/icon/tut-title-resize.png</pixmap>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>false</bool>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QPushButton" name="popout_btn">
+                         <property name="text">
+                          <string/>
+                         </property>
+                         <property name="icon">
+                          <iconset resource="resource.qrc">
+                           <normaloff>:/icon/icons8-popup-window-48.png</normaloff>:/icon/icons8-popup-window-48.png</iconset>
+                         </property>
+                         <property name="iconSize">
+                          <size>
+                           <width>20</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                         <property name="flat">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="Line" name="line_5">
+                      <property name="styleSheet">
+                       <string notr="true">background: white;</string>
+                      </property>
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
                       </property>
                      </widget>
                     </item>
@@ -402,7 +671,8 @@ color: rgb(255, 255, 255);</string>
                      <widget class="QLabel" name="use_time_lbl">
                       <property name="font">
                        <font>
-                        <pointsize>12</pointsize>
+                        <family>Roboto</family>
+                        <pointsize>14</pointsize>
                         <kerning>true</kerning>
                        </font>
                       </property>
@@ -425,7 +695,7 @@ color: rgb(255, 255, 255);</string>
                    <property name="frameShadow">
                     <enum>QFrame::Raised</enum>
                    </property>
-                   <layout class="QVBoxLayout" name="verticalLayout_24">
+                   <layout class="QHBoxLayout" name="horizontalLayout_16">
                     <property name="leftMargin">
                      <number>0</number>
                     </property>
@@ -439,92 +709,69 @@ color: rgb(255, 255, 255);</string>
                      <number>0</number>
                     </property>
                     <item>
-                     <widget class="QFrame" name="frame">
+                     <widget class="QPushButton" name="monitor_btn">
+                      <property name="font">
+                       <font>
+                        <family>Roboto</family>
+                        <pointsize>12</pointsize>
+                        <kerning>true</kerning>
+                       </font>
+                      </property>
+                      <property name="text">
+                       <string/>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="resource.qrc">
+                        <normaloff>:/icon/icons8-startup.png</normaloff>:/icon/icons8-startup.png</iconset>
+                      </property>
+                      <property name="iconSize">
+                       <size>
+                        <width>55</width>
+                        <height>55</height>
+                       </size>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QFrame" name="frame_3">
+                      <property name="styleSheet">
+                       <string notr="true">QPushButton {
+background-color: #5e00b0;
+padding: 5px 20px 5px 20px;
+}
+
+QPushButton:hover {
+background: #a200ff;
+}</string>
+                      </property>
                       <property name="frameShape">
                        <enum>QFrame::StyledPanel</enum>
                       </property>
                       <property name="frameShadow">
                        <enum>QFrame::Raised</enum>
                       </property>
-                      <layout class="QHBoxLayout" name="horizontalLayout_28">
-                       <property name="spacing">
-                        <number>0</number>
-                       </property>
-                       <property name="leftMargin">
-                        <number>0</number>
-                       </property>
-                       <property name="topMargin">
-                        <number>0</number>
-                       </property>
-                       <property name="rightMargin">
-                        <number>0</number>
-                       </property>
-                       <property name="bottomMargin">
-                        <number>0</number>
-                       </property>
+                      <layout class="QHBoxLayout" name="horizontalLayout_9">
                        <item>
-                        <widget class="QLabel" name="label_16">
-                         <property name="font">
-                          <font>
-                           <pointsize>12</pointsize>
-                           <kerning>true</kerning>
-                          </font>
+                        <widget class="QPushButton" name="refresh_chart_btn">
+                         <property name="styleSheet">
+                          <string notr="true"/>
                          </property>
                          <property name="text">
-                          <string>Monitoring</string>
-                         </property>
-                         <property name="alignment">
-                          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                          <string>Refresh</string>
                          </property>
                         </widget>
                        </item>
-                       <item alignment="Qt::AlignRight">
-                        <widget class="QPushButton" name="popout_btn">
+                       <item alignment="Qt::AlignHCenter">
+                        <widget class="QPushButton" name="use_time_btn">
+                         <property name="styleSheet">
+                          <string notr="true"/>
+                         </property>
                          <property name="text">
-                          <string/>
-                         </property>
-                         <property name="icon">
-                          <iconset resource="resource.qrc">
-                           <normaloff>:/icon/icons8-popup-window-48.png</normaloff>:/icon/icons8-popup-window-48.png</iconset>
-                         </property>
-                         <property name="flat">
-                          <bool>true</bool>
+                          <string>Use Time</string>
                          </property>
                         </widget>
                        </item>
                       </layout>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="Line" name="line_4">
-                      <property name="minimumSize">
-                       <size>
-                        <width>120</width>
-                        <height>0</height>
-                       </size>
-                      </property>
-                      <property name="styleSheet">
-                       <string notr="true">background-color: rgb(218, 255, 251);</string>
-                      </property>
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QPushButton" name="monitor_btn">
-                      <property name="font">
-                       <font>
-                        <pointsize>12</pointsize>
-                        <kerning>true</kerning>
-                       </font>
-                      </property>
-                      <property name="styleSheet">
-                       <string notr="true">background-color: rgb(100, 204, 197);</string>
-                      </property>
-                      <property name="text">
-                       <string>Start</string>
-                      </property>
                      </widget>
                     </item>
                    </layout>
@@ -535,44 +782,6 @@ color: rgb(255, 255, 255);</string>
               </item>
               <item>
                <layout class="QGridLayout" name="chart_cont"/>
-              </item>
-              <item>
-               <widget class="QFrame" name="frame_3">
-                <property name="frameShape">
-                 <enum>QFrame::StyledPanel</enum>
-                </property>
-                <property name="frameShadow">
-                 <enum>QFrame::Raised</enum>
-                </property>
-                <layout class="QHBoxLayout" name="horizontalLayout_9">
-                 <item alignment="Qt::AlignHCenter">
-                  <widget class="QPushButton" name="use_time_btn">
-                   <property name="styleSheet">
-                    <string notr="true">background-color: rgb(23, 107, 135);</string>
-                   </property>
-                   <property name="text">
-                    <string>Use Time</string>
-                   </property>
-                   <property name="default">
-                    <bool>false</bool>
-                   </property>
-                   <property name="flat">
-                    <bool>false</bool>
-                   </property>
-                  </widget>
-                 </item>
-                 <item alignment="Qt::AlignHCenter">
-                  <widget class="QPushButton" name="refresh_chart_btn">
-                   <property name="styleSheet">
-                    <string notr="true">background-color: rgb(23, 107, 135);</string>
-                   </property>
-                   <property name="text">
-                    <string>Refresh</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
               </item>
              </layout>
             </widget>
@@ -594,12 +803,24 @@ color: rgb(255, 255, 255);</string>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_10">
               <property name="spacing">
-               <number>12</number>
+               <number>0</number>
               </property>
-              <item>
+              <item alignment="Qt::AlignLeft">
                <widget class="QLabel" name="table_lbl">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="text">
-                 <string>Computer Access Time</string>
+                 <string/>
+                </property>
+                <property name="pixmap">
+                 <pixmap resource="resource.qrc">:/icon/access-title-resize.png</pixmap>
+                </property>
+                <property name="scaledContents">
+                 <bool>false</bool>
                 </property>
                </widget>
               </item>
@@ -612,8 +833,8 @@ color: rgb(255, 255, 255);</string>
                  </size>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">QTableWidget { background-color: transparent; color: white;}
-QTableWidget QHeaderView::section { background-color: rgb(23, 107, 135); color: white;}
+                 <string notr="true">QTableWidget { background-color: transparent;}
+QTableWidget QHeaderView::section { background-color: rgb(23, 107, 135);}
 QTableWidget QTableCornerButton::section {background-color: rgb(23, 107, 135) }
 QTableWidget { border: none; }</string>
                 </property>
@@ -785,6 +1006,12 @@ QTableWidget { border: none; }</string>
               </item>
               <item>
                <widget class="QFrame" name="TotalUsetimeFame">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="frameShape">
                  <enum>QFrame::StyledPanel</enum>
                 </property>
@@ -795,39 +1022,221 @@ QTableWidget { border: none; }</string>
                  <property name="spacing">
                   <number>0</number>
                  </property>
-                 <item alignment="Qt::AlignLeft">
-                  <widget class="QFrame" name="frame_6">
+                 <property name="leftMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <widget class="QFrame" name="frame_4">
                    <property name="frameShape">
                     <enum>QFrame::StyledPanel</enum>
                    </property>
                    <property name="frameShadow">
                     <enum>QFrame::Raised</enum>
                    </property>
-                   <layout class="QHBoxLayout" name="horizontalLayout_12">
+                   <layout class="QVBoxLayout" name="verticalLayout_7">
                     <item>
-                     <widget class="QLabel" name="usetime_lbl">
+                     <widget class="QFrame" name="frame_6">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="frameShape">
+                       <enum>QFrame::StyledPanel</enum>
+                      </property>
+                      <property name="frameShadow">
+                       <enum>QFrame::Raised</enum>
+                      </property>
+                      <layout class="QHBoxLayout" name="horizontalLayout_12">
+                       <property name="spacing">
+                        <number>0</number>
+                       </property>
+                       <property name="leftMargin">
+                        <number>0</number>
+                       </property>
+                       <property name="topMargin">
+                        <number>0</number>
+                       </property>
+                       <item>
+                        <widget class="QLabel" name="usetime_lbl">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="font">
+                          <font>
+                           <family>Roboto</family>
+                           <pointsize>12</pointsize>
+                          </font>
+                         </property>
+                         <property name="text">
+                          <string>Total Use Time per day (h)</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QDoubleSpinBox" name="usetime_box">
+                         <property name="styleSheet">
+                          <string notr="true">QDoubleSpinBox {
+	padding: 5px;
+}
+
+QDoubleSpinBox::up-button {
+    subcontrol-origin: border;
+    subcontrol-position: top right;
+    border-image: url(:/icon/icons8-up-48.png) 1;
+}
+
+QDoubleSpinBox::down-button {
+    subcontrol-origin: border;
+    subcontrol-position: bottom right;
+    border-image: url(:/icon/icons8-down-48.png) 1;
+}</string>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </widget>
+                    </item>
+                    <item alignment="Qt::AlignHCenter">
+                     <widget class="QCheckBox" name="parental_box">
+                      <property name="font">
+                       <font>
+                        <family>Roboto</family>
+                        <pointsize>12</pointsize>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">QCheckBox {
+    spacing: 10px;
+}
+
+QCheckBox::indicator {
+    width: 24px;
+    height: 24px;
+}
+
+QCheckBox::indicator:unchecked {
+    image: url(:/icon/icons8-toggle-off-48.png);
+}
+
+QCheckBox::indicator:checked {
+    image: url(:/icon/icons8-toggle-on-48.png);
+}
+</string>
+                      </property>
                       <property name="text">
-                       <string>Total Use Time per day (h)</string>
+                       <string>Parental Option</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QFrame" name="ButtonFrame_2">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">QPushButton{
+background-color: #3b006e;
+padding: 5px 20px 5px 20px;
+}
+
+QPushButton:hover{
+background: #a200ff;
+}
+</string>
+                   </property>
+                   <property name="frameShape">
+                    <enum>QFrame::StyledPanel</enum>
+                   </property>
+                   <property name="frameShadow">
+                    <enum>QFrame::Raised</enum>
+                   </property>
+                   <layout class="QHBoxLayout" name="horizontalLayout_14">
+                    <property name="topMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="bottomMargin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <widget class="QPushButton" name="exct_data_btn">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true"/>
+                      </property>
+                      <property name="text">
+                       <string>Extract All Data</string>
                       </property>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QDoubleSpinBox" name="usetime_box"/>
+                     <widget class="QPushButton" name="restore_btn">
+                      <property name="enabled">
+                       <bool>true</bool>
+                      </property>
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true"/>
+                      </property>
+                      <property name="text">
+                       <string>Restore Data</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="changePIN_btn">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true"/>
+                      </property>
+                      <property name="text">
+                       <string>Change PIN</string>
+                      </property>
+                     </widget>
                     </item>
                    </layout>
                   </widget>
                  </item>
                  <item alignment="Qt::AlignHCenter">
-                  <widget class="QCheckBox" name="parental_box">
-                   <property name="text">
-                    <string>Parental Option</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item alignment="Qt::AlignRight">
                   <widget class="QPushButton" name="usetime_btn">
                    <property name="styleSheet">
-                    <string notr="true">background-color: rgb(100, 204, 197);</string>
+                    <string notr="true">QPushButton {background-color: #00d991;}
+QPushButton:hover{background-color: #00fca8;}
+QPushButton:pressed{background-color: #00fca8;}</string>
                    </property>
                    <property name="text">
                     <string>Apply</string>
@@ -842,6 +1251,12 @@ QTableWidget { border: none; }</string>
            </item>
            <item>
             <widget class="QFrame" name="OtherFrame">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="frameShape">
               <enum>QFrame::StyledPanel</enum>
              </property>
@@ -852,70 +1267,18 @@ QTableWidget { border: none; }</string>
               <property name="spacing">
                <number>0</number>
               </property>
-              <item alignment="Qt::AlignHCenter">
-               <widget class="QLabel" name="other_lbl">
-                <property name="text">
-                 <string>Others</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QFrame" name="ButtonFrame_2">
-                <property name="frameShape">
-                 <enum>QFrame::StyledPanel</enum>
-                </property>
-                <property name="frameShadow">
-                 <enum>QFrame::Raised</enum>
-                </property>
-                <layout class="QHBoxLayout" name="horizontalLayout_14">
-                 <item>
-                  <widget class="QFrame" name="DataFrame">
-                   <property name="frameShape">
-                    <enum>QFrame::StyledPanel</enum>
-                   </property>
-                   <property name="frameShadow">
-                    <enum>QFrame::Raised</enum>
-                   </property>
-                   <layout class="QHBoxLayout" name="horizontalLayout_11">
-                    <item alignment="Qt::AlignRight">
-                     <widget class="QPushButton" name="exct_data_btn">
-                      <property name="styleSheet">
-                       <string notr="true">background-color: rgb(23, 107, 135);</string>
-                      </property>
-                      <property name="text">
-                       <string>Extract All Data</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item alignment="Qt::AlignLeft">
-                     <widget class="QPushButton" name="restore_btn">
-                      <property name="enabled">
-                       <bool>true</bool>
-                      </property>
-                      <property name="styleSheet">
-                       <string notr="true">background-color: rgb(23, 107, 135);</string>
-                      </property>
-                      <property name="text">
-                       <string>Restore Data</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </widget>
-                 </item>
-                 <item alignment="Qt::AlignHCenter">
-                  <widget class="QPushButton" name="changePIN_btn">
-                   <property name="styleSheet">
-                    <string notr="true">background-color: rgb(23, 107, 135);</string>
-                   </property>
-                   <property name="text">
-                    <string>Change PIN</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
-              </item>
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
              </layout>
             </widget>
            </item>
@@ -950,6 +1313,12 @@ QTableWidget { border: none; }</string>
                   <verstretch>0</verstretch>
                  </sizepolicy>
                 </property>
+                <property name="font">
+                 <font>
+                  <family>Roboto</family>
+                  <pointsize>12</pointsize>
+                 </font>
+                </property>
                 <property name="text">
                  <string>Camera</string>
                 </property>
@@ -965,6 +1334,45 @@ QTableWidget { border: none; }</string>
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">QComboBox {
+    border-radius: 3px;
+    min-width: 8em;
+	background: #7346ad;
+}
+
+/* QComboBox gets the &quot;on&quot; state when the popup is open */
+QComboBox:!editable:on, QComboBox::drop-down:editable:on {
+    background:  #3b006e;
+}
+
+QComboBox:on { /* shift the text when the popup opens */
+    padding-top: 3px;
+    padding-left: 4px;
+}
+
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 15px;
+
+    border-left-width: 1px;
+    border-left-color:  #3b006e;
+    border-left-style: solid;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+
+}
+
+QComboBox::down-arrow {
+    border-image: url(:/icon/icons8-down-48.png) 4;
+}
+
+QComboBox::down-arrow:on { /* shift the arrow when popup is open */
+    top: 1px;
+    left: 1px;
+}</string>
                 </property>
                </widget>
               </item>
@@ -986,6 +1394,28 @@ QTableWidget { border: none; }</string>
            </item>
            <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
             <widget class="QFrame" name="ButtonFrame">
+             <property name="styleSheet">
+              <string notr="true">QPushButton{
+padding: 5px 20px 5px 20px;
+}
+
+QPushButton#recalibrate_btn, #proceed_btn {
+background-color: #5e00b0;
+}
+
+QPushButton#recalibrate_btn:hover, #proceed_btn:hover {
+background: #a200ff;
+}
+
+QPushButton#append_btn, #cancel_btn {
+background-color: #3b006e;
+}
+
+QPushButton#append_btn:hover, #cancel_btn:hover {
+background: #a200ff;
+}
+</string>
+             </property>
              <property name="frameShape">
               <enum>QFrame::StyledPanel</enum>
              </property>
@@ -996,7 +1426,7 @@ QTableWidget { border: none; }</string>
               <item>
                <widget class="QPushButton" name="recalibrate_btn">
                 <property name="styleSheet">
-                 <string notr="true">background-color: rgb(100, 204, 197);</string>
+                 <string notr="true"/>
                 </property>
                 <property name="text">
                  <string>Calibrate</string>
@@ -1006,7 +1436,7 @@ QTableWidget { border: none; }</string>
               <item>
                <widget class="QPushButton" name="proceed_btn">
                 <property name="styleSheet">
-                 <string notr="true">background-color: rgb(100, 204, 197);</string>
+                 <string notr="true"/>
                 </property>
                 <property name="text">
                  <string>Proceed</string>
@@ -1016,7 +1446,7 @@ QTableWidget { border: none; }</string>
               <item>
                <widget class="QPushButton" name="append_btn">
                 <property name="styleSheet">
-                 <string notr="true">background-color: rgb(23, 107, 135);</string>
+                 <string notr="true"/>
                 </property>
                 <property name="text">
                  <string>Add Posture</string>
@@ -1026,7 +1456,7 @@ QTableWidget { border: none; }</string>
               <item>
                <widget class="QPushButton" name="cancel_btn">
                 <property name="styleSheet">
-                 <string notr="true">background-color: rgb(23, 107, 135);</string>
+                 <string notr="true"/>
                 </property>
                 <property name="text">
                  <string>Cancel</string>
@@ -1062,6 +1492,64 @@ QTableWidget { border: none; }</string>
                <width>400</width>
                <height>400</height>
               </size>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QCheckBox {
+    spacing: 10px;
+}
+
+QCheckBox::indicator {
+    width: 24px;
+    height: 24px;
+}
+
+QCheckBox::indicator:unchecked {
+    image: url(:/icon/icons8-toggle-off-48.png);
+}
+
+QCheckBox::indicator:checked {
+    image: url(:/icon/icons8-toggle-on-48.png);
+}
+
+QComboBox {
+    border-radius: 3px;
+    min-width: 8em;
+	background: #7346ad;
+	padding: 3px
+}
+
+/* QComboBox gets the &quot;on&quot; state when the popup is open */
+QComboBox:!editable:on, QComboBox::drop-down:editable:on {
+    background:  #3b006e;
+}
+
+QComboBox:on { /* shift the text when the popup opens */
+    padding-top: 3px;
+    padding-left: 4px;
+}
+
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 15px;
+
+    border-left-width: 1px;
+    border-left-color:  #3b006e;
+    border-left-style: solid;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+
+}
+
+QComboBox::down-arrow {
+    border-image: url(:/icon/icons8-down-48.png) 4;
+}
+
+QComboBox::down-arrow:on { /* shift the arrow when popup is open */
+    top: 1px;
+    left: 1px;
+}
+</string>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_26">
               <item>
@@ -1099,6 +1587,12 @@ QTableWidget { border: none; }</string>
                      <verstretch>0</verstretch>
                     </sizepolicy>
                    </property>
+                   <property name="font">
+                    <font>
+                     <family>Roboto</family>
+                     <pointsize>12</pointsize>
+                    </font>
+                   </property>
                    <property name="text">
                     <string>Auto Start</string>
                    </property>
@@ -1112,6 +1606,12 @@ QTableWidget { border: none; }</string>
                      <verstretch>0</verstretch>
                     </sizepolicy>
                    </property>
+                   <property name="font">
+                    <font>
+                     <family>Roboto</family>
+                     <pointsize>12</pointsize>
+                    </font>
+                   </property>
                    <property name="text">
                     <string>Run In Background</string>
                    </property>
@@ -1119,6 +1619,12 @@ QTableWidget { border: none; }</string>
                  </item>
                  <item>
                   <widget class="QCheckBox" name="app_time_track_box">
+                   <property name="font">
+                    <font>
+                     <family>Roboto</family>
+                     <pointsize>12</pointsize>
+                    </font>
+                   </property>
                    <property name="text">
                     <string> App Use Time Tracking</string>
                    </property>
@@ -1180,13 +1686,37 @@ QTableWidget { border: none; }</string>
                         <verstretch>0</verstretch>
                        </sizepolicy>
                       </property>
+                      <property name="font">
+                       <font>
+                        <family>Roboto</family>
+                        <pointsize>12</pointsize>
+                       </font>
+                      </property>
                       <property name="text">
                        <string>Break Time (mins)</string>
                       </property>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QDoubleSpinBox" name="reminder_box"/>
+                     <widget class="QDoubleSpinBox" name="reminder_box">
+                      <property name="styleSheet">
+                       <string notr="true">QDoubleSpinBox {
+	padding: 5px;
+}
+
+QDoubleSpinBox::up-button {
+    subcontrol-origin: border;
+    subcontrol-position: top right;
+    border-image: url(:/icon/icons8-up-48.png) 1;
+}
+
+QDoubleSpinBox::down-button {
+    subcontrol-origin: border;
+    subcontrol-position: bottom right;
+    border-image: url(:/icon/icons8-down-48.png) 1;
+}</string>
+                      </property>
+                     </widget>
                     </item>
                    </layout>
                   </widget>
@@ -1213,6 +1743,12 @@ QTableWidget { border: none; }</string>
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <family>Roboto</family>
+                        <pointsize>12</pointsize>
+                       </font>
                       </property>
                       <property name="text">
                        <string>Break Reminder</string>
@@ -1241,7 +1777,7 @@ QTableWidget { border: none; }</string>
                 </property>
                 <layout class="QHBoxLayout" name="horizontalLayout_24">
                  <property name="spacing">
-                  <number>0</number>
+                  <number>20</number>
                  </property>
                  <property name="leftMargin">
                   <number>0</number>
@@ -1255,7 +1791,7 @@ QTableWidget { border: none; }</string>
                  <property name="bottomMargin">
                   <number>0</number>
                  </property>
-                 <item>
+                 <item alignment="Qt::AlignRight">
                   <widget class="QLabel" name="alert_lbl">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -1269,6 +1805,12 @@ QTableWidget { border: none; }</string>
                      <height>0</height>
                     </size>
                    </property>
+                   <property name="font">
+                    <font>
+                     <family>Roboto</family>
+                     <pointsize>12</pointsize>
+                    </font>
+                   </property>
                    <property name="text">
                     <string>Alert Position</string>
                    </property>
@@ -1277,13 +1819,16 @@ QTableWidget { border: none; }</string>
                    </property>
                   </widget>
                  </item>
-                 <item>
+                 <item alignment="Qt::AlignLeft">
                   <widget class="QComboBox" name="alert_box">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                      <horstretch>0</horstretch>
                      <verstretch>0</verstretch>
                     </sizepolicy>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true"/>
                    </property>
                    <item>
                     <property name="text">
@@ -1315,7 +1860,22 @@ QTableWidget { border: none; }</string>
                  <enum>QFrame::Raised</enum>
                 </property>
                 <layout class="QHBoxLayout" name="horizontalLayout_25">
-                 <item>
+                 <property name="spacing">
+                  <number>20</number>
+                 </property>
+                 <property name="leftMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
+                 <item alignment="Qt::AlignRight">
                   <widget class="QLabel" name="camera_lbl">
                    <property name="enabled">
                     <bool>true</bool>
@@ -1326,6 +1886,12 @@ QTableWidget { border: none; }</string>
                      <verstretch>0</verstretch>
                     </sizepolicy>
                    </property>
+                   <property name="font">
+                    <font>
+                     <family>Roboto</family>
+                     <pointsize>12</pointsize>
+                    </font>
+                   </property>
                    <property name="text">
                     <string>Camera</string>
                    </property>
@@ -1334,7 +1900,7 @@ QTableWidget { border: none; }</string>
                    </property>
                   </widget>
                  </item>
-                 <item>
+                 <item alignment="Qt::AlignLeft">
                   <widget class="QComboBox" name="camera_box">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -1355,6 +1921,27 @@ QTableWidget { border: none; }</string>
                   <verstretch>0</verstretch>
                  </sizepolicy>
                 </property>
+                <property name="styleSheet">
+                 <string notr="true">QPushButton{
+padding: 5px 20px 5px 20px;
+}
+
+QPushButton#apply_btn{
+background-color: #00d991;
+}
+
+QPushButton#apply_btn:hover{
+background: #00fca8;
+}
+
+QPushButton#reset_btn{
+background-color: #a10000;
+}
+
+QPushButton#reset_btn:hover{
+background: #d10000;
+}</string>
+                </property>
                 <property name="frameShape">
                  <enum>QFrame::StyledPanel</enum>
                 </property>
@@ -1374,20 +1961,20 @@ QTableWidget { border: none; }</string>
                  <property name="bottomMargin">
                   <number>0</number>
                  </property>
-                 <item>
+                 <item alignment="Qt::AlignHCenter">
                   <widget class="QPushButton" name="reset_btn">
                    <property name="styleSheet">
-                    <string notr="true">background-color: rgb(23, 107, 135);</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string>Reset</string>
                    </property>
                   </widget>
                  </item>
-                 <item>
+                 <item alignment="Qt::AlignHCenter">
                   <widget class="QPushButton" name="apply_btn">
                    <property name="styleSheet">
-                    <string notr="true">background-color: rgb(100, 204, 197);</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string>Apply</string>
@@ -1430,7 +2017,11 @@ QTableWidget { border: none; }</string>
                  <item alignment="Qt::AlignHCenter">
                   <widget class="QPushButton" name="web_btn">
                    <property name="text">
-                    <string>Website</string>
+                    <string>Info</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="resource.qrc">
+                     <normaloff>:/icon/icons8-info-48.png</normaloff>:/icon/icons8-info-48.png</iconset>
                    </property>
                    <property name="flat">
                     <bool>true</bool>
@@ -1485,6 +2076,12 @@ QTableWidget { border: none; }</string>
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <family>Roboto</family>
+                   <pointsize>12</pointsize>
+                  </font>
                  </property>
                  <property name="text">
                   <string>Create New PIN</string>
@@ -1603,7 +2200,15 @@ QTableWidget { border: none; }</string>
                   </sizepolicy>
                  </property>
                  <property name="styleSheet">
-                  <string notr="true">background-color: rgb(100, 204, 197);</string>
+                  <string notr="true">QPushButton{
+padding: 3px 25px 3px 25px;
+background-color: #00d991;
+}
+
+QPushButton:hover{
+background: #00fca8;
+}
+</string>
                  </property>
                  <property name="text">
                   <string>OK</string>
@@ -1658,6 +2263,12 @@ QTableWidget { border: none; }</string>
                       <verstretch>0</verstretch>
                      </sizepolicy>
                     </property>
+                    <property name="font">
+                     <font>
+                      <family>Roboto</family>
+                      <pointsize>12</pointsize>
+                     </font>
+                    </property>
                     <property name="text">
                      <string>Enter your 6-digit PIN</string>
                     </property>
@@ -1684,7 +2295,15 @@ QTableWidget { border: none; }</string>
                      <item>
                       <widget class="QPushButton" name="PIN_btn">
                        <property name="styleSheet">
-                        <string notr="true">background-color: rgb(100, 204, 197);</string>
+                        <string notr="true">QPushButton{
+padding: 3px 25px 3px 25px;
+background-color: #00d991;
+}
+
+QPushButton:hover{
+background: #00fca8;
+}
+</string>
                        </property>
                        <property name="text">
                         <string>OK</string>
@@ -1697,7 +2316,7 @@ QTableWidget { border: none; }</string>
                   <item>
                    <widget class="QCheckBox" name="PIN_checkbox">
                     <property name="text">
-                     <string>Remember for this launch</string>
+                     <string>Remember me</string>
                     </property>
                    </widget>
                   </item>
@@ -1732,7 +2351,6 @@ QTableWidget { border: none; }</string>
   </widget>
  </widget>
  <resources>
-  <include location="resource.qrc"/>
   <include location="resource.qrc"/>
  </resources>
  <connections/>

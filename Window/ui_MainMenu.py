@@ -26,15 +26,18 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1038, 512)
+        MainWindow.resize(1051, 513)
         icon = QIcon()
         icon.addFile(u":/icon/logo.ico", QSize(), QIcon.Normal, QIcon.Off)
         MainWindow.setWindowIcon(icon)
-        MainWindow.setStyleSheet(u"background-color: rgb(0, 28, 48);\n"
-"color: rgb(255, 255, 255);")
+        MainWindow.setStyleSheet(u"#widget {background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 rgb(26, 16, 57), stop:0.5 rgb(41, 14, 47), stop:1 rgb(26, 16, 57))}\n"
+"\n"
+"")
         MainWindow.setUnifiedTitleAndToolBarOnMac(False)
         self.widget = QWidget(MainWindow)
         self.widget.setObjectName(u"widget")
+        self.widget.setStyleSheet(u"color: white;\n"
+"font-family: \"Roboto\", sans-serif;")
         self.horizontalLayout_2 = QHBoxLayout(self.widget)
         self.horizontalLayout_2.setSpacing(0)
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
@@ -46,7 +49,7 @@ class Ui_MainWindow(object):
         self.SideMenuBar.setFrameShadow(QFrame.Raised)
         self.verticalLayout_9 = QVBoxLayout(self.SideMenuBar)
         self.verticalLayout_9.setObjectName(u"verticalLayout_9")
-        self.verticalLayout_9.setContentsMargins(-1, 0, 6, 0)
+        self.verticalLayout_9.setContentsMargins(0, 6, 6, 20)
         self.logo_with_title_lbl = QLabel(self.SideMenuBar)
         self.logo_with_title_lbl.setObjectName(u"logo_with_title_lbl")
         sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
@@ -54,59 +57,164 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.logo_with_title_lbl.sizePolicy().hasHeightForWidth())
         self.logo_with_title_lbl.setSizePolicy(sizePolicy)
-        self.logo_with_title_lbl.setPixmap(QPixmap(u":/icon/little_logo.png"))
-        self.logo_with_title_lbl.setAlignment(Qt.AlignCenter)
+        self.logo_with_title_lbl.setPixmap(QPixmap(u":/icon/new-title-resize.png"))
 
-        self.verticalLayout_9.addWidget(self.logo_with_title_lbl)
+        self.verticalLayout_9.addWidget(self.logo_with_title_lbl, 0, Qt.AlignLeft)
 
-        self.frame_4 = QFrame(self.SideMenuBar)
-        self.frame_4.setObjectName(u"frame_4")
-        self.frame_4.setFrameShape(QFrame.StyledPanel)
-        self.frame_4.setFrameShadow(QFrame.Raised)
-        self.verticalLayout_7 = QVBoxLayout(self.frame_4)
-        self.verticalLayout_7.setObjectName(u"verticalLayout_7")
-        self.dashboard_btn = QPushButton(self.frame_4)
-        self.dashboard_btn.setObjectName(u"dashboard_btn")
+        self.frame = QFrame(self.SideMenuBar)
+        self.frame.setObjectName(u"frame")
+        self.frame.setStyleSheet(u"QPushButton {\n"
+"	background-color: transparent;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"background-color: transparent;\n"
+"}\n"
+"\n"
+"QPushButton:pressed{\n"
+"background-color: transparent;}")
+        self.frame.setFrameShape(QFrame.StyledPanel)
+        self.frame.setFrameShadow(QFrame.Raised)
+        self.verticalLayout_11 = QVBoxLayout(self.frame)
+        self.verticalLayout_11.setObjectName(u"verticalLayout_11")
+        self.verticalLayout_11.setContentsMargins(-1, -1, -1, 0)
+        self.frame1 = QFrame(self.frame)
+        self.frame1.setObjectName(u"frame1")
+        self.frame1.setStyleSheet(u"QFrame {background: rgba(46, 2, 102, 0.5);\n"
+"border-radius: 25px;\n"
+"};\n"
+"\n"
+"")
+        self.frame1.setFrameShape(QFrame.StyledPanel)
+        self.frame1.setFrameShadow(QFrame.Raised)
+        self.verticalLayout_8 = QVBoxLayout(self.frame1)
+        self.verticalLayout_8.setSpacing(0)
+        self.verticalLayout_8.setObjectName(u"verticalLayout_8")
+        self.verticalLayout_8.setContentsMargins(0, 0, 0, 0)
+        self.a_2 = QWidget(self.frame1)
+        self.a_2.setObjectName(u"a_2")
+        sizePolicy1 = QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
+        sizePolicy1.setHeightForWidth(self.a_2.sizePolicy().hasHeightForWidth())
+        self.a_2.setSizePolicy(sizePolicy1)
+        self.a_2.setStyleSheet(u"")
+        self.horizontalLayout_28 = QHBoxLayout(self.a_2)
+        self.horizontalLayout_28.setSpacing(0)
+        self.horizontalLayout_28.setObjectName(u"horizontalLayout_28")
+        self.horizontalLayout_28.setContentsMargins(0, 0, 0, 0)
+        self.dashboard_btn_2 = QPushButton(self.a_2)
+        self.dashboard_btn_2.setObjectName(u"dashboard_btn_2")
+        font = QFont()
+        font.setFamilies([u"Roboto"])
+        font.setPointSize(12)
+        self.dashboard_btn_2.setFont(font)
         icon1 = QIcon()
         icon1.addFile(u":/icon/icons8-dashboard-layout-48.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.dashboard_btn.setIcon(icon1)
-        self.dashboard_btn.setIconSize(QSize(25, 25))
-        self.dashboard_btn.setFlat(True)
+        self.dashboard_btn_2.setIcon(icon1)
+        self.dashboard_btn_2.setIconSize(QSize(30, 30))
+        self.dashboard_btn_2.setFlat(True)
 
-        self.verticalLayout_7.addWidget(self.dashboard_btn, 0, Qt.AlignLeft)
+        self.horizontalLayout_28.addWidget(self.dashboard_btn_2)
 
-        self.parental_btn = QPushButton(self.frame_4)
-        self.parental_btn.setObjectName(u"parental_btn")
+
+        self.verticalLayout_8.addWidget(self.a_2)
+
+        self.line_4 = QFrame(self.frame1)
+        self.line_4.setObjectName(u"line_4")
+        self.line_4.setStyleSheet(u"border: 3px dotted white;")
+        self.line_4.setFrameShape(QFrame.HLine)
+        self.line_4.setFrameShadow(QFrame.Sunken)
+
+        self.verticalLayout_8.addWidget(self.line_4)
+
+        self.d_2 = QWidget(self.frame1)
+        self.d_2.setObjectName(u"d_2")
+        sizePolicy1.setHeightForWidth(self.d_2.sizePolicy().hasHeightForWidth())
+        self.d_2.setSizePolicy(sizePolicy1)
+        self.horizontalLayout_31 = QHBoxLayout(self.d_2)
+        self.horizontalLayout_31.setSpacing(0)
+        self.horizontalLayout_31.setObjectName(u"horizontalLayout_31")
+        self.horizontalLayout_31.setContentsMargins(0, 0, 0, 0)
+        self.parental_btn_2 = QPushButton(self.d_2)
+        self.parental_btn_2.setObjectName(u"parental_btn_2")
+        self.parental_btn_2.setFont(font)
         icon2 = QIcon()
         icon2.addFile(u":/icon/icons8-switches-48.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.parental_btn.setIcon(icon2)
-        self.parental_btn.setIconSize(QSize(25, 25))
-        self.parental_btn.setFlat(True)
+        self.parental_btn_2.setIcon(icon2)
+        self.parental_btn_2.setIconSize(QSize(25, 25))
+        self.parental_btn_2.setFlat(True)
 
-        self.verticalLayout_7.addWidget(self.parental_btn, 0, Qt.AlignLeft)
+        self.horizontalLayout_31.addWidget(self.parental_btn_2)
 
-        self.calibrate_btn = QPushButton(self.frame_4)
-        self.calibrate_btn.setObjectName(u"calibrate_btn")
+
+        self.verticalLayout_8.addWidget(self.d_2)
+
+        self.line_6 = QFrame(self.frame1)
+        self.line_6.setObjectName(u"line_6")
+        self.line_6.setStyleSheet(u"border: 3px dotted white;")
+        self.line_6.setFrameShape(QFrame.HLine)
+        self.line_6.setFrameShadow(QFrame.Sunken)
+
+        self.verticalLayout_8.addWidget(self.line_6)
+
+        self.b_2 = QWidget(self.frame1)
+        self.b_2.setObjectName(u"b_2")
+        sizePolicy1.setHeightForWidth(self.b_2.sizePolicy().hasHeightForWidth())
+        self.b_2.setSizePolicy(sizePolicy1)
+        self.horizontalLayout_32 = QHBoxLayout(self.b_2)
+        self.horizontalLayout_32.setSpacing(0)
+        self.horizontalLayout_32.setObjectName(u"horizontalLayout_32")
+        self.horizontalLayout_32.setContentsMargins(0, 0, 0, 0)
+        self.calibrate_btn_2 = QPushButton(self.b_2)
+        self.calibrate_btn_2.setObjectName(u"calibrate_btn_2")
+        self.calibrate_btn_2.setFont(font)
         icon3 = QIcon()
         icon3.addFile(u":/icon/icons8-tasks-48.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.calibrate_btn.setIcon(icon3)
-        self.calibrate_btn.setIconSize(QSize(25, 25))
-        self.calibrate_btn.setFlat(True)
+        self.calibrate_btn_2.setIcon(icon3)
+        self.calibrate_btn_2.setIconSize(QSize(25, 25))
+        self.calibrate_btn_2.setFlat(True)
 
-        self.verticalLayout_7.addWidget(self.calibrate_btn, 0, Qt.AlignLeft)
+        self.horizontalLayout_32.addWidget(self.calibrate_btn_2)
 
-        self.settings_btn = QPushButton(self.frame_4)
-        self.settings_btn.setObjectName(u"settings_btn")
+
+        self.verticalLayout_8.addWidget(self.b_2)
+
+        self.line_7 = QFrame(self.frame1)
+        self.line_7.setObjectName(u"line_7")
+        self.line_7.setStyleSheet(u"border: 3px dotted white;")
+        self.line_7.setFrameShape(QFrame.HLine)
+        self.line_7.setFrameShadow(QFrame.Sunken)
+
+        self.verticalLayout_8.addWidget(self.line_7)
+
+        self.c_2 = QWidget(self.frame1)
+        self.c_2.setObjectName(u"c_2")
+        sizePolicy1.setHeightForWidth(self.c_2.sizePolicy().hasHeightForWidth())
+        self.c_2.setSizePolicy(sizePolicy1)
+        self.horizontalLayout_33 = QHBoxLayout(self.c_2)
+        self.horizontalLayout_33.setSpacing(0)
+        self.horizontalLayout_33.setObjectName(u"horizontalLayout_33")
+        self.horizontalLayout_33.setContentsMargins(0, 0, 0, 0)
+        self.settings_btn_2 = QPushButton(self.c_2)
+        self.settings_btn_2.setObjectName(u"settings_btn_2")
+        self.settings_btn_2.setFont(font)
         icon4 = QIcon()
         icon4.addFile(u":/icon/icons8-setting-48.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.settings_btn.setIcon(icon4)
-        self.settings_btn.setIconSize(QSize(25, 25))
-        self.settings_btn.setFlat(True)
+        self.settings_btn_2.setIcon(icon4)
+        self.settings_btn_2.setIconSize(QSize(25, 25))
+        self.settings_btn_2.setFlat(True)
 
-        self.verticalLayout_7.addWidget(self.settings_btn, 0, Qt.AlignLeft)
+        self.horizontalLayout_33.addWidget(self.settings_btn_2)
 
 
-        self.verticalLayout_9.addWidget(self.frame_4)
+        self.verticalLayout_8.addWidget(self.c_2)
+
+
+        self.verticalLayout_11.addWidget(self.frame1)
+
+
+        self.verticalLayout_9.addWidget(self.frame)
 
 
         self.horizontalLayout_2.addWidget(self.SideMenuBar)
@@ -127,21 +235,6 @@ class Ui_MainWindow(object):
         self.horizontalLayout_4.setSpacing(0)
         self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
         self.horizontalLayout_4.setContentsMargins(-1, -1, -1, 0)
-        self.frame_5 = QFrame(self.WindowBar)
-        self.frame_5.setObjectName(u"frame_5")
-        self.frame_5.setFrameShape(QFrame.StyledPanel)
-        self.frame_5.setFrameShadow(QFrame.Raised)
-
-        self.horizontalLayout_4.addWidget(self.frame_5)
-
-        self.page_title_lbl = QLabel(self.WindowBar)
-        self.page_title_lbl.setObjectName(u"page_title_lbl")
-        font = QFont()
-        font.setPointSize(12)
-        self.page_title_lbl.setFont(font)
-
-        self.horizontalLayout_4.addWidget(self.page_title_lbl, 0, Qt.AlignHCenter)
-
         self.ActionFrame = QFrame(self.WindowBar)
         self.ActionFrame.setObjectName(u"ActionFrame")
         self.ActionFrame.setStyleSheet(u"*{border:None;}")
@@ -177,11 +270,12 @@ class Ui_MainWindow(object):
 
         self.cont_stackedwidget = QStackedWidget(self.MainContentFrame)
         self.cont_stackedwidget.setObjectName(u"cont_stackedwidget")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
-        sizePolicy1.setHorizontalStretch(0)
-        sizePolicy1.setVerticalStretch(0)
-        sizePolicy1.setHeightForWidth(self.cont_stackedwidget.sizePolicy().hasHeightForWidth())
-        self.cont_stackedwidget.setSizePolicy(sizePolicy1)
+        sizePolicy2 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
+        sizePolicy2.setHorizontalStretch(0)
+        sizePolicy2.setVerticalStretch(0)
+        sizePolicy2.setHeightForWidth(self.cont_stackedwidget.sizePolicy().hasHeightForWidth())
+        self.cont_stackedwidget.setSizePolicy(sizePolicy2)
+        self.cont_stackedwidget.setStyleSheet(u"background-color: transparent;")
         self.Dashboard = QWidget()
         self.Dashboard.setObjectName(u"Dashboard")
         self.verticalLayout_19 = QVBoxLayout(self.Dashboard)
@@ -190,12 +284,13 @@ class Ui_MainWindow(object):
         self.verticalLayout_19.setContentsMargins(0, 0, 0, 0)
         self.Frame = QFrame(self.Dashboard)
         self.Frame.setObjectName(u"Frame")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
-        sizePolicy2.setHorizontalStretch(0)
-        sizePolicy2.setVerticalStretch(0)
-        sizePolicy2.setHeightForWidth(self.Frame.sizePolicy().hasHeightForWidth())
-        self.Frame.setSizePolicy(sizePolicy2)
+        sizePolicy3 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        sizePolicy3.setHorizontalStretch(0)
+        sizePolicy3.setVerticalStretch(0)
+        sizePolicy3.setHeightForWidth(self.Frame.sizePolicy().hasHeightForWidth())
+        self.Frame.setSizePolicy(sizePolicy3)
         font1 = QFont()
+        font1.setFamilies([u"Roboto"])
         font1.setKerning(True)
         self.Frame.setFont(font1)
         self.Frame.setFrameShape(QFrame.StyledPanel)
@@ -214,20 +309,57 @@ class Ui_MainWindow(object):
         self.UseTimeFrame.setFrameShape(QFrame.StyledPanel)
         self.UseTimeFrame.setFrameShadow(QFrame.Raised)
         self.verticalLayout_23 = QVBoxLayout(self.UseTimeFrame)
+        self.verticalLayout_23.setSpacing(0)
         self.verticalLayout_23.setObjectName(u"verticalLayout_23")
-        self.label_3 = QLabel(self.UseTimeFrame)
+        self.frame_8 = QFrame(self.UseTimeFrame)
+        self.frame_8.setObjectName(u"frame_8")
+        self.frame_8.setFrameShape(QFrame.StyledPanel)
+        self.frame_8.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_15 = QHBoxLayout(self.frame_8)
+        self.horizontalLayout_15.setSpacing(0)
+        self.horizontalLayout_15.setObjectName(u"horizontalLayout_15")
+        self.horizontalLayout_15.setContentsMargins(0, 0, 0, 0)
+        self.label_3 = QLabel(self.frame_8)
         self.label_3.setObjectName(u"label_3")
         font2 = QFont()
+        font2.setFamilies([u"Roboto"])
         font2.setPointSize(12)
         font2.setKerning(True)
         self.label_3.setFont(font2)
+        self.label_3.setPixmap(QPixmap(u":/icon/tut-title-resize.png"))
+        self.label_3.setScaledContents(False)
         self.label_3.setAlignment(Qt.AlignCenter)
 
-        self.verticalLayout_23.addWidget(self.label_3)
+        self.horizontalLayout_15.addWidget(self.label_3)
+
+        self.popout_btn = QPushButton(self.frame_8)
+        self.popout_btn.setObjectName(u"popout_btn")
+        icon7 = QIcon()
+        icon7.addFile(u":/icon/icons8-popup-window-48.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.popout_btn.setIcon(icon7)
+        self.popout_btn.setIconSize(QSize(20, 20))
+        self.popout_btn.setFlat(True)
+
+        self.horizontalLayout_15.addWidget(self.popout_btn)
+
+
+        self.verticalLayout_23.addWidget(self.frame_8)
+
+        self.line_5 = QFrame(self.UseTimeFrame)
+        self.line_5.setObjectName(u"line_5")
+        self.line_5.setStyleSheet(u"background: white;")
+        self.line_5.setFrameShape(QFrame.HLine)
+        self.line_5.setFrameShadow(QFrame.Sunken)
+
+        self.verticalLayout_23.addWidget(self.line_5)
 
         self.use_time_lbl = QLabel(self.UseTimeFrame)
         self.use_time_lbl.setObjectName(u"use_time_lbl")
-        self.use_time_lbl.setFont(font2)
+        font3 = QFont()
+        font3.setFamilies([u"Roboto"])
+        font3.setPointSize(14)
+        font3.setKerning(True)
+        self.use_time_lbl.setFont(font3)
         self.use_time_lbl.setAlignment(Qt.AlignCenter)
 
         self.verticalLayout_23.addWidget(self.use_time_lbl)
@@ -239,51 +371,47 @@ class Ui_MainWindow(object):
         self.MonitorFrame.setObjectName(u"MonitorFrame")
         self.MonitorFrame.setFrameShape(QFrame.StyledPanel)
         self.MonitorFrame.setFrameShadow(QFrame.Raised)
-        self.verticalLayout_24 = QVBoxLayout(self.MonitorFrame)
-        self.verticalLayout_24.setObjectName(u"verticalLayout_24")
-        self.verticalLayout_24.setContentsMargins(0, 0, 0, 0)
-        self.frame = QFrame(self.MonitorFrame)
-        self.frame.setObjectName(u"frame")
-        self.frame.setFrameShape(QFrame.StyledPanel)
-        self.frame.setFrameShadow(QFrame.Raised)
-        self.horizontalLayout_28 = QHBoxLayout(self.frame)
-        self.horizontalLayout_28.setSpacing(0)
-        self.horizontalLayout_28.setObjectName(u"horizontalLayout_28")
-        self.horizontalLayout_28.setContentsMargins(0, 0, 0, 0)
-        self.label_16 = QLabel(self.frame)
-        self.label_16.setObjectName(u"label_16")
-        self.label_16.setFont(font2)
-        self.label_16.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
-
-        self.horizontalLayout_28.addWidget(self.label_16)
-
-        self.popout_btn = QPushButton(self.frame)
-        self.popout_btn.setObjectName(u"popout_btn")
-        icon7 = QIcon()
-        icon7.addFile(u":/icon/icons8-popup-window-48.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.popout_btn.setIcon(icon7)
-        self.popout_btn.setFlat(True)
-
-        self.horizontalLayout_28.addWidget(self.popout_btn, 0, Qt.AlignRight)
-
-
-        self.verticalLayout_24.addWidget(self.frame)
-
-        self.line_4 = QFrame(self.MonitorFrame)
-        self.line_4.setObjectName(u"line_4")
-        self.line_4.setMinimumSize(QSize(120, 0))
-        self.line_4.setStyleSheet(u"background-color: rgb(218, 255, 251);")
-        self.line_4.setFrameShape(QFrame.HLine)
-        self.line_4.setFrameShadow(QFrame.Sunken)
-
-        self.verticalLayout_24.addWidget(self.line_4)
-
+        self.horizontalLayout_16 = QHBoxLayout(self.MonitorFrame)
+        self.horizontalLayout_16.setObjectName(u"horizontalLayout_16")
+        self.horizontalLayout_16.setContentsMargins(0, 0, 0, 0)
         self.monitor_btn = QPushButton(self.MonitorFrame)
         self.monitor_btn.setObjectName(u"monitor_btn")
         self.monitor_btn.setFont(font2)
-        self.monitor_btn.setStyleSheet(u"background-color: rgb(100, 204, 197);")
+        icon8 = QIcon()
+        icon8.addFile(u":/icon/icons8-startup.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.monitor_btn.setIcon(icon8)
+        self.monitor_btn.setIconSize(QSize(55, 55))
 
-        self.verticalLayout_24.addWidget(self.monitor_btn)
+        self.horizontalLayout_16.addWidget(self.monitor_btn)
+
+        self.frame_3 = QFrame(self.MonitorFrame)
+        self.frame_3.setObjectName(u"frame_3")
+        self.frame_3.setStyleSheet(u"QPushButton {\n"
+"background-color: #5e00b0;\n"
+"padding: 5px 20px 5px 20px;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"background: #a200ff;\n"
+"}")
+        self.frame_3.setFrameShape(QFrame.StyledPanel)
+        self.frame_3.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_9 = QHBoxLayout(self.frame_3)
+        self.horizontalLayout_9.setObjectName(u"horizontalLayout_9")
+        self.refresh_chart_btn = QPushButton(self.frame_3)
+        self.refresh_chart_btn.setObjectName(u"refresh_chart_btn")
+        self.refresh_chart_btn.setStyleSheet(u"")
+
+        self.horizontalLayout_9.addWidget(self.refresh_chart_btn)
+
+        self.use_time_btn = QPushButton(self.frame_3)
+        self.use_time_btn.setObjectName(u"use_time_btn")
+        self.use_time_btn.setStyleSheet(u"")
+
+        self.horizontalLayout_9.addWidget(self.use_time_btn, 0, Qt.AlignHCenter)
+
+
+        self.horizontalLayout_16.addWidget(self.frame_3)
 
 
         self.horizontalLayout_18.addWidget(self.MonitorFrame, 0, Qt.AlignLeft)
@@ -295,28 +423,6 @@ class Ui_MainWindow(object):
         self.chart_cont.setObjectName(u"chart_cont")
 
         self.verticalLayout_22.addLayout(self.chart_cont)
-
-        self.frame_3 = QFrame(self.Frame)
-        self.frame_3.setObjectName(u"frame_3")
-        self.frame_3.setFrameShape(QFrame.StyledPanel)
-        self.frame_3.setFrameShadow(QFrame.Raised)
-        self.horizontalLayout_9 = QHBoxLayout(self.frame_3)
-        self.horizontalLayout_9.setObjectName(u"horizontalLayout_9")
-        self.use_time_btn = QPushButton(self.frame_3)
-        self.use_time_btn.setObjectName(u"use_time_btn")
-        self.use_time_btn.setStyleSheet(u"background-color: rgb(23, 107, 135);")
-        self.use_time_btn.setFlat(False)
-
-        self.horizontalLayout_9.addWidget(self.use_time_btn, 0, Qt.AlignHCenter)
-
-        self.refresh_chart_btn = QPushButton(self.frame_3)
-        self.refresh_chart_btn.setObjectName(u"refresh_chart_btn")
-        self.refresh_chart_btn.setStyleSheet(u"background-color: rgb(23, 107, 135);")
-
-        self.horizontalLayout_9.addWidget(self.refresh_chart_btn, 0, Qt.AlignHCenter)
-
-
-        self.verticalLayout_22.addWidget(self.frame_3)
 
 
         self.verticalLayout_19.addWidget(self.Frame)
@@ -332,12 +438,16 @@ class Ui_MainWindow(object):
         self.UsetimeFame_2.setFrameShape(QFrame.StyledPanel)
         self.UsetimeFame_2.setFrameShadow(QFrame.Raised)
         self.verticalLayout_10 = QVBoxLayout(self.UsetimeFame_2)
-        self.verticalLayout_10.setSpacing(12)
+        self.verticalLayout_10.setSpacing(0)
         self.verticalLayout_10.setObjectName(u"verticalLayout_10")
         self.table_lbl = QLabel(self.UsetimeFame_2)
         self.table_lbl.setObjectName(u"table_lbl")
+        sizePolicy.setHeightForWidth(self.table_lbl.sizePolicy().hasHeightForWidth())
+        self.table_lbl.setSizePolicy(sizePolicy)
+        self.table_lbl.setPixmap(QPixmap(u":/icon/access-title-resize.png"))
+        self.table_lbl.setScaledContents(False)
 
-        self.verticalLayout_10.addWidget(self.table_lbl)
+        self.verticalLayout_10.addWidget(self.table_lbl, 0, Qt.AlignLeft)
 
         self.usetime_table = QTableWidget(self.UsetimeFame_2)
         if (self.usetime_table.columnCount() < 24):
@@ -408,8 +518,8 @@ class Ui_MainWindow(object):
         self.usetime_table.setVerticalHeaderItem(6, __qtablewidgetitem30)
         self.usetime_table.setObjectName(u"usetime_table")
         self.usetime_table.setMinimumSize(QSize(803, 234))
-        self.usetime_table.setStyleSheet(u"QTableWidget { background-color: transparent; color: white;}\n"
-"QTableWidget QHeaderView::section { background-color: rgb(23, 107, 135); color: white;}\n"
+        self.usetime_table.setStyleSheet(u"QTableWidget { background-color: transparent;}\n"
+"QTableWidget QHeaderView::section { background-color: rgb(23, 107, 135);}\n"
 "QTableWidget QTableCornerButton::section {background-color: rgb(23, 107, 135) }\n"
 "QTableWidget { border: none; }")
         self.usetime_table.setLineWidth(0)
@@ -420,40 +530,143 @@ class Ui_MainWindow(object):
 
         self.TotalUsetimeFame = QFrame(self.UsetimeFame_2)
         self.TotalUsetimeFame.setObjectName(u"TotalUsetimeFame")
+        sizePolicy.setHeightForWidth(self.TotalUsetimeFame.sizePolicy().hasHeightForWidth())
+        self.TotalUsetimeFame.setSizePolicy(sizePolicy)
         self.TotalUsetimeFame.setFrameShape(QFrame.StyledPanel)
         self.TotalUsetimeFame.setFrameShadow(QFrame.Raised)
         self.horizontalLayout_10 = QHBoxLayout(self.TotalUsetimeFame)
         self.horizontalLayout_10.setSpacing(0)
         self.horizontalLayout_10.setObjectName(u"horizontalLayout_10")
-        self.frame_6 = QFrame(self.TotalUsetimeFame)
+        self.horizontalLayout_10.setContentsMargins(0, 0, 0, 0)
+        self.frame_4 = QFrame(self.TotalUsetimeFame)
+        self.frame_4.setObjectName(u"frame_4")
+        self.frame_4.setFrameShape(QFrame.StyledPanel)
+        self.frame_4.setFrameShadow(QFrame.Raised)
+        self.verticalLayout_7 = QVBoxLayout(self.frame_4)
+        self.verticalLayout_7.setObjectName(u"verticalLayout_7")
+        self.frame_6 = QFrame(self.frame_4)
         self.frame_6.setObjectName(u"frame_6")
+        sizePolicy.setHeightForWidth(self.frame_6.sizePolicy().hasHeightForWidth())
+        self.frame_6.setSizePolicy(sizePolicy)
         self.frame_6.setFrameShape(QFrame.StyledPanel)
         self.frame_6.setFrameShadow(QFrame.Raised)
         self.horizontalLayout_12 = QHBoxLayout(self.frame_6)
+        self.horizontalLayout_12.setSpacing(0)
         self.horizontalLayout_12.setObjectName(u"horizontalLayout_12")
+        self.horizontalLayout_12.setContentsMargins(0, 0, -1, -1)
         self.usetime_lbl = QLabel(self.frame_6)
         self.usetime_lbl.setObjectName(u"usetime_lbl")
+        sizePolicy.setHeightForWidth(self.usetime_lbl.sizePolicy().hasHeightForWidth())
+        self.usetime_lbl.setSizePolicy(sizePolicy)
+        self.usetime_lbl.setFont(font)
 
         self.horizontalLayout_12.addWidget(self.usetime_lbl)
 
         self.usetime_box = QDoubleSpinBox(self.frame_6)
         self.usetime_box.setObjectName(u"usetime_box")
+        self.usetime_box.setStyleSheet(u"QDoubleSpinBox {\n"
+"	padding: 5px;\n"
+"}\n"
+"\n"
+"QDoubleSpinBox::up-button {\n"
+"    subcontrol-origin: border;\n"
+"    subcontrol-position: top right;\n"
+"    border-image: url(:/icon/icons8-up-48.png) 1;\n"
+"}\n"
+"\n"
+"QDoubleSpinBox::down-button {\n"
+"    subcontrol-origin: border;\n"
+"    subcontrol-position: bottom right;\n"
+"    border-image: url(:/icon/icons8-down-48.png) 1;\n"
+"}")
 
         self.horizontalLayout_12.addWidget(self.usetime_box)
 
 
-        self.horizontalLayout_10.addWidget(self.frame_6, 0, Qt.AlignLeft)
+        self.verticalLayout_7.addWidget(self.frame_6)
 
-        self.parental_box = QCheckBox(self.TotalUsetimeFame)
+        self.parental_box = QCheckBox(self.frame_4)
         self.parental_box.setObjectName(u"parental_box")
+        self.parental_box.setFont(font)
+        self.parental_box.setStyleSheet(u"QCheckBox {\n"
+"    spacing: 10px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator {\n"
+"    width: 24px;\n"
+"    height: 24px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked {\n"
+"    image: url(:/icon/icons8-toggle-off-48.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked {\n"
+"    image: url(:/icon/icons8-toggle-on-48.png);\n"
+"}\n"
+"")
 
-        self.horizontalLayout_10.addWidget(self.parental_box, 0, Qt.AlignHCenter)
+        self.verticalLayout_7.addWidget(self.parental_box, 0, Qt.AlignHCenter)
+
+
+        self.horizontalLayout_10.addWidget(self.frame_4)
+
+        self.ButtonFrame_2 = QFrame(self.TotalUsetimeFame)
+        self.ButtonFrame_2.setObjectName(u"ButtonFrame_2")
+        sizePolicy.setHeightForWidth(self.ButtonFrame_2.sizePolicy().hasHeightForWidth())
+        self.ButtonFrame_2.setSizePolicy(sizePolicy)
+        self.ButtonFrame_2.setStyleSheet(u"QPushButton{\n"
+"background-color: #3b006e;\n"
+"padding: 5px 20px 5px 20px;\n"
+"}\n"
+"\n"
+"QPushButton:hover{\n"
+"background: #a200ff;\n"
+"}\n"
+"")
+        self.ButtonFrame_2.setFrameShape(QFrame.StyledPanel)
+        self.ButtonFrame_2.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_14 = QHBoxLayout(self.ButtonFrame_2)
+        self.horizontalLayout_14.setObjectName(u"horizontalLayout_14")
+        self.horizontalLayout_14.setContentsMargins(-1, 0, -1, 0)
+        self.exct_data_btn = QPushButton(self.ButtonFrame_2)
+        self.exct_data_btn.setObjectName(u"exct_data_btn")
+        sizePolicy4 = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        sizePolicy4.setHorizontalStretch(0)
+        sizePolicy4.setVerticalStretch(0)
+        sizePolicy4.setHeightForWidth(self.exct_data_btn.sizePolicy().hasHeightForWidth())
+        self.exct_data_btn.setSizePolicy(sizePolicy4)
+        self.exct_data_btn.setStyleSheet(u"")
+
+        self.horizontalLayout_14.addWidget(self.exct_data_btn)
+
+        self.restore_btn = QPushButton(self.ButtonFrame_2)
+        self.restore_btn.setObjectName(u"restore_btn")
+        self.restore_btn.setEnabled(True)
+        sizePolicy4.setHeightForWidth(self.restore_btn.sizePolicy().hasHeightForWidth())
+        self.restore_btn.setSizePolicy(sizePolicy4)
+        self.restore_btn.setStyleSheet(u"")
+
+        self.horizontalLayout_14.addWidget(self.restore_btn)
+
+        self.changePIN_btn = QPushButton(self.ButtonFrame_2)
+        self.changePIN_btn.setObjectName(u"changePIN_btn")
+        sizePolicy4.setHeightForWidth(self.changePIN_btn.sizePolicy().hasHeightForWidth())
+        self.changePIN_btn.setSizePolicy(sizePolicy4)
+        self.changePIN_btn.setStyleSheet(u"")
+
+        self.horizontalLayout_14.addWidget(self.changePIN_btn)
+
+
+        self.horizontalLayout_10.addWidget(self.ButtonFrame_2)
 
         self.usetime_btn = QPushButton(self.TotalUsetimeFame)
         self.usetime_btn.setObjectName(u"usetime_btn")
-        self.usetime_btn.setStyleSheet(u"background-color: rgb(100, 204, 197);")
+        self.usetime_btn.setStyleSheet(u"QPushButton {background-color: #00d991;}\n"
+"QPushButton:hover{background-color: #00fca8;}\n"
+"QPushButton:pressed{background-color: #00fca8;}")
 
-        self.horizontalLayout_10.addWidget(self.usetime_btn, 0, Qt.AlignRight)
+        self.horizontalLayout_10.addWidget(self.usetime_btn, 0, Qt.AlignHCenter)
 
 
         self.verticalLayout_10.addWidget(self.TotalUsetimeFame)
@@ -463,53 +676,14 @@ class Ui_MainWindow(object):
 
         self.OtherFrame = QFrame(self.ParentalControl)
         self.OtherFrame.setObjectName(u"OtherFrame")
+        sizePolicy.setHeightForWidth(self.OtherFrame.sizePolicy().hasHeightForWidth())
+        self.OtherFrame.setSizePolicy(sizePolicy)
         self.OtherFrame.setFrameShape(QFrame.StyledPanel)
         self.OtherFrame.setFrameShadow(QFrame.Raised)
         self.verticalLayout_13 = QVBoxLayout(self.OtherFrame)
         self.verticalLayout_13.setSpacing(0)
         self.verticalLayout_13.setObjectName(u"verticalLayout_13")
-        self.other_lbl = QLabel(self.OtherFrame)
-        self.other_lbl.setObjectName(u"other_lbl")
-
-        self.verticalLayout_13.addWidget(self.other_lbl, 0, Qt.AlignHCenter)
-
-        self.ButtonFrame_2 = QFrame(self.OtherFrame)
-        self.ButtonFrame_2.setObjectName(u"ButtonFrame_2")
-        self.ButtonFrame_2.setFrameShape(QFrame.StyledPanel)
-        self.ButtonFrame_2.setFrameShadow(QFrame.Raised)
-        self.horizontalLayout_14 = QHBoxLayout(self.ButtonFrame_2)
-        self.horizontalLayout_14.setObjectName(u"horizontalLayout_14")
-        self.DataFrame = QFrame(self.ButtonFrame_2)
-        self.DataFrame.setObjectName(u"DataFrame")
-        self.DataFrame.setFrameShape(QFrame.StyledPanel)
-        self.DataFrame.setFrameShadow(QFrame.Raised)
-        self.horizontalLayout_11 = QHBoxLayout(self.DataFrame)
-        self.horizontalLayout_11.setObjectName(u"horizontalLayout_11")
-        self.exct_data_btn = QPushButton(self.DataFrame)
-        self.exct_data_btn.setObjectName(u"exct_data_btn")
-        self.exct_data_btn.setStyleSheet(u"background-color: rgb(23, 107, 135);")
-
-        self.horizontalLayout_11.addWidget(self.exct_data_btn, 0, Qt.AlignRight)
-
-        self.restore_btn = QPushButton(self.DataFrame)
-        self.restore_btn.setObjectName(u"restore_btn")
-        self.restore_btn.setEnabled(True)
-        self.restore_btn.setStyleSheet(u"background-color: rgb(23, 107, 135);")
-
-        self.horizontalLayout_11.addWidget(self.restore_btn, 0, Qt.AlignLeft)
-
-
-        self.horizontalLayout_14.addWidget(self.DataFrame)
-
-        self.changePIN_btn = QPushButton(self.ButtonFrame_2)
-        self.changePIN_btn.setObjectName(u"changePIN_btn")
-        self.changePIN_btn.setStyleSheet(u"background-color: rgb(23, 107, 135);")
-
-        self.horizontalLayout_14.addWidget(self.changePIN_btn, 0, Qt.AlignHCenter)
-
-
-        self.verticalLayout_13.addWidget(self.ButtonFrame_2)
-
+        self.verticalLayout_13.setContentsMargins(0, 0, 0, 0)
 
         self.verticalLayout_5.addWidget(self.OtherFrame)
 
@@ -532,11 +706,12 @@ class Ui_MainWindow(object):
         self.calibrate_camera_lbl = QLabel(self.CalibrateCameraFrame)
         self.calibrate_camera_lbl.setObjectName(u"calibrate_camera_lbl")
         self.calibrate_camera_lbl.setEnabled(True)
-        sizePolicy3 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
-        sizePolicy3.setHorizontalStretch(0)
-        sizePolicy3.setVerticalStretch(0)
-        sizePolicy3.setHeightForWidth(self.calibrate_camera_lbl.sizePolicy().hasHeightForWidth())
-        self.calibrate_camera_lbl.setSizePolicy(sizePolicy3)
+        sizePolicy5 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        sizePolicy5.setHorizontalStretch(0)
+        sizePolicy5.setVerticalStretch(0)
+        sizePolicy5.setHeightForWidth(self.calibrate_camera_lbl.sizePolicy().hasHeightForWidth())
+        self.calibrate_camera_lbl.setSizePolicy(sizePolicy5)
+        self.calibrate_camera_lbl.setFont(font)
         self.calibrate_camera_lbl.setAlignment(Qt.AlignCenter)
 
         self.horizontalLayout_30.addWidget(self.calibrate_camera_lbl)
@@ -545,6 +720,43 @@ class Ui_MainWindow(object):
         self.calibrate_camera_box.setObjectName(u"calibrate_camera_box")
         sizePolicy.setHeightForWidth(self.calibrate_camera_box.sizePolicy().hasHeightForWidth())
         self.calibrate_camera_box.setSizePolicy(sizePolicy)
+        self.calibrate_camera_box.setStyleSheet(u"QComboBox {\n"
+"    border-radius: 3px;\n"
+"    min-width: 8em;\n"
+"	background: #7346ad;\n"
+"}\n"
+"\n"
+"/* QComboBox gets the \"on\" state when the popup is open */\n"
+"QComboBox:!editable:on, QComboBox::drop-down:editable:on {\n"
+"    background:  #3b006e;\n"
+"}\n"
+"\n"
+"QComboBox:on { /* shift the text when the popup opens */\n"
+"    padding-top: 3px;\n"
+"    padding-left: 4px;\n"
+"}\n"
+"\n"
+"QComboBox::drop-down {\n"
+"    subcontrol-origin: padding;\n"
+"    subcontrol-position: top right;\n"
+"    width: 15px;\n"
+"\n"
+"    border-left-width: 1px;\n"
+"    border-left-color:  #3b006e;\n"
+"    border-left-style: solid;\n"
+"    border-top-right-radius: 3px;\n"
+"    border-bottom-right-radius: 3px;\n"
+"\n"
+"}\n"
+"\n"
+"QComboBox::down-arrow {\n"
+"    border-image: url(:/icon/icons8-down-48.png) 4;\n"
+"}\n"
+"\n"
+"QComboBox::down-arrow:on { /* shift the arrow when popup is open */\n"
+"    top: 1px;\n"
+"    left: 1px;\n"
+"}")
 
         self.horizontalLayout_30.addWidget(self.calibrate_camera_box)
 
@@ -553,9 +765,6 @@ class Ui_MainWindow(object):
 
         self.hint_lbl = QLabel(self.Calibration)
         self.hint_lbl.setObjectName(u"hint_lbl")
-        sizePolicy4 = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        sizePolicy4.setHorizontalStretch(0)
-        sizePolicy4.setVerticalStretch(0)
         sizePolicy4.setHeightForWidth(self.hint_lbl.sizePolicy().hasHeightForWidth())
         self.hint_lbl.setSizePolicy(sizePolicy4)
 
@@ -563,31 +772,51 @@ class Ui_MainWindow(object):
 
         self.ButtonFrame = QFrame(self.Calibration)
         self.ButtonFrame.setObjectName(u"ButtonFrame")
+        self.ButtonFrame.setStyleSheet(u"QPushButton{\n"
+"padding: 5px 20px 5px 20px;\n"
+"}\n"
+"\n"
+"QPushButton#recalibrate_btn, #proceed_btn {\n"
+"background-color: #5e00b0;\n"
+"}\n"
+"\n"
+"QPushButton#recalibrate_btn:hover, #proceed_btn:hover {\n"
+"background: #a200ff;\n"
+"}\n"
+"\n"
+"QPushButton#append_btn, #cancel_btn {\n"
+"background-color: #3b006e;\n"
+"}\n"
+"\n"
+"QPushButton#append_btn:hover, #cancel_btn:hover {\n"
+"background: #a200ff;\n"
+"}\n"
+"")
         self.ButtonFrame.setFrameShape(QFrame.StyledPanel)
         self.ButtonFrame.setFrameShadow(QFrame.Raised)
         self.horizontalLayout_29 = QHBoxLayout(self.ButtonFrame)
         self.horizontalLayout_29.setObjectName(u"horizontalLayout_29")
         self.recalibrate_btn = QPushButton(self.ButtonFrame)
         self.recalibrate_btn.setObjectName(u"recalibrate_btn")
-        self.recalibrate_btn.setStyleSheet(u"background-color: rgb(100, 204, 197);")
+        self.recalibrate_btn.setStyleSheet(u"")
 
         self.horizontalLayout_29.addWidget(self.recalibrate_btn)
 
         self.proceed_btn = QPushButton(self.ButtonFrame)
         self.proceed_btn.setObjectName(u"proceed_btn")
-        self.proceed_btn.setStyleSheet(u"background-color: rgb(100, 204, 197);")
+        self.proceed_btn.setStyleSheet(u"")
 
         self.horizontalLayout_29.addWidget(self.proceed_btn)
 
         self.append_btn = QPushButton(self.ButtonFrame)
         self.append_btn.setObjectName(u"append_btn")
-        self.append_btn.setStyleSheet(u"background-color: rgb(23, 107, 135);")
+        self.append_btn.setStyleSheet(u"")
 
         self.horizontalLayout_29.addWidget(self.append_btn)
 
         self.cancel_btn = QPushButton(self.ButtonFrame)
         self.cancel_btn.setObjectName(u"cancel_btn")
-        self.cancel_btn.setStyleSheet(u"background-color: rgb(23, 107, 135);")
+        self.cancel_btn.setStyleSheet(u"")
 
         self.horizontalLayout_29.addWidget(self.cancel_btn)
 
@@ -604,6 +833,63 @@ class Ui_MainWindow(object):
         self.SettingOptionFrame = QFrame(self.Settings)
         self.SettingOptionFrame.setObjectName(u"SettingOptionFrame")
         self.SettingOptionFrame.setMinimumSize(QSize(400, 400))
+        self.SettingOptionFrame.setStyleSheet(u"QCheckBox {\n"
+"    spacing: 10px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator {\n"
+"    width: 24px;\n"
+"    height: 24px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked {\n"
+"    image: url(:/icon/icons8-toggle-off-48.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked {\n"
+"    image: url(:/icon/icons8-toggle-on-48.png);\n"
+"}\n"
+"\n"
+"QComboBox {\n"
+"    border-radius: 3px;\n"
+"    min-width: 8em;\n"
+"	background: #7346ad;\n"
+"	padding: 3px\n"
+"}\n"
+"\n"
+"/* QComboBox gets the \"on\" state when the popup is open */\n"
+"QComboBox:!editable:on, QComboBox::drop-down:editable:on {\n"
+"    background:  #3b006e;\n"
+"}\n"
+"\n"
+"QComboBox:on { /* shift the text when the popup opens */\n"
+"    padding-top: 3px;\n"
+"    padding-left: 4px;\n"
+"}\n"
+"\n"
+"QComboBox::drop-down {\n"
+"    subcontrol-origin: padding;\n"
+"    subcontrol-position: top right;\n"
+"    width: 15px;\n"
+"\n"
+"    border-left-width: 1px;\n"
+"    border-left-color:  #3b006e;\n"
+"    border-left-style: solid;\n"
+"    border-top-right-radius: 3px;\n"
+"    bord"
+                        "er-bottom-right-radius: 3px;\n"
+"\n"
+"}\n"
+"\n"
+"QComboBox::down-arrow {\n"
+"    border-image: url(:/icon/icons8-down-48.png) 4;\n"
+"}\n"
+"\n"
+"QComboBox::down-arrow:on { /* shift the arrow when popup is open */\n"
+"    top: 1px;\n"
+"    left: 1px;\n"
+"}\n"
+"")
         self.verticalLayout_26 = QVBoxLayout(self.SettingOptionFrame)
         self.verticalLayout_26.setObjectName(u"verticalLayout_26")
         self.OptionFrame = QFrame(self.SettingOptionFrame)
@@ -619,6 +905,7 @@ class Ui_MainWindow(object):
         self.start_box.setObjectName(u"start_box")
         sizePolicy4.setHeightForWidth(self.start_box.sizePolicy().hasHeightForWidth())
         self.start_box.setSizePolicy(sizePolicy4)
+        self.start_box.setFont(font)
 
         self.horizontalLayout_27.addWidget(self.start_box)
 
@@ -626,11 +913,13 @@ class Ui_MainWindow(object):
         self.background_box.setObjectName(u"background_box")
         sizePolicy4.setHeightForWidth(self.background_box.sizePolicy().hasHeightForWidth())
         self.background_box.setSizePolicy(sizePolicy4)
+        self.background_box.setFont(font)
 
         self.horizontalLayout_27.addWidget(self.background_box)
 
         self.app_time_track_box = QCheckBox(self.OptionFrame)
         self.app_time_track_box.setObjectName(u"app_time_track_box")
+        self.app_time_track_box.setFont(font)
 
         self.horizontalLayout_27.addWidget(self.app_time_track_box)
 
@@ -648,11 +937,11 @@ class Ui_MainWindow(object):
         self.horizontalLayout_22.setContentsMargins(0, 0, 0, 0)
         self.frame_36 = QFrame(self.BreakFrame)
         self.frame_36.setObjectName(u"frame_36")
-        sizePolicy5 = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
-        sizePolicy5.setHorizontalStretch(0)
-        sizePolicy5.setVerticalStretch(0)
-        sizePolicy5.setHeightForWidth(self.frame_36.sizePolicy().hasHeightForWidth())
-        self.frame_36.setSizePolicy(sizePolicy5)
+        sizePolicy6 = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
+        sizePolicy6.setHorizontalStretch(0)
+        sizePolicy6.setVerticalStretch(0)
+        sizePolicy6.setHeightForWidth(self.frame_36.sizePolicy().hasHeightForWidth())
+        self.frame_36.setSizePolicy(sizePolicy6)
         self.frame_36.setFrameShape(QFrame.StyledPanel)
         self.frame_36.setFrameShadow(QFrame.Raised)
         self.horizontalLayout_23 = QHBoxLayout(self.frame_36)
@@ -660,13 +949,29 @@ class Ui_MainWindow(object):
         self.horizontalLayout_23.setContentsMargins(0, -1, -1, -1)
         self.reminder_lbl = QLabel(self.frame_36)
         self.reminder_lbl.setObjectName(u"reminder_lbl")
-        sizePolicy5.setHeightForWidth(self.reminder_lbl.sizePolicy().hasHeightForWidth())
-        self.reminder_lbl.setSizePolicy(sizePolicy5)
+        sizePolicy6.setHeightForWidth(self.reminder_lbl.sizePolicy().hasHeightForWidth())
+        self.reminder_lbl.setSizePolicy(sizePolicy6)
+        self.reminder_lbl.setFont(font)
 
         self.horizontalLayout_23.addWidget(self.reminder_lbl)
 
         self.reminder_box = QDoubleSpinBox(self.frame_36)
         self.reminder_box.setObjectName(u"reminder_box")
+        self.reminder_box.setStyleSheet(u"QDoubleSpinBox {\n"
+"	padding: 5px;\n"
+"}\n"
+"\n"
+"QDoubleSpinBox::up-button {\n"
+"    subcontrol-origin: border;\n"
+"    subcontrol-position: top right;\n"
+"    border-image: url(:/icon/icons8-up-48.png) 1;\n"
+"}\n"
+"\n"
+"QDoubleSpinBox::down-button {\n"
+"    subcontrol-origin: border;\n"
+"    subcontrol-position: bottom right;\n"
+"    border-image: url(:/icon/icons8-down-48.png) 1;\n"
+"}")
 
         self.horizontalLayout_23.addWidget(self.reminder_box)
 
@@ -675,16 +980,17 @@ class Ui_MainWindow(object):
 
         self.frame_37 = QFrame(self.BreakFrame)
         self.frame_37.setObjectName(u"frame_37")
-        sizePolicy5.setHeightForWidth(self.frame_37.sizePolicy().hasHeightForWidth())
-        self.frame_37.setSizePolicy(sizePolicy5)
+        sizePolicy6.setHeightForWidth(self.frame_37.sizePolicy().hasHeightForWidth())
+        self.frame_37.setSizePolicy(sizePolicy6)
         self.frame_37.setFrameShape(QFrame.StyledPanel)
         self.frame_37.setFrameShadow(QFrame.Raised)
         self.verticalLayout_27 = QVBoxLayout(self.frame_37)
         self.verticalLayout_27.setObjectName(u"verticalLayout_27")
         self.notify_box = QCheckBox(self.frame_37)
         self.notify_box.setObjectName(u"notify_box")
-        sizePolicy2.setHeightForWidth(self.notify_box.sizePolicy().hasHeightForWidth())
-        self.notify_box.setSizePolicy(sizePolicy2)
+        sizePolicy3.setHeightForWidth(self.notify_box.sizePolicy().hasHeightForWidth())
+        self.notify_box.setSizePolicy(sizePolicy3)
+        self.notify_box.setFont(font)
 
         self.verticalLayout_27.addWidget(self.notify_box)
 
@@ -701,17 +1007,18 @@ class Ui_MainWindow(object):
         self.AlertFrame.setFrameShape(QFrame.StyledPanel)
         self.AlertFrame.setFrameShadow(QFrame.Raised)
         self.horizontalLayout_24 = QHBoxLayout(self.AlertFrame)
-        self.horizontalLayout_24.setSpacing(0)
+        self.horizontalLayout_24.setSpacing(20)
         self.horizontalLayout_24.setObjectName(u"horizontalLayout_24")
         self.horizontalLayout_24.setContentsMargins(0, 0, 0, 0)
         self.alert_lbl = QLabel(self.AlertFrame)
         self.alert_lbl.setObjectName(u"alert_lbl")
-        sizePolicy3.setHeightForWidth(self.alert_lbl.sizePolicy().hasHeightForWidth())
-        self.alert_lbl.setSizePolicy(sizePolicy3)
+        sizePolicy5.setHeightForWidth(self.alert_lbl.sizePolicy().hasHeightForWidth())
+        self.alert_lbl.setSizePolicy(sizePolicy5)
         self.alert_lbl.setBaseSize(QSize(1, 0))
+        self.alert_lbl.setFont(font)
         self.alert_lbl.setAlignment(Qt.AlignCenter)
 
-        self.horizontalLayout_24.addWidget(self.alert_lbl)
+        self.horizontalLayout_24.addWidget(self.alert_lbl, 0, Qt.AlignRight)
 
         self.alert_box = QComboBox(self.AlertFrame)
         self.alert_box.addItem("")
@@ -719,8 +1026,9 @@ class Ui_MainWindow(object):
         self.alert_box.setObjectName(u"alert_box")
         sizePolicy.setHeightForWidth(self.alert_box.sizePolicy().hasHeightForWidth())
         self.alert_box.setSizePolicy(sizePolicy)
+        self.alert_box.setStyleSheet(u"")
 
-        self.horizontalLayout_24.addWidget(self.alert_box)
+        self.horizontalLayout_24.addWidget(self.alert_box, 0, Qt.AlignLeft)
 
 
         self.verticalLayout_26.addWidget(self.AlertFrame)
@@ -732,22 +1040,25 @@ class Ui_MainWindow(object):
         self.CameraFrame.setFrameShape(QFrame.StyledPanel)
         self.CameraFrame.setFrameShadow(QFrame.Raised)
         self.horizontalLayout_25 = QHBoxLayout(self.CameraFrame)
+        self.horizontalLayout_25.setSpacing(20)
         self.horizontalLayout_25.setObjectName(u"horizontalLayout_25")
+        self.horizontalLayout_25.setContentsMargins(0, 0, 0, 0)
         self.camera_lbl = QLabel(self.CameraFrame)
         self.camera_lbl.setObjectName(u"camera_lbl")
         self.camera_lbl.setEnabled(True)
-        sizePolicy3.setHeightForWidth(self.camera_lbl.sizePolicy().hasHeightForWidth())
-        self.camera_lbl.setSizePolicy(sizePolicy3)
+        sizePolicy5.setHeightForWidth(self.camera_lbl.sizePolicy().hasHeightForWidth())
+        self.camera_lbl.setSizePolicy(sizePolicy5)
+        self.camera_lbl.setFont(font)
         self.camera_lbl.setAlignment(Qt.AlignCenter)
 
-        self.horizontalLayout_25.addWidget(self.camera_lbl)
+        self.horizontalLayout_25.addWidget(self.camera_lbl, 0, Qt.AlignRight)
 
         self.camera_box = QComboBox(self.CameraFrame)
         self.camera_box.setObjectName(u"camera_box")
         sizePolicy.setHeightForWidth(self.camera_box.sizePolicy().hasHeightForWidth())
         self.camera_box.setSizePolicy(sizePolicy)
 
-        self.horizontalLayout_25.addWidget(self.camera_box)
+        self.horizontalLayout_25.addWidget(self.camera_box, 0, Qt.AlignLeft)
 
 
         self.verticalLayout_26.addWidget(self.CameraFrame)
@@ -756,6 +1067,25 @@ class Ui_MainWindow(object):
         self.SettingsBtnFrame.setObjectName(u"SettingsBtnFrame")
         sizePolicy.setHeightForWidth(self.SettingsBtnFrame.sizePolicy().hasHeightForWidth())
         self.SettingsBtnFrame.setSizePolicy(sizePolicy)
+        self.SettingsBtnFrame.setStyleSheet(u"QPushButton{\n"
+"padding: 5px 20px 5px 20px;\n"
+"}\n"
+"\n"
+"QPushButton#apply_btn{\n"
+"background-color: #00d991;\n"
+"}\n"
+"\n"
+"QPushButton#apply_btn:hover{\n"
+"background: #00fca8;\n"
+"}\n"
+"\n"
+"QPushButton#reset_btn{\n"
+"background-color: #a10000;\n"
+"}\n"
+"\n"
+"QPushButton#reset_btn:hover{\n"
+"background: #d10000;\n"
+"}")
         self.SettingsBtnFrame.setFrameShape(QFrame.StyledPanel)
         self.SettingsBtnFrame.setFrameShadow(QFrame.Raised)
         self.horizontalLayout_26 = QHBoxLayout(self.SettingsBtnFrame)
@@ -763,15 +1093,15 @@ class Ui_MainWindow(object):
         self.horizontalLayout_26.setContentsMargins(0, 0, 0, 0)
         self.reset_btn = QPushButton(self.SettingsBtnFrame)
         self.reset_btn.setObjectName(u"reset_btn")
-        self.reset_btn.setStyleSheet(u"background-color: rgb(23, 107, 135);")
+        self.reset_btn.setStyleSheet(u"")
 
-        self.horizontalLayout_26.addWidget(self.reset_btn)
+        self.horizontalLayout_26.addWidget(self.reset_btn, 0, Qt.AlignHCenter)
 
         self.apply_btn = QPushButton(self.SettingsBtnFrame)
         self.apply_btn.setObjectName(u"apply_btn")
-        self.apply_btn.setStyleSheet(u"background-color: rgb(100, 204, 197);")
+        self.apply_btn.setStyleSheet(u"")
 
-        self.horizontalLayout_26.addWidget(self.apply_btn)
+        self.horizontalLayout_26.addWidget(self.apply_btn, 0, Qt.AlignHCenter)
 
 
         self.verticalLayout_26.addWidget(self.SettingsBtnFrame)
@@ -788,6 +1118,9 @@ class Ui_MainWindow(object):
         self.horizontalLayout_13.setContentsMargins(0, 0, 0, 0)
         self.web_btn = QPushButton(self.frame_7)
         self.web_btn.setObjectName(u"web_btn")
+        icon9 = QIcon()
+        icon9.addFile(u":/icon/icons8-info-48.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.web_btn.setIcon(icon9)
         self.web_btn.setFlat(True)
 
         self.horizontalLayout_13.addWidget(self.web_btn, 0, Qt.AlignHCenter)
@@ -814,11 +1147,12 @@ class Ui_MainWindow(object):
         self.verticalLayout.setContentsMargins(0, -1, 0, 0)
         self.label_7 = QLabel(self.ChangePINPage)
         self.label_7.setObjectName(u"label_7")
-        sizePolicy6 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
-        sizePolicy6.setHorizontalStretch(0)
-        sizePolicy6.setVerticalStretch(0)
-        sizePolicy6.setHeightForWidth(self.label_7.sizePolicy().hasHeightForWidth())
-        self.label_7.setSizePolicy(sizePolicy6)
+        sizePolicy7 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
+        sizePolicy7.setHorizontalStretch(0)
+        sizePolicy7.setVerticalStretch(0)
+        sizePolicy7.setHeightForWidth(self.label_7.sizePolicy().hasHeightForWidth())
+        self.label_7.setSizePolicy(sizePolicy7)
+        self.label_7.setFont(font)
         self.label_7.setAlignment(Qt.AlignCenter)
 
         self.verticalLayout.addWidget(self.label_7, 0, Qt.AlignLeft)
@@ -888,8 +1222,8 @@ class Ui_MainWindow(object):
 
         self.change_PIN_hint_lbl = QLabel(self.ChangePINPage)
         self.change_PIN_hint_lbl.setObjectName(u"change_PIN_hint_lbl")
-        sizePolicy6.setHeightForWidth(self.change_PIN_hint_lbl.sizePolicy().hasHeightForWidth())
-        self.change_PIN_hint_lbl.setSizePolicy(sizePolicy6)
+        sizePolicy7.setHeightForWidth(self.change_PIN_hint_lbl.sizePolicy().hasHeightForWidth())
+        self.change_PIN_hint_lbl.setSizePolicy(sizePolicy7)
         self.change_PIN_hint_lbl.setAlignment(Qt.AlignCenter)
 
         self.verticalLayout.addWidget(self.change_PIN_hint_lbl, 0, Qt.AlignHCenter)
@@ -898,7 +1232,15 @@ class Ui_MainWindow(object):
         self.change_PIN_btn.setObjectName(u"change_PIN_btn")
         sizePolicy4.setHeightForWidth(self.change_PIN_btn.sizePolicy().hasHeightForWidth())
         self.change_PIN_btn.setSizePolicy(sizePolicy4)
-        self.change_PIN_btn.setStyleSheet(u"background-color: rgb(100, 204, 197);")
+        self.change_PIN_btn.setStyleSheet(u"QPushButton{\n"
+"padding: 3px 25px 3px 25px;\n"
+"background-color: #00d991;\n"
+"}\n"
+"\n"
+"QPushButton:hover{\n"
+"background: #00fca8;\n"
+"}\n"
+"")
 
         self.verticalLayout.addWidget(self.change_PIN_btn, 0, Qt.AlignHCenter)
 
@@ -920,6 +1262,7 @@ class Ui_MainWindow(object):
         self.label_6.setObjectName(u"label_6")
         sizePolicy.setHeightForWidth(self.label_6.sizePolicy().hasHeightForWidth())
         self.label_6.setSizePolicy(sizePolicy)
+        self.label_6.setFont(font)
 
         self.verticalLayout_4.addWidget(self.label_6)
 
@@ -937,7 +1280,15 @@ class Ui_MainWindow(object):
 
         self.PIN_btn = QPushButton(self.PINFrame)
         self.PIN_btn.setObjectName(u"PIN_btn")
-        self.PIN_btn.setStyleSheet(u"background-color: rgb(100, 204, 197);")
+        self.PIN_btn.setStyleSheet(u"QPushButton{\n"
+"padding: 3px 25px 3px 25px;\n"
+"background-color: #00d991;\n"
+"}\n"
+"\n"
+"QPushButton:hover{\n"
+"background: #00fca8;\n"
+"}\n"
+"")
 
         self.horizontalLayout_7.addWidget(self.PIN_btn)
 
@@ -974,8 +1325,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.cont_stackedwidget.setCurrentIndex(1)
-        self.use_time_btn.setDefault(False)
+        self.cont_stackedwidget.setCurrentIndex(4)
         self.PIN_stackedwidget.setCurrentIndex(1)
 
 
@@ -985,21 +1335,20 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"Align Position", None))
         self.logo_with_title_lbl.setText("")
-        self.dashboard_btn.setText(QCoreApplication.translate("MainWindow", u"  Dashboard", None))
-        self.parental_btn.setText(QCoreApplication.translate("MainWindow", u"  Parental Control", None))
-        self.calibrate_btn.setText(QCoreApplication.translate("MainWindow", u"  Calibration", None))
-        self.settings_btn.setText(QCoreApplication.translate("MainWindow", u"  Settings", None))
-        self.page_title_lbl.setText(QCoreApplication.translate("MainWindow", u"Page Title", None))
+        self.dashboard_btn_2.setText(QCoreApplication.translate("MainWindow", u"  Dashboard", None))
+        self.parental_btn_2.setText(QCoreApplication.translate("MainWindow", u"  Parental\n"
+"  Control", None))
+        self.calibrate_btn_2.setText(QCoreApplication.translate("MainWindow", u"  Calibration", None))
+        self.settings_btn_2.setText(QCoreApplication.translate("MainWindow", u"  Settings", None))
         self.min_btn.setText("")
         self.close_btn.setText("")
-        self.label_3.setText(QCoreApplication.translate("MainWindow", u"Today Use Time:", None))
-        self.use_time_lbl.setText(QCoreApplication.translate("MainWindow", u"00:00:00", None))
-        self.label_16.setText(QCoreApplication.translate("MainWindow", u"Monitoring", None))
+        self.label_3.setText("")
         self.popout_btn.setText("")
-        self.monitor_btn.setText(QCoreApplication.translate("MainWindow", u"Start", None))
-        self.use_time_btn.setText(QCoreApplication.translate("MainWindow", u"Use Time", None))
+        self.use_time_lbl.setText(QCoreApplication.translate("MainWindow", u"00:00:00", None))
+        self.monitor_btn.setText("")
         self.refresh_chart_btn.setText(QCoreApplication.translate("MainWindow", u"Refresh", None))
-        self.table_lbl.setText(QCoreApplication.translate("MainWindow", u"Computer Access Time", None))
+        self.use_time_btn.setText(QCoreApplication.translate("MainWindow", u"Use Time", None))
+        self.table_lbl.setText("")
         ___qtablewidgetitem = self.usetime_table.horizontalHeaderItem(0)
         ___qtablewidgetitem.setText(QCoreApplication.translate("MainWindow", u"0", None));
         ___qtablewidgetitem1 = self.usetime_table.horizontalHeaderItem(1)
@@ -1064,11 +1413,10 @@ class Ui_MainWindow(object):
         ___qtablewidgetitem30.setText(QCoreApplication.translate("MainWindow", u"Sun", None));
         self.usetime_lbl.setText(QCoreApplication.translate("MainWindow", u"Total Use Time per day (h)", None))
         self.parental_box.setText(QCoreApplication.translate("MainWindow", u"Parental Option", None))
-        self.usetime_btn.setText(QCoreApplication.translate("MainWindow", u"Apply", None))
-        self.other_lbl.setText(QCoreApplication.translate("MainWindow", u"Others", None))
         self.exct_data_btn.setText(QCoreApplication.translate("MainWindow", u"Extract All Data", None))
         self.restore_btn.setText(QCoreApplication.translate("MainWindow", u"Restore Data", None))
         self.changePIN_btn.setText(QCoreApplication.translate("MainWindow", u"Change PIN", None))
+        self.usetime_btn.setText(QCoreApplication.translate("MainWindow", u"Apply", None))
         self.calibrate_preview_lbl.setText("")
         self.calibrate_camera_lbl.setText(QCoreApplication.translate("MainWindow", u"Camera", None))
         self.hint_lbl.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
@@ -1088,7 +1436,7 @@ class Ui_MainWindow(object):
         self.camera_lbl.setText(QCoreApplication.translate("MainWindow", u"Camera", None))
         self.reset_btn.setText(QCoreApplication.translate("MainWindow", u"Reset", None))
         self.apply_btn.setText(QCoreApplication.translate("MainWindow", u"Apply", None))
-        self.web_btn.setText(QCoreApplication.translate("MainWindow", u"Website", None))
+        self.web_btn.setText(QCoreApplication.translate("MainWindow", u"Info", None))
         self.label_7.setText(QCoreApplication.translate("MainWindow", u"Create New PIN", None))
         self.old_PIN_lbl.setText(QCoreApplication.translate("MainWindow", u"Old PIN       ", None))
         self.new_PIN_lbl.setText(QCoreApplication.translate("MainWindow", u"New PIN     ", None))
@@ -1097,7 +1445,7 @@ class Ui_MainWindow(object):
         self.change_PIN_btn.setText(QCoreApplication.translate("MainWindow", u"OK", None))
         self.label_6.setText(QCoreApplication.translate("MainWindow", u"Enter your 6-digit PIN", None))
         self.PIN_btn.setText(QCoreApplication.translate("MainWindow", u"OK", None))
-        self.PIN_checkbox.setText(QCoreApplication.translate("MainWindow", u"Remember for this launch", None))
+        self.PIN_checkbox.setText(QCoreApplication.translate("MainWindow", u"Remember me", None))
         self.PIN_hint_lbl.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
     # retranslateUi
 
