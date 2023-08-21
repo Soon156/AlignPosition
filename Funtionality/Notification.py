@@ -4,10 +4,7 @@ import time
 import logging as log
 import zroya
 from PySide6 import QtWidgets
-
-from Funtionality.Config import abs_logo_path
 from Funtionality.ErrorMessage import WarningMessageBox
-from Window.Authorize_2 import PINDialog2, get_condition, change_condition
 
 status = zroya.init(
     app_name="AlignPosition",
@@ -19,13 +16,10 @@ status = zroya.init(
 
 log.debug("zroya init: " + str(status))
 
-callback = None
 sleep_time = 300
-shutdown_time = 30
 clear_time = 10000  # millisecond
-logo = abs_logo_path
-notify = None
-elapsed_time = 0
+cancel_signal = False
+cancel_condition = True
 
 try:
     first_notify = zroya.Template(zroya.TemplateType.ImageAndText2)
@@ -41,7 +35,6 @@ try:
     sleep_notify = zroya.Template(zroya.TemplateType.ImageAndText2)
     sleep_notify.setFirstLine("Over Today Usetime")
     sleep_notify.setSecondLine("Your computer will be sleep in " + str(sleep_time) + " seconds!")
-    # sleep_notify.setImage(logo)
     sleep_notify.addAction("Cancel")
 
 except Exception as e:
@@ -53,29 +46,33 @@ except Exception as e:
     sys.exit()
 
 
-def set_elapsed_time(shared_elapsed_time):
-    global elapsed_time
-    elapsed_time = shared_elapsed_time
+def cancel_handler(nid, action_id):
+    print("cancel handler")
+    global cancel_signal, cancel_condition
+    cancel_signal = True
+    cancel_condition = True
 
 
-def cancel_handler():
-    window = PINDialog2()
-    window.exec()
+def reset_signal():
+    global cancel_signal
+    cancel_signal = False
+
+
+def update_cancel_cond():
+    global cancel_condition
+    cancel_condition = False
+    log.info("Operation sleep cancel")
 
 
 def show_control():
-    global callback
-    start_time = time.time()
     zroya.show(sleep_notify, on_action=cancel_handler)
+    start_time = time.time()
+    time.sleep(10)
     while True:
-        time.sleep(sleep_time)
-        condition = get_condition()
-        if condition:
-            change_condition()
-            log.info("System Sleep")
-            os.system("rundll32.exe powrprof.dll,SetSuspendState 0,1,0")
-            break
-        if time.time() - start_time >= clear_time or notify:
+        if time.time() - start_time >= sleep_time:
+            if cancel_condition:
+                log.info("System Sleep")
+                os.system("rundll32.exe powrprof.dll,SetSuspendState 0,1,0")
             break
 
 
