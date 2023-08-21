@@ -6,7 +6,6 @@ import datetime
 from psutil import process_iter
 from pygrabber.dshow_graph import FilterGraph
 
-VERSION = "0.0.1"
 Good_Posture = "Maintain your good posture 5 seconds, clicked proceed to start"
 Bad_Posture = "Maintain your bad posture 5 seconds, clicked proceed to start"
 Append_Posture = "Append bad posture, clicked proceed to start"
@@ -25,9 +24,7 @@ now = datetime.datetime.now()
 current_month, current_year = now.month, now.year
 
 # App_Use_Time Filter List
-filter_list = ["Windows Explorer", "Align Position", "null", "Application Frame Host", "Windows Problem Reporting",
-               "Desktop Window Manager", "", "Pick an app", "Windows Start Experience Host",
-               "Windows Shell Experience Host"]
+filter_list = ["Align Position", "null", "Application Frame Host", "", "Pick an app"]
 
 # PATH
 logo_path = "Resources\logo.ico"
