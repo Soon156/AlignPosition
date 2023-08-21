@@ -10,7 +10,7 @@ from PySide6.QtCore import Slot, Qt, QSize
 from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox, QSizePolicy, QLineEdit, QFileDialog, \
     QTableWidgetItem
 from PySide6.QtCharts import QBarSet, QBarSeries, QBarCategoryAxis, QChart, QChartView
-from PySide6.QtGui import QPainter, QColor, QDesktopServices
+from PySide6.QtGui import QPainter, QColor, QDesktopServices, QIcon
 from Funtionality.Config import model_file, get_config, get_available_cameras, create_config, \
     key_file_path, desktop_path, Bad_Posture, Good_Posture, Append_Posture, Cancel_Calibrate, Capture_Posture, \
     Model_Training, abs_logo_path
@@ -30,8 +30,11 @@ from .ui_MainMenu import Ui_MainWindow
 from .minWindow import MinWindow
 from pystray import Menu, Icon, MenuItem
 from PIL.Image import open
+import Window.resource_rc
 
-day_names = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+top_side_menu = "background: #7346ad;border-top-left-radius: 25px;border-top-right-radius: 25px;"
+btm_side_menu = "background: #7346ad;border-bottom-left-radius: 25px;border-bottom-right-radius: 25px;"
+choice_side_menu = "background: #7346ad;"
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -47,11 +50,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # Connect object
         self.min_btn.clicked.connect(self.min_window_visible)
         self.close_btn.clicked.connect(self.close)
-        self.dashboard_btn.clicked.connect(self.dashboard_page)
-        self.parental_btn.clicked.connect(self.parental_page)
-        self.calibrate_btn.clicked.connect(self.calibration_page)
-        self.settings_btn.clicked.connect(self.settings_page)
+        self.dashboard_btn_2.clicked.connect(self.dashboard_page)
+        self.parental_btn_2.clicked.connect(self.parental_page)
+        self.calibrate_btn_2.clicked.connect(self.calibration_page)
+        self.settings_btn_2.clicked.connect(self.settings_page)
         self.parental_box.clicked.connect(self.update_parental_box)
+        self.icon_start = QIcon()
+        self.icon_start.addFile(u":/icon/icons8-startup.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.icon_stop = QIcon()
+        self.icon_stop.addFile(u":/icon/icons8-shutdown-48.png", QSize(), QIcon.Normal, QIcon.Off)
 
         # Dashboard page
         self.popout_btn.clicked.connect(self.min_window)
@@ -82,6 +89,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.new_PIN_line.setEchoMode(QLineEdit.Password)
         self.confirm_PIN_line.setEchoMode(QLineEdit.Password)
         self.PIN_btn.clicked.connect(self.valid_pin)
+        self.confirm_PIN_line.returnPressed.connect(self.change_PIN_btn.click)
+        self.new_PIN_line.returnPressed.connect(self.change_PIN_btn.click)
+        self.old_PIN_line.returnPressed.connect(self.change_PIN_btn.click)
+        self.PIN_line.returnPressed.connect(self.PIN_btn.click)
 
         # Parental page
         self.changePIN_btn.clicked.connect(self.change_pin_page)
@@ -130,9 +141,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.system_icon.run_detached()
 
     def min_window_visible(self):
-        if self.w.isVisible():
-            self.hide()
-        else:
+        try:
+            if self.w.isVisible():
+                self.hide()
+        except AttributeError:
             self.showMinimized()
 
     def if_visible(self):
@@ -145,7 +157,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     # Page handler
     def dashboard_page(self):
         self.stop_preview()
-        self.page_title_lbl.setText("Dashboard")
+        self.reset_stylesheet()
+        self.a_2.setStyleSheet(top_side_menu)
         if os.path.exists(key_file_path):
             self.cont_stackedwidget.setCurrentIndex(0)
             self.use_time_lbl.setText(seconds_to_hms(read_elapsed_time_data()))
@@ -157,7 +170,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def parental_page(self):
         self.stop_preview()
-        self.page_title_lbl.setText("Parental Control")
+        self.reset_stylesheet()
+        self.d_2.setStyleSheet(choice_side_menu)
         self.cont_stackedwidget.setCurrentIndex(4)
         if self.login_state:
             self.valid_pin(True)
@@ -174,17 +188,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.PIN_line.clear()
 
     def calibration_page(self):
-        self.hint_lbl.hide()
-        self.page_title_lbl.setText("Calibration")
-        self.cont_stackedwidget.setCurrentIndex(2)
         self.check_model()
+        self.reset_stylesheet()
+        self.b_2.setStyleSheet(choice_side_menu)
+        self.hint_lbl.hide()
+        self.cont_stackedwidget.setCurrentIndex(2)
         self.proceed_btn.hide()
         self.cancel_btn.hide()
         self.calibrate_camera_box_handler(int(get_config().get('camera')))
 
     def settings_page(self):
         self.stop_preview()
-        self.page_title_lbl.setText("Settings")
+        self.reset_stylesheet()
+        self.c_2.setStyleSheet(btm_side_menu)
         self.cont_stackedwidget.setCurrentIndex(3)
         self.init_setting_page()
 
@@ -205,16 +221,21 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         except:
             pass
         if os.path.exists(model_file):
+            self.monitor_btn.setStyleSheet("")
             self.monitor_btn.clicked.connect(self.start_monitoring)
             if self.monitoring_state:
-                self.monitor_btn.setText("Stop")
+                self.monitor_btn.setIcon(self.icon_stop)
             else:
-                self.monitor_btn.setText("Start")
+                self.monitor_btn.setIcon(self.icon_start)
             self.recalibrate_btn.setText("Recalibrate")
             self.recalibrate_btn.show()
             self.append_btn.show()
         else:
             log.warning("Model file not found")
+            icon = QIcon()
+            icon.addFile(u":/", QSize(), QIcon.Normal, QIcon.Off)
+            self.monitor_btn.setIcon(icon)
+            self.monitor_btn.setStyleSheet("background-color: rgb(101, 224, 206);")
             self.monitor_btn.setText("Calibrate")
             self.recalibrate_btn.setText("Calibrate")
             self.append_btn.hide()
@@ -224,7 +245,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     # Monitoring
     def change_monitoring_state(self, state):
         self.monitoring_state = state
-        self.monitor_btn.setText("Start")
+        self.monitor_btn.setIcon(self.icon_start)
         self.w1.hide()
         log.info("Monitoring stop")
 
@@ -232,7 +253,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.stop_preview()
         if not self.monitoring_state:
             self.monitoring_state = True
-            self.monitor_btn.setText("Stop")
+            self.monitor_btn.setIcon(self.icon_stop)
             self.start_time = time.time()
             if self.values['overlay_enable'] == "True":
                 self.overlay_win()
@@ -328,7 +349,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 if len(new1) >= 6 and new1.isdigit():
                     if cond:
                         user_register(self.new_PIN_line.text())
-                        self.cont_stackedwidget.setCurrentIndex(0)
+                        self.dashboard_page()
                     else:
                         if change_password(old, new1):
                             QMessageBox.information(self, "PIN changed", "Password changed successfully")
@@ -402,6 +423,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         except:
             pass
 
+    def reset_stylesheet(self):
+        self.a_2.setStyleSheet('')
+        self.b_2.setStyleSheet('')
+        self.c_2.setStyleSheet('')
+        self.d_2.setStyleSheet('')
+
     def capture(self):
         if not self.is_capturing or self.hint_lbl.text() == Bad_Posture:
             self.is_capturing = True
@@ -453,7 +480,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         elif arg == "append":
             log.info("Append Success")
             self.hint_lbl.setText("Append finish")
-        self.monitor_btn.setText("Start")
         self.check_model()
         self.proceed_btn.hide()
         self.proceed_btn.setEnabled(True)
@@ -652,11 +678,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         for app in top_7_apps:
             temp = []
-            bar_set = QBarSet(app)
+            name = None
             for date in data:
+                use_timedate = 0
                 if app in data[date]:
                     use_timedate = round(data[date][app] / 60, 2)
-                    temp.append(use_timedate)
+                temp.append(use_timedate)
+                name = f"{app}: {use_timedate} m"
+            bar_set = QBarSet(name)
             bar_set.append(temp)
             series.append(bar_set)
 
