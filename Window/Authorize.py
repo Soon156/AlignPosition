@@ -1,5 +1,4 @@
 import sys
-import threading
 from PySide6 import QtWidgets
 from PySide6.QtWidgets import QDialog
 from Funtionality.Config import get_config, clear_log
@@ -20,7 +19,7 @@ class PINDialog(QDialog, Ui_PINDialog):
             self.close()
             # Create the application instance
             app = QtWidgets.QApplication(sys.argv)
-
+            self.PIN_line.returnPressed.connect(self.PIN_btn.click)
             get_config()
             clear_log()
 
