@@ -165,7 +165,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.w1.setScreen(self.screen())
         self.w2 = PINDialog()
 
-    def start_parental_control_thread(self):  # TODO
+    def start_parental_control_thread(self):
         self.parental_thread = ParentalTracking()
         self.parental_thread.cancel.connect(self.call_window2)
         self.parental_thread.setParent(self)
