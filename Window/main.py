@@ -481,9 +481,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.start_train(mode)
 
     def error_handler(self, msg):
-        QMessageBox.warning(self, "Warning", f"An error occurred: {msg}")
         if msg.startswith("Model accuracy too low:"):
             self.cancel_ops(cond=True)
+        if "cap.read()" in msg:
+            self.change_monitoring_state(False)
+            msg = "Camera in use or not available, try change camera in settings"
+        QMessageBox.warning(self, "Warning", f"An error occurred: {msg}")
 
     def start_train(self, mode):
         self.training_thread = TrainModel(mode)
@@ -635,8 +638,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 log.info(f"Overlay change to {pos} side")
 
             write_config(self.values)
-
             self.values = get_config()
+            try:
+                self.w1.win_geometry()
+            except:
+                pass
 
     # Chart list
     def tut_chart(self):
