@@ -165,11 +165,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.w1.setScreen(self.screen())
         self.w2 = PINDialog()
 
-    def start_parental_control_thread(self):
+    def start_parental_control_thread(self):  # TODO
         self.parental_thread = ParentalTracking()
+        self.parental_thread.cancel.connect(self.call_window2)
         self.parental_thread.setParent(self)
         self.parental_thread.start()
         self.parental_control_thread = True
+
+    def call_window2(self):
+        self.w2.show()
 
     def min_window_visible(self):  # Small window button handler
         try:
@@ -791,9 +795,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self.values['auto'] = "True"
                 write_config(self.values)
                 self.values = get_config()
-                self.parental_thread.update_table_data()
                 if self.parental_control_thread:
                     self.start_parental_control_thread()
+                else:
+                    self.parental_thread.update_table_data()
             else:
                 self.parental_thread.stop_parental_thread()
                 self.parental_control_thread = False
