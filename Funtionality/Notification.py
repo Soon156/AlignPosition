@@ -58,6 +58,10 @@ def reset_signal():
     cancel_signal = False
 
 
+def get_signal():
+    return cancel_signal
+
+
 def update_cancel_cond():
     global cancel_condition
     cancel_condition = False
