@@ -33,7 +33,6 @@ class ParentalTracking(QThread):
 
     def run(self):
         log.info("Parental tracking start")
-        print(self.cond_usetime)
         while self.cond_usetime:
             time.sleep(1)
             # Check total use time

@@ -64,6 +64,7 @@ class Ui_PINDialog(object):
         self.horizontalLayout_7.setContentsMargins(0, -1, 0, -1)
         self.PIN_line = QLineEdit(self.PINFrame)
         self.PIN_line.setObjectName(u"PIN_line")
+        self.PIN_line.setStyleSheet(u"background-color: transparent;")
 
         self.horizontalLayout_7.addWidget(self.PIN_line)
 
