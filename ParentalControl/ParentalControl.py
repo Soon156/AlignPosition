@@ -2,14 +2,15 @@ import threading
 import time
 import logging as log
 from datetime import datetime
-from PySide6.QtCore import QThread
+from PySide6.QtCore import QThread, Signal
 from Funtionality.Config import get_config
-from Funtionality.Notification import show_control, reset_signal
+from Funtionality.Notification import show_control, reset_signal, get_signal
 from ParentalControl.Auth import retrieve_table_data
 
 
 class ParentalTracking(QThread):
     cond_usetime = True
+    cancel = Signal()
 
     def __init__(self):
         super().__init__()
@@ -57,9 +58,10 @@ class ParentalTracking(QThread):
                 self.start_time = time.time()
                 self.state = False
 
+            cancel_signal = get_signal()
             # Show PIN dialog to cancel operation
-            if cancel_signal:  # FIXME replacement
-                self.parent().w2.show()
+            if cancel_signal:
+                self.cancel.emit()
                 reset_signal()
 
         log.info("Parental tracking stop")
