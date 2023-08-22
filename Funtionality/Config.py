@@ -28,6 +28,7 @@ filter_list = ["Align Position", "null", "Application Frame Host", "", "Pick an 
 
 # PATH
 logo_path = "Resources\logo.ico"
+overlay_logo_path = "Resources\overlay-pic.png"  # TODO change the logo
 appdata_path = os.getenv('APPDATA')
 app_folder = os.path.join(appdata_path, 'AlignPosition')
 log_folder = os.path.join(app_folder, 'logs')
@@ -43,6 +44,8 @@ library_in_production = os.path.dirname(package_folder)
 home_in_pro = os.path.dirname(library_in_production)
 abs_logo_path = os.path.join(library_in_production, logo_path)  # Test
 # abs_logo_path = os.path.join(home_in_pro, logo_path)  # Production
+abs_overlay_pic_path = os.path.join(library_in_production, overlay_logo_path)  # Test
+# abs_overlay_pic_path = os.path.join(home_in_pro, overlay_logo_path)  # Test
 key_file_path = os.path.expanduser('~/.AlignPosition/user.key')
 salt_file_path = os.path.expanduser('~/.AlignPosition/salt.bin')
 fernet_file_path = os.path.expanduser('~/.AlignPosition/fernet.key')
