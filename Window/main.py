@@ -14,7 +14,7 @@ from PySide6.QtCharts import QBarSet, QBarSeries, QBarCategoryAxis, QChart, QCha
 from PySide6.QtGui import QPainter, QColor, QDesktopServices, QIcon
 from Funtionality.Config import model_file, get_config, get_available_cameras, create_config, \
     key_file_path, desktop_path, Bad_Posture, Good_Posture, Append_Posture, Cancel_Calibrate, Capture_Posture, \
-    Model_Training, abs_logo_path
+    Model_Training, abs_logo_path, remove_all_data, reset_parental, check_key
 from Funtionality.UpdateConfig import write_config, tracking_instance
 from Funtionality.Notification import first_notify, show_break
 from ParentalControl.Auth import change_password, login_user, read_use_time, \
@@ -33,7 +33,7 @@ from .ui_MainMenu import Ui_MainWindow
 from .minWindow import MinWindow
 from pystray import Menu, Icon, MenuItem
 from PIL.Image import open
-import Window.resource_rc
+import resource_rc
 
 top_side_menu = "background: #7346ad;border-top-left-radius: 25px;border-top-right-radius: 25px;"
 btm_side_menu = "background: #7346ad;border-bottom-left-radius: 25px;border-bottom-right-radius: 25px;"
@@ -82,10 +82,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # Settings page
         self.init_setting_page()
-        self.reset_btn.clicked.connect(create_config)
+        self.reset_btn.clicked.connect(self.reset_config)
         self.apply_btn.clicked.connect(self.update_setting)
         self.usetime_table.cellClicked.connect(self.toggle_cell)
         self.web_btn.clicked.connect(lambda: QDesktopServices.openUrl("https://github.com/Soon156/AlignPosition/"))
+        self.remove_data_btn.clicked.connect(self.remove_data)
 
         # Authenticate page
         self.PIN_line.setEchoMode(QLineEdit.Password)
@@ -103,6 +104,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.exct_data_btn.clicked.connect(self.extract_data)
         self.restore_btn.clicked.connect(self.restore_data)
         self.usetime_btn.clicked.connect(self.handle_submit)
+        self.reset_parental_btn.clicked.connect(self.reset_parental_settings)
+
         for day in range(7):  # Init table cell
             for hour in range(24):
                 item = QTableWidgetItem(day, hour)
@@ -164,6 +167,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.w1 = OverlayWidget()  # PopOut Window
         self.w1.setScreen(self.screen())
         self.w2 = PINDialog()
+        self.w3 = PINDialog2()
+        self.w3.finished.connect(self.exit_main)
+        self.w3.reset.connect(self.reset_w3_control_state)
+        self.w3_authorize_lock = False
+        self.w3_state = None
+        self.request = None
+
+    def reset_w3_control_state(self):
+        self.w3_authorize_lock = False
+        self.w3_state = None
+        self.request = None
 
     def start_parental_control_thread(self):
         self.parental_thread = ParentalTracking()
@@ -173,6 +187,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.parental_control_thread = True
 
     def call_window2(self):
+        self.w2.PIN_line.setText("")
+        self.w2.PIN_hint_lbl.hide()
+        self.w3.PIN_line.setFocus()
         self.w2.show()
 
     def min_window_visible(self):  # Small window button handler
@@ -345,18 +362,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             cond = True
         if cond:
-            use_time = 8
-            data = retrieve_table_data()
-            self.parental_box.setChecked(False)
-            if data:
-                if data[1]:
-                    self.parental_box.setChecked(True)
-                use_time = data[0]
-                for day, hour in data[2:]:
-                    table_item = self.usetime_table.item(day, hour)
-                    table_item.setBackground(QColor(220, 20, 60))
+            self.reinit_parental_table()
             self.update_parental_box()
-            self.usetime_box.setValue(use_time)
             self.cont_stackedwidget.setCurrentIndex(1)
 
     def update_parental_box(self):
@@ -364,6 +371,23 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.parental_box.setText("Parental Control Activated")
         else:
             self.parental_box.setText("Parental Control Deactivated")
+
+    def reinit_parental_table(self, use_time=8):
+        self.parental_box.setChecked(False)
+        data = retrieve_table_data()
+        if data:
+            if data[1]:
+                self.parental_box.setChecked(True)
+            use_time = data[0]
+            for day, hour in data[2:]:
+                table_item = self.usetime_table.item(day, hour)
+                table_item.setBackground(QColor(220, 20, 60))
+        else:
+            for day in range(7):  # Re-init table cell
+                for hour in range(24):
+                    table_item = self.usetime_table.item(day, hour)
+                    table_item.setBackground(QColor(0, 0, 0, 0))
+        self.usetime_box.setValue(use_time)
 
     def change_pin(self, cond=False):  # True: create new PIN for first time user
         old = self.old_PIN_line.text()
@@ -401,6 +425,38 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         path = os.path.join(desktop_path, "Use_Time_Extract.zip")
         zip_files(path)
         QMessageBox.information(self, "Success", f"Use time extract to {path}")
+
+    def reset_config(self):
+        create_config()
+        self.init_setting_page()
+
+    def reset_parental_settings(self):
+        msgbox = QMessageBox(self)
+        msgbox.setWindowTitle('Warning')
+        msgbox.setIcon(QMessageBox.Warning)
+        msgbox.setText('This action remove and reset all you parental control settings\nDo you wish to continue?')
+        msgbox.addButton('Yes', QMessageBox.YesRole)
+        msgbox.addButton('No', QMessageBox.NoRole)
+        result = msgbox.exec()
+
+        if result == 0:
+            self.w3_authorize_lock = True
+            self.request = "reset_parental_settings"
+            self.show_authorize_win()
+
+    def remove_data(self):
+        msgbox = QMessageBox(self)
+        msgbox.setWindowTitle('Warning')
+        msgbox.setIcon(QMessageBox.Warning)
+        msgbox.setText('This action will reset the whole program and all your data will be lost!\nBackup your data first before proceeding.\n\nDo you wish to continue?')
+        msgbox.addButton('Yes', QMessageBox.YesRole)
+        msgbox.addButton('No', QMessageBox.NoRole)
+        result = msgbox.exec()
+
+        if result == 0:
+            self.w3_authorize_lock = True
+            self.request = "remove_data"
+            self.show_authorize_win()
 
     def restore_data(self):
         msgbox = QMessageBox(self)
@@ -560,13 +616,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     # Settings
     def init_setting_page(self):
         values = get_config()
+        data = retrieve_table_data()
         # Set value from config
         if values.get('background') == "True":
             self.background_box.setChecked(True)
         else:
             self.background_box.setChecked(False)
 
-        if values.get('auto') == "True":
+        if values.get('auto') == "True" or data and data[1]:
             self.start_box.setChecked(True)
         else:
             self.start_box.setChecked(False)
@@ -602,7 +659,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self.values['background'] = "False"
                 log.info(f"Background Disable")
 
-            if self.start_box.isChecked() and not self.data[1]:
+            if len(self.data) == 0:
+                self.values['auto'] = "False"
+                log.info(f"Startup Disable")
+            elif self.start_box.isChecked() and not self.data[1]:
                 self.values['auto'] = "True"
                 log.info(f"Startup Enable")
             elif not self.start_box.isChecked() and self.data[1]:
@@ -611,11 +671,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             else:
                 self.values['auto'] = "False"
                 log.info(f"Startup Disable")
-
-            if self.app_time_track_box.isChecked():
+            if self.app_time_track_box.isChecked() and check_key():
                 self.values['app_tracking'] = "True"
                 log.info(f"App Tracking Enable")
             else:
+                if not check_key():
+                    QMessageBox.information(self, "Action not allowed", "You must set your PIN first")
                 self.values['app_tracking'] = "False"
                 log.info(f"App Tracking Disable")
 
@@ -642,6 +703,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 log.info(f"Overlay change to {pos} side")
 
             write_config(self.values)
+            self.init_setting_page()
             self.values = get_config()
             try:
                 self.w1.win_geometry()
@@ -795,13 +857,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self.values['auto'] = "True"
                 write_config(self.values)
                 self.values = get_config()
-                if self.parental_control_thread:
+                if not self.parental_control_thread:
                     self.start_parental_control_thread()
                 else:
                     self.parental_thread.update_table_data()
             else:
-                self.parental_thread.stop_parental_thread()
-                self.parental_control_thread = False
+                if self.parental_thread is not None:
+                    self.parental_thread.stop_parental_thread()
+                    self.parental_control_thread = False
 
     def toggle_cell(self, row, column):
         item = self.usetime_table.item(row, column)
@@ -843,29 +906,57 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def exit_app(self):
         if self.data and self.data[1]:
-            window = PINDialog2()
-            window.finished.connect(self.exit_main)
-            window.exec()
+            self.show_authorize_win()
         else:
             self.exit_main()
 
+    def show_authorize_win(self):
+        if not self.isVisible():
+            self.show()
+        if self.w3_state:
+            self.w3.PIN_line.setText("")
+            self.w3.PIN_hint_lbl.hide()
+            self.w3.PIN_line.setFocus()
+            self.w3.show()
+        else:
+            self.w3.exec()
+            self.w3_state = True
+
     def exit_main(self):
-        self.destroy()  # End Main Window
-        try:
-            self.parental_thread.stop_parental_thread()  # Stop parental time tracking
-        except:
-            pass
-        tracking_instance.update_condition()  # Stop app use time tracking
-        if self.monitoring_state:  # Stop monitoring
-            self.monitoring_state = False
-            self.posture_recognizer.stop_capture()
-        self.system_icon.stop()  # Stop system tray
-        # Close all dialog window
-        windows = [self.w, self.w1, self.w2]
-        for window in windows:
+        if self.w3_authorize_lock:
+            self.w3_authorize_lock = False
+            if self.request == "remove_data":
+                try:
+                    remove_all_data()
+                    QMessageBox.information(self, "App Reset", "All data has been removed successfully!")
+                except Exception as e:
+                    QMessageBox.critical(self, "Failed to remove data", str(e))
+                self.exit_main()
+            elif self.request == "reset_parental_settings":
+                try:
+                    reset_parental()
+                    QMessageBox.information(self, "Parental reset", "All data has been reset successfully")
+                    self.reinit_parental_table()
+                except Exception as e:
+                    QMessageBox.critical(self, "Failed to remove data", str(e))
+        else:
+            self.destroy()  # End Main Window
             try:
-                window.close()
-            except Exception as e:
-                log.info(str(e))
-        QApplication.exit()
-        sys.exit()
+                self.parental_thread.stop_parental_thread()  # Stop parental time tracking
+            except:
+                pass
+            tracking_instance.update_condition()  # Stop app use time tracking
+            if self.monitoring_state:  # Stop monitoring
+                self.monitoring_state = False
+                self.posture_recognizer.stop_capture()
+            self.system_icon.stop()  # Stop system tray
+            # Close all dialog window
+            windows = [self.w, self.w1, self.w2, self.w3]
+            for window in windows:
+                try:
+                    window.close()
+                except Exception:
+                    pass
+            QApplication.exit()
+            sys.exit()
+
