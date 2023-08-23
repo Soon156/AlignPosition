@@ -6,6 +6,8 @@ import datetime
 from psutil import process_iter
 from pygrabber.dshow_graph import FilterGraph
 
+import shutil
+
 Good_Posture = "Maintain your good posture 5 seconds, clicked proceed to start"
 Bad_Posture = "Maintain your bad posture 5 seconds, clicked proceed to start"
 Append_Posture = "Append bad posture, clicked proceed to start"
@@ -28,7 +30,7 @@ filter_list = ["Align Position", "null", "Application Frame Host", "", "Pick an 
 
 # PATH
 logo_path = "Resources\logo.ico"
-overlay_logo_path = "Resources\overlay-pic.png"  # TODO change the logo
+overlay_logo_path = "Resources\overlay-pic.png"
 appdata_path = os.getenv('APPDATA')
 app_folder = os.path.join(appdata_path, 'AlignPosition')
 log_folder = os.path.join(app_folder, 'logs')
@@ -46,13 +48,13 @@ abs_logo_path = os.path.join(library_in_production, logo_path)  # Test
 # abs_logo_path = os.path.join(home_in_pro, logo_path)  # Production
 abs_overlay_pic_path = os.path.join(library_in_production, overlay_logo_path)  # Test
 # abs_overlay_pic_path = os.path.join(home_in_pro, overlay_logo_path)  # Production
+hidden_file_path = os.path.expanduser('~/.AlignPosition')
 key_file_path = os.path.expanduser('~/.AlignPosition/user.key')
 salt_file_path = os.path.expanduser('~/.AlignPosition/salt.bin')
-fernet_file_path = os.path.expanduser('~/.AlignPosition/fernet.key')
 desktop_path = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
 key_path = r"Software\Microsoft\Windows\CurrentVersion\Run"
 app_name = "Align Position"
-exe_path = os.path.join(library_in_production, "Align Position.exe")
+exe_path = os.path.join(home_in_pro, "Align Position.exe")  # Production
 
 # Create folders if they don't exist
 os.makedirs(app_folder, exist_ok=True)
@@ -142,6 +144,32 @@ def get_available_cameras():
         return available_cameras
 
 
+# remove data
+def remove_all_data():
+    # remove
+    try:
+        contents = os.listdir(app_folder)
+        for item in contents:
+            item_path = os.path.join(app_folder, item)
+            if os.path.isdir(item_path):  # Check if it's a directory
+                if item != 'logs':  # Exclude the 'log' folder
+                    # Remove the directory and its contents
+                    shutil.rmtree(item_path)
+            else:
+                os.remove(item_path)
+        shutil.rmtree(hidden_file_path)
+        log.info("All data has been remove, app will close soon")
+    except Exception as e:
+        log.warning(e)
+
+
+def reset_parental():
+    try:
+        os.remove(allow_use_time)
+    except FileNotFoundError:
+        log.warning("File is not exist or already remove")
+
+
 # create or reset config
 def create_config():
     config = configparser.ConfigParser(allow_no_value=True)
@@ -197,3 +225,11 @@ def check_condition():
             raise Exception("Invalid config value")
     except Exception as e:
         log.warning(e)
+
+
+def check_key():
+    path = [key_file_path, salt_file_path]
+    for item in path:
+        if not os.path.exists(item):
+            return False
+    return True
