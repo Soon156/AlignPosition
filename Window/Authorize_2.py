@@ -6,9 +6,10 @@ from Window.ui_Authorize import Ui_PINDialog
 
 class PINDialog2(QDialog, Ui_PINDialog):
     finished = Signal()
+    reset = Signal()
 
-    def __init__(self, parent=None):
-        super().__init__(parent)
+    def __init__(self):
+        super().__init__()
         self.setupUi(self)
         self.PIN_line.returnPressed.connect(self.PIN_btn.click)
         self.PIN_line.setEchoMode(QLineEdit.Password)
@@ -17,8 +18,12 @@ class PINDialog2(QDialog, Ui_PINDialog):
 
     def valid_pin(self):
         if login_user(self.PIN_line.text()):
-            self.close()
+            self.hide()
             self.finished.emit()
         else:
             self.PIN_hint_lbl.setText("Incorrect PIN")
             self.PIN_hint_lbl.show()
+
+    def closeEvent(self, event):
+        event.ignore()
+        self.reset.emit()
