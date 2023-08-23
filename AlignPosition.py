@@ -1,5 +1,6 @@
 import sys
 from PySide6 import QtWidgets
+from Funtionality.Config import check_key
 from Funtionality.ErrorMessage import WarningMessageBox
 from Funtionality.UpdateConfig import tracking_app_use_time
 from Window.main import MainWindow
@@ -14,7 +15,7 @@ if __name__ == '__main__':
         Config.get_config()
         Config.clear_log()
 
-        if values['app_tracking'] == "True":
+        if values['app_tracking'] == "True" and check_key():
             tracking_app_use_time()
 
         # Create the main window
