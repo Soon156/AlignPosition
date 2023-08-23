@@ -18,7 +18,7 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
 from PySide6.QtWidgets import (QApplication, QDialog, QFrame, QHBoxLayout,
     QLabel, QLineEdit, QPushButton, QSizePolicy,
     QVBoxLayout, QWidget)
-import Window.resource_rc
+import resource_rc
 
 class Ui_PINDialog(object):
     def setupUi(self, PINDialog):
@@ -104,7 +104,7 @@ class Ui_PINDialog(object):
     def retranslateUi(self, PINDialog):
         PINDialog.setWindowTitle(QCoreApplication.translate("PINDialog", u"PIN", None))
         self.label.setText(QCoreApplication.translate("PINDialog", u"Enter your 6-digit PIN", None))
-        self.PIN_btn.setText(QCoreApplication.translate("PINDialog", u"Login", None))
+        self.PIN_btn.setText(QCoreApplication.translate("PINDialog", u"OK", None))
         self.PIN_hint_lbl.setText(QCoreApplication.translate("PINDialog", u"TextLabel", None))
     # retranslateUi
 

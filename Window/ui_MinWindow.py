@@ -17,7 +17,7 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QDialog, QHBoxLayout, QLabel,
     QPushButton, QSizePolicy, QWidget)
-import Window.resource_rc
+import resource_rc
 
 class Ui_minDialog(object):
     def setupUi(self, minDialog):

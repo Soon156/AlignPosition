@@ -104,7 +104,7 @@ background: #00fca8;
 </string>
            </property>
            <property name="text">
-            <string>Login</string>
+            <string>OK</string>
            </property>
           </widget>
          </item>

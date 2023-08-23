@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1051</width>
-    <height>513</height>
+    <width>1057</width>
+    <height>508</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -514,7 +514,7 @@ border-radius: 25px;
           <string notr="true">background-color: transparent;</string>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>3</number>
          </property>
          <widget class="QWidget" name="Dashboard">
           <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -805,26 +805,79 @@ background: #a200ff;
               <property name="spacing">
                <number>0</number>
               </property>
-              <item alignment="Qt::AlignLeft">
-               <widget class="QLabel" name="table_lbl">
+              <item>
+               <widget class="QFrame" name="frame_10">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
                 </property>
-                <property name="text">
-                 <string/>
+                <property name="frameShape">
+                 <enum>QFrame::StyledPanel</enum>
                 </property>
-                <property name="pixmap">
-                 <pixmap resource="resource.qrc">:/icon/access-title-resize.png</pixmap>
+                <property name="frameShadow">
+                 <enum>QFrame::Raised</enum>
                 </property>
-                <property name="scaledContents">
-                 <bool>false</bool>
-                </property>
+                <layout class="QHBoxLayout" name="horizontalLayout_14">
+                 <property name="spacing">
+                  <number>0</number>
+                 </property>
+                 <property name="leftMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <widget class="QLabel" name="table_lbl">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="pixmap">
+                    <pixmap resource="resource.qrc">:/icon/access-title-resize.png</pixmap>
+                   </property>
+                   <property name="scaledContents">
+                    <bool>false</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item alignment="Qt::AlignRight">
+                  <widget class="QPushButton" name="reset_parental_btn">
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="resource.qrc">
+                     <normaloff>:/icon/icons8-reset-48.png</normaloff>:/icon/icons8-reset-48.png</iconset>
+                   </property>
+                   <property name="iconSize">
+                    <size>
+                     <width>20</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="flat">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
                </widget>
               </item>
-              <item alignment="Qt::AlignLeft|Qt::AlignTop">
+              <item alignment="Qt::AlignLeft|Qt::AlignVCenter">
                <widget class="QTableWidget" name="usetime_table">
                 <property name="minimumSize">
                  <size>
@@ -1146,7 +1199,7 @@ QCheckBox::indicator:checked {
                    </layout>
                   </widget>
                  </item>
-                 <item>
+                 <item alignment="Qt::AlignHCenter">
                   <widget class="QFrame" name="ButtonFrame_2">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -1162,8 +1215,7 @@ padding: 5px 20px 5px 20px;
 
 QPushButton:hover{
 background: #a200ff;
-}
-</string>
+}</string>
                    </property>
                    <property name="frameShape">
                     <enum>QFrame::StyledPanel</enum>
@@ -1171,7 +1223,7 @@ background: #a200ff;
                    <property name="frameShadow">
                     <enum>QFrame::Raised</enum>
                    </property>
-                   <layout class="QHBoxLayout" name="horizontalLayout_14">
+                   <layout class="QHBoxLayout" name="horizontalLayout_11">
                     <property name="topMargin">
                      <number>0</number>
                     </property>
@@ -1179,18 +1231,18 @@ background: #a200ff;
                      <number>0</number>
                     </property>
                     <item>
-                     <widget class="QPushButton" name="exct_data_btn">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
+                     <widget class="QPushButton" name="changePIN_btn">
+                      <property name="minimumSize">
+                       <size>
+                        <width>130</width>
+                        <height>0</height>
+                       </size>
                       </property>
                       <property name="styleSheet">
                        <string notr="true"/>
                       </property>
                       <property name="text">
-                       <string>Extract All Data</string>
+                       <string>Change PIN</string>
                       </property>
                      </widget>
                     </item>
@@ -1199,11 +1251,11 @@ background: #a200ff;
                       <property name="enabled">
                        <bool>true</bool>
                       </property>
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
+                      <property name="minimumSize">
+                       <size>
+                        <width>130</width>
+                        <height>0</height>
+                       </size>
                       </property>
                       <property name="styleSheet">
                        <string notr="true"/>
@@ -1214,18 +1266,18 @@ background: #a200ff;
                      </widget>
                     </item>
                     <item>
-                     <widget class="QPushButton" name="changePIN_btn">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
+                     <widget class="QPushButton" name="exct_data_btn">
+                      <property name="minimumSize">
+                       <size>
+                        <width>130</width>
+                        <height>0</height>
+                       </size>
                       </property>
                       <property name="styleSheet">
                        <string notr="true"/>
                       </property>
                       <property name="text">
-                       <string>Change PIN</string>
+                       <string>Extract All Data</string>
                       </property>
                      </widget>
                     </item>
@@ -1924,7 +1976,12 @@ QDoubleSpinBox::down-button {
                 </property>
                 <property name="styleSheet">
                  <string notr="true">QPushButton{
+background-color: #3b006e;
 padding: 5px 20px 5px 20px;
+}
+
+QPushButton:hover{
+background: #a200ff;
 }
 
 QPushButton#apply_btn{
@@ -1935,13 +1992,15 @@ QPushButton#apply_btn:hover{
 background: #00fca8;
 }
 
-QPushButton#reset_btn{
+QPushButton#remove_data_btn{
 background-color: #a10000;
 }
 
-QPushButton#reset_btn:hover{
+QPushButton#remove_data_btn:hover{
 background: #d10000;
-}</string>
+}
+
+</string>
                 </property>
                 <property name="frameShape">
                  <enum>QFrame::StyledPanel</enum>
@@ -1962,17 +2021,24 @@ background: #d10000;
                  <property name="bottomMargin">
                   <number>0</number>
                  </property>
-                 <item alignment="Qt::AlignHCenter">
+                 <item>
                   <widget class="QPushButton" name="reset_btn">
+                   <property name="text">
+                    <string>Reset Config</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="remove_data_btn">
                    <property name="styleSheet">
                     <string notr="true"/>
                    </property>
                    <property name="text">
-                    <string>Reset</string>
+                    <string>Remove all data</string>
                    </property>
                   </widget>
                  </item>
-                 <item alignment="Qt::AlignHCenter">
+                 <item>
                   <widget class="QPushButton" name="apply_btn">
                    <property name="styleSheet">
                     <string notr="true"/>
