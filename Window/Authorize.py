@@ -22,3 +22,7 @@ class PINDialog(QDialog, Ui_PINDialog):
         else:
             self.PIN_hint_lbl.setText("Incorrect PIN")
             self.PIN_hint_lbl.show()
+
+    def closeEvent(self, event):
+        event.ignore()
+        self.hide()
