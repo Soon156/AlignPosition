@@ -8,7 +8,7 @@ from Funtionality.Notification import show_control, reset_signal, get_signal
 from ParentalControl.Auth import retrieve_table_data
 
 
-class ParentalTracking(QThread):
+class ParentalTracking(QThread):  # TODO change to services
     cond_usetime = True
     cancel = Signal()
 
@@ -38,11 +38,14 @@ class ParentalTracking(QThread):
             # Check total use time
             limit_time = self.data[0]
             limit_time_in_sec = limit_time * 60 * 60
-            use_time = self.parent().latest_usetime
+            try:
+                use_time = self.parent().latest_usetime
+            except AttributeError:
+                use_time = 0
 
             # CHECKME need avoid crash on 2 notification
             # Check limit use time
-            if limit_time != 24 and use_time > limit_time_in_sec and not self.total_time_state:
+            if limit_time >= 24 and use_time > limit_time_in_sec and not self.total_time_state:
                 self.thread = threading.Thread(target=show_control)
                 self.thread.start()
                 self.total_time_state = True
