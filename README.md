@@ -1,41 +1,17 @@
-# Align Position - Enhanced Parental Control and Posture Monitoring Application
+<h1 align="center">Hi 👋, I'm Soon Kok Seng</h1>
+<h3 align="center">A student from MSU Shah Alam Malaysia</h3>
 
-## Description:
+- 🌱 I’m currently taking **bachelor in computer science**
+
+- 📫You may reach me at **soonkokseng2015@gmail.com**
+
+ - This page is the product of my final year project (FYP)
+
+
+<h1>Align Position</h1>
+<h2>Enhanced Parental Control and Posture Monitoring Application
+</h2>
 AlignPosition is an advanced open-source software designed to provide comprehensive parental control features, break management, privacy and security measures, as well as posture monitoring. The application aims to create a safe and productive computing environment for users while promoting healthy device usage habits and maintaining privacy.
-
-## Key Features:
-
-### Parental Control:
-Monitor and manage total computer usage time for users, especially children.
-Set specific usage time schedules to control when the computer can be accessed.
-
-### Break Management:
-Remind users to take breaks at predefined intervals to prevent prolonged screen time.
-
-### Privacy and Security:
-Encrypt all user data to ensure protection against unauthorized access.
-
-### App and Total Use Time Tracking:
-Track application-specific usage time to better understand usage patterns.
-Monitor and manage the overall device usage time to promote balanced usage habits.
-
-### Dashboard:
-Provide a user-friendly dashboard to initiate usage time monitoring and posture detection.
-Utilize the camera for posture detection and present visual data in two charts: application use time and total use time.
-
-### Calibration:
-Offer a calibration process to define good and bad posture, facilitating accurate posture monitoring.
-
-### Overlay Window:
-Display a transparent and non-intrusive overlay window during usage time monitoring.
-If the user adopts a bad posture, the overlay window will subtly pop up to notify them without causing annoyance.
-
-### Customization Options:
-Enable users to extract and restore backup usage time data, ensuring data preservation.
-Facilitate easy settings reset for user convenience.
-
-## Why Align Position?
- Align Position is a versatile tool for families and individuals aiming to manage screen time, protect privacy, and encourage healthier device usage habits. The application's focus on privacy, security, and posture monitoring sets it apart from conventional parental control software.
 
 ## Contributions:
 Contributions from the open-source community are highly encouraged. Developers can enhance existing features, add new functionalities, improve UI/UX, or contribute to documentation, ensuring the continuous improvement of Align Position.
@@ -43,5 +19,5 @@ Contributions from the open-source community are highly encouraged. Developers c
 ## License:
  Align Position is released under the [GNU General Public License (GPL)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html), ensuring that the software remains free and open-source for all.
 
-## Get Involved:
-Join the  Align Position community on GitHub and contribute to building a safer and more productive digital world for all. Your ideas and contributions are invaluable to us.
+<h3 align="left">Languages and Tools:</h3>
+<p align="left"> <a href="https://git-scm.com/" target="_blank" rel="noreferrer"> <img src="https://www.vectorlogo.zone/logos/git-scm/git-scm-icon.svg" alt="git" width="40" height="40"/> </a> <a href="https://opencv.org/" target="_blank" rel="noreferrer"> <img src="https://www.vectorlogo.zone/logos/opencv/opencv-icon.svg" alt="opencv" width="40" height="40"/> </a> <a href="https://www.python.org" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg" alt="python" width="40" height="40"/> Python 3.10 </a> <a href="https://www.qt.io/" target="_blank" rel="noreferrer"> <img src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Qt_logo_2016.svg" alt="qt" width="40" height="40"/> Qt Designer 6.5.2</a> </p>
