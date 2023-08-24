@@ -109,7 +109,7 @@ def read_use_time():
                 unpicked_row = pickle.loads(decrypted_data)
 
         except pickle.UnpicklingError:
-            log.warning("User file modified/corrupted")  # TODO error handler
+            log.error("User file modified/corrupted")
         except FileNotFoundError:
             log.warning("No use time record found")
     return unpicked_row
@@ -174,7 +174,7 @@ def save_table_data(data):
         log.info("Allowed time updated")
 
 
-def retrieve_table_data():
+def read_table_data():
     unpicked_row = []
     key, salt = retrieve_key_salt()
     if key is not None:
@@ -188,7 +188,7 @@ def retrieve_table_data():
                 unpicked_row = pickle.loads(decrypted_data)
 
         except pickle.UnpicklingError:
-            log.warning("User file modified/corrupted")  # TODO error handler
+            log.error("User file modified/corrupted")
         except FileNotFoundError:
             log.warning("No table data found")
     return unpicked_row
