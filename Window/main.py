@@ -143,15 +143,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.data = read_table_data()  # Retrieve computer access time data
         if self.data and self.data[1]:  # Check is the tracking data exist and is it enabled
-            self.parental_status = True
             self.start_parental_control_thread()
             # Check condition state
             if self.values['auto'] != "True":
                 self.values['auto'] = "True"
                 write_config(self.values)
                 log.info("Auto start enabled by parental control")
-        else:
-            self.parental_status = False
 
         # System tray icon
         self.image = open(abs_logo_path)
@@ -471,8 +468,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             if file_path != "":
                 try:
                     extract_zip(file_path)
+                    data = read_table_data()
+                    self.reinit_parental_table()
+                    if data and data[1]:
+                        self.start_parental_control_thread()
+                    QMessageBox.information(self, "Success", "Data restored successfully")
                 except Exception as e:
-                    QMessageBox.warning(self, "Failed", f"{e}")
+                    QMessageBox.warning(self, "Failed", f"{str(e)}")
 
     # Calibration
     def calibrate_camera_box_handler(self, index):
@@ -884,8 +886,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.dragPos = event.globalPosition().toPoint()
 
     def mouseMoveEvent(self, event):
-        self.move(self.pos() + event.globalPosition().toPoint() - self.dragPos)
-        self.dragPos = event.globalPosition().toPoint()
+        try:
+            self.move(self.pos() + event.globalPosition().toPoint() - self.dragPos)
+            self.dragPos = event.globalPosition().toPoint()
+        except:
+            pass
         event.accept()
 
     # Close Event handler
@@ -933,6 +938,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     QMessageBox.critical(self, "Failed to remove data", str(e))
                 self.exit_main()
             elif self.request == "reset_parental_settings":
+                try:
+                    self.parental_thread.stop_parental_thread()
+                    self.parental_control_thread = False
+                except:
+                    pass
                 try:
                     reset_parental()
                     QMessageBox.information(self, "Parental reset", "All data has been reset successfully")
