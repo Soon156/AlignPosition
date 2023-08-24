@@ -1,11 +1,12 @@
 import csv
+import json
 import os
 import zipfile
-import logging as log
 from Funtionality.Config import desktop_path
-from ParentalControl.Auth import read_use_time, read_app_use_time, write_use_time, write_app_use_time
+from ParentalControl.Auth import read_use_time, read_app_use_time, write_use_time, write_app_use_time, \
+    read_table_data, save_table_data
 
-files = ["use_time.csv", "app_use_time.csv"]
+files = ["use_time.csv", "app_use_time.csv", "table_data.json"]
 
 
 def extract_use_time():
@@ -31,6 +32,12 @@ def extract_app_use_time():
             row = {'Date': date}
             row.update(inner_dict)
             writer.writerow(row)
+
+
+def extract_table_data():
+    data = read_table_data()
+    with open(files[2], "w") as file:
+        json.dump(data, file)
 
 
 def retrieve_use_time(path):
@@ -66,9 +73,16 @@ def retrieve_app_use_time(path):
     return retrieved_data
 
 
+def retrieve_table_data(path):
+    with open(path, "r") as file:
+        data = json.load(file)
+    return data
+
+
 def zip_files(path):
     extract_use_time()
     extract_app_use_time()
+    extract_table_data()
     with zipfile.ZipFile(path, 'w') as zipf:
         for file in files:
             zipf.write(file, os.path.basename(file))
@@ -81,12 +95,15 @@ def extract_zip(zip_file_path):
         zip_ref.extractall(desktop_path)
     for file in files:
         path = os.path.join(desktop_path, file)
-        if file == "use_time.csv":
+        if file == files[0]:
             use_time = retrieve_use_time(path)
             write_use_time(use_time)
-        if file == "app_use_time.csv":
+        if file == files[1]:
             app_time = retrieve_app_use_time(path)
             write_app_use_time(app_time)
+        if file == files[2]:
+            table_data = retrieve_table_data(path)
+            save_table_data(table_data)
         try:
             os.remove(path)
         except FileNotFoundError:
