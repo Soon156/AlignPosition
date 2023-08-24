@@ -1,7 +1,6 @@
 import logging as log
-import time
 from datetime import date
-from ParentalControl.Auth import write_use_time, read_use_time, retrieve_table_data
+from ParentalControl.Auth import write_use_time, read_use_time
 
 
 def read_elapsed_time_data():
