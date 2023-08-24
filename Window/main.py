@@ -445,7 +445,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         msgbox = QMessageBox(self)
         msgbox.setWindowTitle('Warning')
         msgbox.setIcon(QMessageBox.Warning)
-        msgbox.setText('This action will reset the whole program and all your data will be lost!\nBackup your data first before proceeding.\n\nDo you wish to continue?')
+        msgbox.setText(
+            'This action will reset the whole program and all your data will be lost!\nBackup your data first before '
+            'proceeding.\n\nDo you wish to continue?')
         msgbox.addButton('Yes', QMessageBox.YesRole)
         msgbox.addButton('No', QMessageBox.NoRole)
         result = msgbox.exec()
@@ -662,23 +664,29 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 log.info(f"Background Disable")
 
             if len(self.data) == 0:
-                self.values['auto'] = "False"
-                log.info(f"Startup Disable")
+                if self.start_box.isChecked():
+                    self.values['auto'] = "True"
+                else:
+                    self.values['auto'] = "False"
             elif self.start_box.isChecked() and not self.data[1]:
                 self.values['auto'] = "True"
-                log.info(f"Startup Enable")
             elif not self.start_box.isChecked() and self.data[1]:
                 self.start_box.setChecked(True)
                 QMessageBox.warning(self, "Not allowed", "Auto start enabled by parental control")
-            else:
-                self.values['auto'] = "False"
+
+            if self.values['auto'] == "False":
                 log.info(f"Startup Disable")
-            if self.app_time_track_box.isChecked() and check_key():
-                self.values['app_tracking'] = "True"
+            else:
+                log.info(f"Startup Enable")
+
+            if self.app_time_track_box.isChecked():
+                if not check_key():
+                    self.values['app_tracking'] = "False"
+                    QMessageBox.information(self, "Action not allowed", "You must set your PIN first")
+                else:
+                    self.values['app_tracking'] = "True"
                 log.info(f"App Tracking Enable")
             else:
-                if not check_key():
-                    QMessageBox.information(self, "Action not allowed", "You must set your PIN first")
                 self.values['app_tracking'] = "False"
                 log.info(f"App Tracking Disable")
 
@@ -785,7 +793,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     use_timedate = data[date][app] / 60
                     total_time += use_timedate
                 temp.append(use_timedate)
-                name = f"{app}: {round(total_time,2)} m"
+                name = f"{app}: {round(total_time, 2)} m"
             bar_set = QBarSet(name)
             bar_set.append(temp)
             series.append(bar_set)
@@ -969,4 +977,3 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     pass
             QApplication.exit()
             sys.exit()
-
