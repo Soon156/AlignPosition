@@ -18,7 +18,7 @@ from Funtionality.Config import model_file, get_config, get_available_cameras, c
 from Funtionality.UpdateConfig import write_config, tracking_instance
 from Funtionality.Notification import first_notify, show_break
 from ParentalControl.Auth import change_password, login_user, read_use_time, \
-    read_app_use_time, user_register, save_table_data, retrieve_table_data
+    read_app_use_time, user_register, save_table_data, read_table_data
 from ParentalControl.Backup_Restore import extract_zip, zip_files
 from ParentalControl.ParentalControl import ParentalTracking
 from PostureRecognize.ElapsedTime import seconds_to_hms
@@ -141,7 +141,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.parental_control_thread = False
         self.latest_usetime = read_elapsed_time_data()  # Get track on total use time
 
-        self.data = retrieve_table_data()  # Retrieve computer access time data
+        self.data = read_table_data()  # Retrieve computer access time data
         if self.data and self.data[1]:  # Check is the tracking data exist and is it enabled
             self.parental_status = True
             self.start_parental_control_thread()
@@ -374,7 +374,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def reinit_parental_table(self, use_time=8):
         self.parental_box.setChecked(False)
-        data = retrieve_table_data()
+        data = read_table_data()
         if data:
             if data[1]:
                 self.parental_box.setChecked(True)
@@ -616,14 +616,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     # Settings
     def init_setting_page(self):
         values = get_config()
-        data = retrieve_table_data()
+        data = read_table_data()
         # Set value from config
         if values.get('background') == "True":
             self.background_box.setChecked(True)
         else:
             self.background_box.setChecked(False)
 
-        if values.get('auto') == "True" or data and data[1]:
+        if values.get('auto') == "True" or (data and data[1]):
             self.start_box.setChecked(True)
         else:
             self.start_box.setChecked(False)
