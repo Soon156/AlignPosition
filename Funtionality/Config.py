@@ -54,7 +54,7 @@ salt_file_path = os.path.expanduser('~/.AlignPosition/salt.bin')
 desktop_path = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
 key_path = r"Software\Microsoft\Windows\CurrentVersion\Run"
 app_name = "Align Position"
-exe_path = os.path.join(home_in_pro, "Align Position.exe")  # Production
+exe_path = os.path.join(home_in_pro, "AlignPosition.exe")  # Production
 
 # Create folders if they don't exist
 os.makedirs(app_folder, exist_ok=True)
