@@ -5,7 +5,7 @@ from datetime import datetime
 from PySide6.QtCore import QThread, Signal
 from Funtionality.Config import get_config
 from Funtionality.Notification import show_control, reset_signal, get_signal
-from ParentalControl.Auth import retrieve_table_data
+from ParentalControl.Auth import read_table_data
 
 
 class ParentalTracking(QThread):  # TODO change to services
@@ -17,7 +17,7 @@ class ParentalTracking(QThread):  # TODO change to services
         self.current_day = datetime.now().weekday()
         self.current_time = datetime.now().time()
         self.values = get_config()
-        self.data = retrieve_table_data()
+        self.data = read_table_data()
         self.state = False  # To control the notification not spam
         self.total_time_state = False  # To control the total time notification
         self.start_time = time.time()  # Time to reset notification state
@@ -27,7 +27,7 @@ class ParentalTracking(QThread):  # TODO change to services
         self.cond_usetime = False
 
     def update_table_data(self):
-        self.data = retrieve_table_data()
+        self.data = read_table_data()
         self.total_time_state = False
         self.state = False
 
