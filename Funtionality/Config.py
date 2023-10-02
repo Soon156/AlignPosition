@@ -2,6 +2,7 @@ import configparser
 import os
 import logging as log
 import datetime
+import winreg
 
 from psutil import process_iter
 from pygrabber.dshow_graph import FilterGraph
@@ -19,7 +20,6 @@ Capture_Posture = "Capturing posture, stay still...."
 
 # ACCURACY AND PERFORMANCE
 DETECTION_RATE = 0.5  # second
-counter = 0  # To check the program exist
 
 # Get the current month and year
 now = datetime.datetime.now()
@@ -27,6 +27,17 @@ current_month, current_year = now.month, now.year
 
 # App_Use_Time Filter List
 filter_list = ["Align Position", "null", "Application Frame Host", "", "Pick an app"]
+
+
+def get_registry_value(key=winreg.HKEY_CURRENT_USER, subkey="SOFTWARE\Align Position", value_name="Resource Folder"):
+    try:
+        with winreg.OpenKey(key, subkey) as registry_key:
+            value, _ = winreg.QueryValueEx(registry_key, value_name)
+            return value
+    except Exception as e:
+        library_in_production = os.path.dirname(package_folder)
+        return library_in_production
+
 
 # PATH
 logo_path = "Resources\logo.ico"
@@ -42,19 +53,18 @@ app_use_time_file = f"use_time_{current_month:02d}_{current_year}.bin"
 app_use_time = os.path.join(app_folder, app_use_time_file)
 allow_use_time = os.path.join(app_folder, "table_time.bin")
 package_folder = os.path.dirname(os.path.abspath(__file__))
-library_in_production = os.path.dirname(package_folder)
-home_in_pro = os.path.dirname(library_in_production)
-abs_logo_path = os.path.join(library_in_production, logo_path)  # Test
-# abs_logo_path = os.path.join(home_in_pro, logo_path)  # Production
-abs_overlay_pic_path = os.path.join(library_in_production, overlay_logo_path)  # Test
-# abs_overlay_pic_path = os.path.join(home_in_pro, overlay_logo_path)  # Production
+
+install_path = get_registry_value()
+
+abs_logo_path = os.path.join(install_path, logo_path)
+abs_overlay_pic_path = os.path.join(install_path, overlay_logo_path)
 hidden_file_path = os.path.expanduser('~/.AlignPosition')
 key_file_path = os.path.expanduser('~/.AlignPosition/user.key')
 salt_file_path = os.path.expanduser('~/.AlignPosition/salt.bin')
 desktop_path = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
 key_path = r"Software\Microsoft\Windows\CurrentVersion\Run"
 app_name = "Align Position"
-exe_path = os.path.join(home_in_pro, "AlignPosition.exe")  # Production
+exe_path = os.path.join(install_path, "AlignPosition.exe --background")  # Production
 
 # Create folders if they don't exist
 os.makedirs(app_folder, exist_ok=True)
@@ -91,7 +101,7 @@ DEFAULT_VAL = {
     'app_tracking': False,
     'overlay': "Right",
     'overlay_enable': True,
-    'auto': False,
+    'auto': True,
     'init': True,
     'dev': False
 }
@@ -123,14 +133,20 @@ def clear_log():
 
 # check alive of program
 def check_process():
-    global counter
+    counter = 0
     for p in process_iter():
         if p.name() == "AlignPosition.exe":
             counter += 1
-        if counter >= 2:
-            log.error("Program is already run")
+        if counter > 2:
             return True
     return False
+
+
+def check_logo():
+    if os.path.exists(abs_logo_path) and os.path.exists(abs_overlay_pic_path):
+        return True
+    else:
+        return False
 
 
 # get camera list
@@ -158,6 +174,7 @@ def remove_all_data():
             else:
                 os.remove(item_path)
         shutil.rmtree(hidden_file_path)
+        # parental_monitoring()
         log.info("All data has been remove, app will close soon")
     except Exception as e:
         log.warning(e)
@@ -165,9 +182,22 @@ def remove_all_data():
 
 def reset_parental():
     try:
+        # parental_monitoring()
         os.remove(allow_use_time)
     except FileNotFoundError:
         log.warning("File is not exist or already remove")
+
+
+"""
+   def parental_monitoring(value_name="Parental State", sub_key="SOFTWARE\Align Position"
+                        , path=winreg.HKEY_CURRENT_USER, value=0):
+    value = str(value)
+    try:
+        with winreg.OpenKey(path, sub_key, 0, winreg.KEY_WRITE) as key:
+            winreg.SetValueEx(key, value_name, 0, winreg.REG_SZ, value)
+    except FileNotFoundError:
+        with winreg.CreateKey(path, sub_key) as key:
+            winreg.SetValueEx(key, value_name, 0, winreg.REG_SZ, value)"""
 
 
 # create or reset config
