@@ -27,3 +27,4 @@ class PINDialog2(QDialog, Ui_PINDialog):
     def closeEvent(self, event):
         event.ignore()
         self.reset.emit()
+        self.hide()
