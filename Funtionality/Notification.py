@@ -43,7 +43,6 @@ except Exception as e:
     hint = "Missing Icon Resources, reinstall the application"
     error = "File Not Found"
     widget = WarningMessageBox(title, hint, error)
-    sys.exit()
 
 
 def cancel_handler(nid, action_id):
