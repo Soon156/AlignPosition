@@ -8,7 +8,7 @@ import joblib
 import numpy as np
 from PySide6.QtCore import Signal, QThread, QRunnable, QObject, QThreadPool
 from PySide6.QtGui import QImage, QPixmap
-from Funtionality.Config import get_config, Model_Training, Bad_Posture, Capture_Posture, temp_folder
+from Funtionality.Config import get_config, temp_folder
 from PostureRecognize.ElapsedTime import read_elapsed_time_data, save_elapsed_time_data
 from PostureRecognize.Model import model_file
 from PostureRecognize.FrameProcess import get_landmark, buffer_frames
@@ -92,7 +92,6 @@ class PostureRecognizerThread(QThread):
                 if not ret:
                     log.error("Invalid video source, cap.read() failed")
                     raise Exception("cap.read() failed")
-
                 # Get landmark of frame
                 frame, landmark = get_landmark(frame)
                 if landmark is not None:
@@ -101,7 +100,6 @@ class PostureRecognizerThread(QThread):
                     # Update the elapsed time
                     if counter:  # If there is idle
                         start_time += temp_time
-
                     self.new_time = int(time.time() - start_time) + self.old_time
                     self.elapsed_time_updated.emit(self.new_time)
 
@@ -110,7 +108,6 @@ class PostureRecognizerThread(QThread):
                     # Display the labels on the dev frame
                     label_text = f"Posture: {labels}"
                     cv2.putText(frame, label_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-
                 else:
                     if not counter:  # If not idle before
                         idle_time = time.time()
@@ -122,12 +119,10 @@ class PostureRecognizerThread(QThread):
                             temp_time = pass_time  # set temp time
                         else:
                             temp_time = 0  # reset temp time to avoid minus (line:104) if smaller then threshold
-
                 if date.today() != self.date_today:  # Reset the time if pass 12am
                     save_elapsed_time_data(self.new_time, self.date_today)
                     self.new_time = 0
                     self.old_time = self.new_time
-
                 if values.get('dev') == "True":
                     # Display the frame with pose landmarks and labels
                     cv2.imshow("Pose Landmarks", frame)
@@ -140,6 +135,7 @@ class PostureRecognizerThread(QThread):
             cap.release()
             cv2.destroyAllWindows()
             self.finished.emit(self.running)
+
         except Exception as e:
             self.error_msg.emit(str(e))
 

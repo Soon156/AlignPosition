@@ -4,7 +4,7 @@ import logging as log
 import threading
 import winreg
 
-from Funtionality.Config import key_path, app_name, exe_path, CONFIG_PATH, check_key
+from Funtionality.Config import key_path, app_name, exe_path, CONFIG_PATH
 from ParentalControl.AppUseTime import Tracking
 
 tracking_instance = Tracking()
@@ -21,12 +21,11 @@ def tracking_app_use_time():
 def stop_tracking():
     try:
         tracking_instance.update_condition()
-        use_time.join()
     except RuntimeError:
         log.warning("App time tracking ald stop")
 
 
-def write_config(dictionary_str):  # TODO change to services
+def write_config(dictionary_str):
     if dictionary_str["auto"] == "True":
         try:
             with winreg.OpenKey(winreg.HKEY_CURRENT_USER, key_path, 0, winreg.KEY_WRITE) as key:
