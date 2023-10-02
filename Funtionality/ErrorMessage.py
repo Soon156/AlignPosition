@@ -1,9 +1,12 @@
+import sys
 from PySide6 import QtWidgets, QtCore
 from PySide6.QtWidgets import QMessageBox
 
+
 def button_clicked(button):
     if button.text() == "OK":
-        print("OK button clicked")
+        sys.exit()
+        pass
 
 
 class WarningMessageBox(QtWidgets.QMainWindow):
@@ -18,5 +21,3 @@ class WarningMessageBox(QtWidgets.QMainWindow):
             message_box.setStandardButtons(QMessageBox.Ok)
             message_box.buttonClicked.connect(button_clicked)
         message_box.exec()
-
-
