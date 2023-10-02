@@ -9,13 +9,13 @@ import zroya
 from PySide6 import QtCharts
 from PySide6.QtCore import Slot, Qt, QSize
 from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox, QSizePolicy, QLineEdit, QFileDialog, \
-    QTableWidgetItem
+    QTableWidgetItem, QSystemTrayIcon, QMenu
 from PySide6.QtCharts import QBarSet, QBarSeries, QBarCategoryAxis, QChart, QChartView
-from PySide6.QtGui import QPainter, QColor, QDesktopServices, QIcon
+from PySide6.QtGui import QPainter, QColor, QDesktopServices, QIcon, QAction
 from Funtionality.Config import model_file, get_config, get_available_cameras, create_config, \
     key_file_path, desktop_path, Bad_Posture, Good_Posture, Append_Posture, Cancel_Calibrate, Capture_Posture, \
-    Model_Training, abs_logo_path, remove_all_data, reset_parental, check_key
-from Funtionality.UpdateConfig import write_config, tracking_instance
+    Model_Training, abs_logo_path, remove_all_data, check_key, reset_parental  # parental_monitoring
+from Funtionality.UpdateConfig import write_config, tracking_instance, stop_tracking, use_time
 from Funtionality.Notification import first_notify, show_break
 from ParentalControl.Auth import change_password, login_user, read_use_time, \
     read_app_use_time, user_register, save_table_data, read_table_data
@@ -31,9 +31,7 @@ from .Authorize_2 import PINDialog2
 from .OverlayWindow import OverlayWidget
 from .ui_MainMenu import Ui_MainWindow
 from .minWindow import MinWindow
-from pystray import Menu, Icon, MenuItem
-from PIL.Image import open
-import resource_rc
+import resource_rc  # DO NOT REMOVE
 
 top_side_menu = "background: #7346ad;border-top-left-radius: 25px;border-top-right-radius: 25px;"
 btm_side_menu = "background: #7346ad;border-bottom-left-radius: 25px;border-bottom-right-radius: 25px;"
@@ -42,7 +40,7 @@ choice_side_menu = "background: #7346ad;"
 
 class MainWindow(QMainWindow, Ui_MainWindow):
 
-    def __init__(self):
+    def __init__(self, background):
         super().__init__()
         # Window Attribute
         self.setupUi(self)
@@ -151,13 +149,23 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 log.info("Auto start enabled by parental control")
 
         # System tray icon
-        self.image = open(abs_logo_path)
-        self.system_icon = Icon("AlignPosition", self.image, menu=Menu(
-            MenuItem("Show", self.if_visible, default=True),
-            MenuItem("Detection", self.start_monitoring),
-            MenuItem("Exit", self.exit_app)
-        ))
-        self.system_icon.run_detached()
+        self.tray_icon = QSystemTrayIcon(self)
+        self.tray_icon.setIcon(QIcon(abs_logo_path))
+        show_action = QAction("Show", self)
+        show_action.triggered.connect(self.show)
+        detection_action = QAction("Start Detection", self)
+        detection_action.triggered.connect(self.start_monitoring)
+
+        exit_action = QAction("Exit", self)
+        exit_action.triggered.connect(self.show_authorize_win)
+
+        tray_menu = QMenu()
+        tray_menu.addAction(show_action)
+        tray_menu.addAction(detection_action)
+        tray_menu.addAction(exit_action)
+
+        self.tray_icon.setContextMenu(tray_menu)
+        self.tray_icon.show()
 
         # Init window
         self.w = None  # Small Window
@@ -168,21 +176,23 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.w3.finished.connect(self.exit_main)
         self.w3.reset.connect(self.reset_w3_control_state)
         self.w3_authorize_lock = False
-        self.w3_state = None
         self.request = None
+        self.show()
+
+        if background:
+            # Run the application in the background
+            self.hide()
 
     def reset_w3_control_state(self):
         self.w3_authorize_lock = False
-        self.w3_state = None
         self.request = None
 
     def start_parental_control_thread(self):
         self.parental_thread = ParentalTracking()
         self.parental_thread.cancel.connect(self.call_window2)
-        self.parental_thread.setParent(self)
+        self.parental_thread.setParent(self)  # set parent failed, parent on other thread Checkme
         self.parental_thread.start()
         self.parental_control_thread = True
-
     def call_window2(self):
         self.w2.PIN_line.setText("")
         self.w2.PIN_hint_lbl.hide()
@@ -320,7 +330,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             except Exception as e:
                 log.error(e)
                 QMessageBox.critical(self, "Error", f"An error occurred: {str(e)}")
-                self.exit_app()
+                self.exit_main()
             log.info("Monitoring start")
         else:
             self.posture_recognizer.stop_capture()
@@ -445,7 +455,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         msgbox = QMessageBox(self)
         msgbox.setWindowTitle('Warning')
         msgbox.setIcon(QMessageBox.Warning)
-        msgbox.setText('This action will reset the whole program and all your data will be lost!\nBackup your data first before proceeding.\n\nDo you wish to continue?')
+        msgbox.setText(
+            'This action will reset the whole program and all your data will be lost!\nBackup your data first before proceeding.\n\nDo you wish to continue?')
         msgbox.addButton('Yes', QMessageBox.YesRole)
         msgbox.addButton('No', QMessageBox.NoRole)
         result = msgbox.exec()
@@ -490,7 +501,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 except:
                     pass
                 self.preview_thread = StartPreview(index)
-                self.preview_thread.setParent(self)
+                self.preview_thread.setParent(self)  # set parent failed parent on other thread Checkme
                 self.preview_thread.error_msg.connect(self.error_handler)
                 self.preview_thread.start()
 
@@ -526,7 +537,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             except Exception as e:
                 QMessageBox.critical(self, "Error", f"An error occurred: {str(e)}")
             self.hint_lbl.setText(Capture_Posture)
-            self.calibrate_thread.setParent(self)
+            self.calibrate_thread.setParent(self)  # set parent failed parent on other thread Checkme
             self.calibrate_thread.finished.connect(self.calibrate_finished)
             self.calibrate_thread.error_msg.connect(self.error_handler)
             self.calibrate_thread.start()
@@ -548,7 +559,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if "cap.read()" in msg:
             self.change_monitoring_state(False)
             msg = "Camera in use or not available, try change camera in settings"
-        QMessageBox.warning(self, "Warning", f"An error occurred: {msg}")
+        QMessageBox.warning(self, "Warning", f"Something wrong: {msg}")
 
     def start_train(self, mode):
         self.training_thread = TrainModel(mode)
@@ -785,7 +796,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     use_timedate = data[date][app] / 60
                     total_time += use_timedate
                 temp.append(use_timedate)
-                name = f"{app}: {round(total_time,2)} m"
+                name = f"{app}: {round(total_time, 2)} m"
             bar_set = QBarSet(name)
             bar_set.append(temp)
             series.append(bar_set)
@@ -905,29 +916,22 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 write_config(var)
                 log.info("First Time Launch")
                 zroya.show(first_notify)
+            self.stop_preview()
             self.hide()
         else:
-            self.exit_app()
-
-    def exit_app(self):
-        if self.data and self.data[1]:
             self.show_authorize_win()
-        else:
-            self.exit_main()
 
     def show_authorize_win(self):
-        if not self.isVisible():
-            self.show()
-        if self.w3_state:
+        if self.data and self.data[1]:
             self.w3.PIN_line.setText("")
             self.w3.PIN_hint_lbl.hide()
             self.w3.PIN_line.setFocus()
             self.w3.show()
         else:
-            self.w3.exec()
-            self.w3_state = True
+            self.exit_main()
 
     def exit_main(self):
+        self.stop_preview()
         if self.w3_authorize_lock:
             self.w3_authorize_lock = False
             if self.request == "remove_data":
@@ -950,23 +954,38 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 except Exception as e:
                     QMessageBox.critical(self, "Failed to remove data", str(e))
         else:
-            self.destroy()  # End Main Window
+            self.hide()
+            try:
+                self.posture_recognizer.stop_capture()  # Stop posture detection
+            except:
+                pass
             try:
                 self.parental_thread.stop_parental_thread()  # Stop parental time tracking
             except:
                 pass
-            tracking_instance.update_condition()  # Stop app use time tracking
-            if self.monitoring_state:  # Stop monitoring
-                self.monitoring_state = False
-                self.posture_recognizer.stop_capture()
-            self.system_icon.stop()  # Stop system tray
+            try:
+                stop_tracking()  # Stop app use time tracking
+            except:
+                pass
+
             # Close all dialog window
             windows = [self.w, self.w1, self.w2, self.w3]
             for window in windows:
                 try:
-                    window.close()
+                    window.destroy()
                 except Exception:
                     pass
+            use_time.join()
+            try:
+                while self.parental_thread.isRunning():
+                    pass
+            except Exception:
+                pass
+            try:
+                while self.posture_recognizer.isRunning():
+                    pass
+            except Exception:
+                pass
+            self.destroy()  # End Main Window
             QApplication.exit()
             sys.exit()
-
