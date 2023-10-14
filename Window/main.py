@@ -1,6 +1,5 @@
 import os
 import sys
-import threading
 import time
 import logging as log
 from datetime import datetime
@@ -13,8 +12,10 @@ from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox, QSizePolic
 from PySide6.QtCharts import QBarSet, QBarSeries, QBarCategoryAxis, QChart, QChartView
 from PySide6.QtGui import QPainter, QColor, QDesktopServices, QIcon, QAction
 from Funtionality.Config import model_file, get_config, get_available_cameras, create_config, \
-    key_file_path, desktop_path, Bad_Posture, Good_Posture, Append_Posture, Cancel_Calibrate, Capture_Posture, \
-    Model_Training, abs_logo_path, remove_all_data, check_key, reset_parental  # parental_monitoring
+    key_file_path, desktop_path, abs_logo_path, remove_all_data, check_key, \
+    reset_parental, \
+    detection_file  # Bad_Posture, Good_Posture, Append_Posture, Cancel_Calibrate, Capture_Posture, Model_Training  #
+# parental_monitoring
 from Funtionality.UpdateConfig import write_config, tracking_instance, stop_tracking, use_time
 from Funtionality.Notification import first_notify, show_break
 from ParentalControl.Auth import change_password, login_user, read_use_time, \
@@ -22,10 +23,9 @@ from ParentalControl.Auth import change_password, login_user, read_use_time, \
 from ParentalControl.Backup_Restore import extract_zip, zip_files
 from ParentalControl.ParentalControl import ParentalTracking
 from PostureRecognize.ElapsedTime import seconds_to_hms
-from PostureRecognize.FrameProcess import temp_backup_restore
-from PostureRecognize.Model import TrainModel
-from PostureRecognize.PositionDetect import PostureRecognizerThread, read_elapsed_time_data, StartPreview, \
-    CalibrateThread
+# from PostureRecognize.FrameProcess import temp_backup_restore
+# from PostureRecognize.Model import TrainModel
+from PostureRecognize.PositionDetect import PostureRecognizerThread, read_elapsed_time_data  # StartPreview
 from .Authorize import PINDialog
 from .Authorize_2 import PINDialog2
 from .OverlayWindow import OverlayWidget
@@ -53,7 +53,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.close_btn.clicked.connect(self.close)
         self.dashboard_btn_2.clicked.connect(self.dashboard_page)
         self.parental_btn_2.clicked.connect(self.parental_page)
-        self.calibrate_btn_2.clicked.connect(self.calibration_page)
         self.settings_btn_2.clicked.connect(self.settings_page)
         self.parental_box.clicked.connect(self.update_parental_box)
 
@@ -68,15 +67,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.icon_start.addFile(u":/icon/icons8-startup.png", QSize(), QIcon.Normal, QIcon.Off)
         self.icon_stop = QIcon()
         self.icon_stop.addFile(u":/icon/icons8-shutdown-48.png", QSize(), QIcon.Normal, QIcon.Off)
-
-        # Calibrate page
-        self.recalibrate_btn.clicked.connect(lambda: self.calibrate(True))
-        self.append_btn.clicked.connect(lambda: self.calibrate(False))
-        self.proceed_btn.clicked.connect(self.capture)
-        self.cancel_btn.clicked.connect(self.cancel_ops)
-        for index, device_name in get_available_cameras().items():
-            self.calibrate_camera_box.addItem(device_name, index)
-        self.calibrate_camera_box.currentIndexChanged.connect(self.calibrate_camera_box_handler)
 
         # Settings page
         self.init_setting_page()
@@ -193,6 +183,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.parental_thread.setParent(self)  # set parent failed, parent on other thread Checkme
         self.parental_thread.start()
         self.parental_control_thread = True
+
     def call_window2(self):
         self.w2.PIN_line.setText("")
         self.w2.PIN_hint_lbl.hide()
@@ -208,14 +199,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def if_visible(self):  # Check main window visibility (tray icon)
         if self.isVisible():
-            self.stop_preview()
             self.hide()
         else:
             self.show()
 
     # Page handler
     def dashboard_page(self):
-        self.stop_preview()
         self.reset_stylesheet()
         self.a_2.setStyleSheet(top_side_menu)
         if os.path.exists(key_file_path):
@@ -228,7 +217,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.parental_page()
 
     def parental_page(self):
-        self.stop_preview()
         self.reset_stylesheet()
         self.d_2.setStyleSheet(choice_side_menu)
         self.cont_stackedwidget.setCurrentIndex(4)
@@ -246,18 +234,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.PIN_hint_lbl.hide()
         self.PIN_line.clear()
 
-    def calibration_page(self):
-        self.check_model()
-        self.reset_stylesheet()
-        self.b_2.setStyleSheet(choice_side_menu)
-        self.hint_lbl.hide()
-        self.cont_stackedwidget.setCurrentIndex(2)
-        self.proceed_btn.hide()
-        self.cancel_btn.hide()
-        self.calibrate_camera_box_handler(int(get_config().get('camera')))
-
     def settings_page(self):
-        self.stop_preview()
         self.reset_stylesheet()
         self.c_2.setStyleSheet(btm_side_menu)
         self.cont_stackedwidget.setCurrentIndex(3)
@@ -268,13 +245,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.w.show()
         self.popout_btn.setEnabled(False)
 
-    def check_model(self):  # If model file exist
+    def check_model(self):  # TODO change this
         try:
-            self.monitor_btn.clicked.disconnect(self.calibration_page)
             self.monitor_btn.clicked.disconnect(self.start_monitoring)
         except:
             pass
-        if os.path.exists(model_file):
+        if os.path.exists(model_file) and os.path.exists(detection_file):
             self.monitor_btn.setStyleSheet("")
             self.monitor_btn.clicked.connect(self.start_monitoring)
             if self.monitoring_state:
@@ -284,21 +260,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
             self.monitor_btn.setText("")
             self.popout_btn.setEnabled(True)
-            self.recalibrate_btn.setText("Recalibrate")
-            self.recalibrate_btn.show()
             self.append_btn.show()
         else:
-            log.warning("Model file not found")
-            icon = QIcon()
-            icon.addFile(u":/", QSize(), QIcon.Normal, QIcon.Off)
-            self.monitor_btn.setIcon(icon)
-            self.monitor_btn.setStyleSheet("background-color: rgb(101, 224, 206);")
-            self.monitor_btn.setText("Calibrate")
-            self.recalibrate_btn.setText("Calibrate")
+            log.warning("Model file not found")  # TODO change the response if no model
             self.popout_btn.setEnabled(False)
             self.append_btn.hide()
-            self.recalibrate_btn.show()
-            self.monitor_btn.clicked.connect(self.calibration_page)
 
     # Monitoring
     def change_monitoring_state(self, state):
@@ -313,7 +279,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         log.info("Monitoring stop")
 
     def start_monitoring(self):
-        self.stop_preview()
         if not self.monitoring_state:
             self.monitoring_state = True
             try:
@@ -356,7 +321,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.w1.change_state(posture)
 
     # Parental Control
-
     def valid_pin(self, cond=False):
         if not cond:
             if login_user(self.PIN_line.text()):
@@ -487,144 +451,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 except Exception as e:
                     QMessageBox.warning(self, "Failed", f"{str(e)}")
 
-    # Calibration
-    def calibrate_camera_box_handler(self, index):
-        self.stop_preview()
-        if not self.monitoring_state:
-            self.calibrate_camera_box.setEnabled(True)
-            self.recalibrate_btn.setEnabled(True)
-            self.append_btn.setEnabled(True)
-
-            if index != -1:
-                try:
-                    self.preview_thread.wait()
-                except:
-                    pass
-                self.preview_thread = StartPreview(index)
-                self.preview_thread.setParent(self)  # set parent failed parent on other thread Checkme
-                self.preview_thread.error_msg.connect(self.error_handler)
-                self.preview_thread.start()
-
-        else:
-            self.calibrate_camera_box.setEnabled(False)
-            self.recalibrate_btn.setEnabled(False)
-            self.append_btn.setEnabled(False)
-            self.calibrate_preview_lbl.setText("Stop the monitoring to start calibrate")
-
-    def stop_preview(self):
-        try:
-            self.preview_thread.stop_preview()
-        except:
-            pass
-
     def reset_stylesheet(self):
         self.a_2.setStyleSheet('')
         self.b_2.setStyleSheet('')
         self.c_2.setStyleSheet('')
         self.d_2.setStyleSheet('')
 
-    def capture(self):
-        if not self.is_capturing or self.hint_lbl.text() == Bad_Posture:
-            self.is_capturing = True
-            self.proceed_btn.setEnabled(False)
-            try:
-                if self.hint_lbl.text() == Good_Posture:
-                    self.calibrate_thread = CalibrateThread("good")
-                elif self.hint_lbl.text() == Bad_Posture:
-                    self.calibrate_thread = CalibrateThread("bad")
-                elif self.hint_lbl.text() == Append_Posture:
-                    self.calibrate_thread = CalibrateThread("append")
-            except Exception as e:
-                QMessageBox.critical(self, "Error", f"An error occurred: {str(e)}")
-            self.hint_lbl.setText(Capture_Posture)
-            self.calibrate_thread.setParent(self)  # set parent failed parent on other thread Checkme
-            self.calibrate_thread.finished.connect(self.calibrate_finished)
-            self.calibrate_thread.error_msg.connect(self.error_handler)
-            self.calibrate_thread.start()
-
-    def calibrate_finished(self, mode):
-        if mode != "good" and mode != "append":
-            mode = "calibrate"
-
-        if mode == "good":
-            self.hint_lbl.setText(Bad_Posture)
-            self.proceed_btn.setEnabled(True)
-        else:
-            self.hint_lbl.setText(Model_Training)
-            self.start_train(mode)
-
     def error_handler(self, msg):
-        if msg.startswith("Model accuracy too low:"):
-            self.cancel_ops(cond=True)
+        # if msg.startswith("Model accuracy too low:"):
+        # self.cancel_ops(cond=True)
         if "cap.read()" in msg:
             self.change_monitoring_state(False)
             msg = "Camera in use or not available, try change camera in settings"
         QMessageBox.warning(self, "Warning", f"Something wrong: {msg}")
-
-    def start_train(self, mode):
-        self.training_thread = TrainModel(mode)
-        self.training_thread.error_msg.connect(self.error_handler)
-        self.training_thread.finished.connect(self.train_finished)
-        self.training_thread.start()
-        self.calibrate_thread = None
-
-    def train_finished(self, arg):
-        self.recalibrate_btn.setText("Re-Calibrate")
-        self.append_btn.show()
-        if arg == "calibrate":
-            log.info("Calibrate Success")
-            self.hint_lbl.setText("Calibrate finish")
-        elif arg == "append":
-            log.info("Append Success")
-            self.hint_lbl.setText("Append finish")
-        self.check_model()
-        self.proceed_btn.hide()
-        self.proceed_btn.setEnabled(True)
-        self.cancel_btn.hide()
-        self.recalibrate_btn.show()
-        self.is_capturing = False
-        log.debug("GUI after train updated")
-
-    def calibrate(self, cond):  # False: append, True: calibrate/recalibrate
-        log.info("Calibration start")
-        try:
-            self.temp.join()
-        except:
-            pass
-        self.temp = threading.Thread(target=temp_backup_restore)
-        self.temp.start()
-        self.proceed_btn.show()
-        self.cancel_btn.show()
-        self.append_btn.hide()
-        self.recalibrate_btn.hide()
-        self.hint_lbl.show()
-        if cond:
-            self.hint_lbl.setText(Good_Posture)
-        else:
-            self.hint_lbl.setText(Append_Posture)
-
-    def cancel_ops(self, cond=None):
-        try:
-            self.temp.join()
-        except:
-            pass
-        self.training_thread = None
-        self.calibrate_thread = None
-
-        self.check_model()
-
-        self.temp = threading.Thread(target=temp_backup_restore, args=("True",))
-        self.temp.start()
-        self.proceed_btn.hide()
-        self.proceed_btn.setEnabled(True)
-        self.cancel_btn.hide()
-        self.recalibrate_btn.show()
-        self.is_capturing = False
-        if cond is None:
-            self.hint_lbl.setText(Cancel_Calibrate)
-            log.info(Cancel_Calibrate)
-        else:
-            self.hint_lbl.setText("Please try again with different posture")
 
     # Settings
     def init_setting_page(self):
@@ -916,7 +755,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 write_config(var)
                 log.info("First Time Launch")
                 zroya.show(first_notify)
-            self.stop_preview()
             self.hide()
         else:
             self.show_authorize_win()
@@ -931,7 +769,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.exit_main()
 
     def exit_main(self):
-        self.stop_preview()
         if self.w3_authorize_lock:
             self.w3_authorize_lock = False
             if self.request == "remove_data":
@@ -975,7 +812,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     window.destroy()
                 except Exception:
                     pass
-            use_time.join()
+            try:
+                use_time.join()
+            except Exception:
+                pass
+
             try:
                 while self.parental_thread.isRunning():
                     pass

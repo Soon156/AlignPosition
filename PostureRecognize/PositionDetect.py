@@ -1,60 +1,14 @@
-import os
 from datetime import date
-
+import tensorflow as tf
 import cv2
 import time
 import logging as log
-import joblib
 import numpy as np
-from PySide6.QtCore import Signal, QThread, QRunnable, QObject, QThreadPool
-from PySide6.QtGui import QImage, QPixmap
-from Funtionality.Config import get_config, temp_folder
+from PySide6.QtCore import Signal, QThread
+from Funtionality.Config import get_config
 from PostureRecognize.ElapsedTime import read_elapsed_time_data, save_elapsed_time_data
-from PostureRecognize.Model import model_file
-from PostureRecognize.FrameProcess import get_landmark, buffer_frames
-
-
-class StartPreview(QThread):
-    error_msg = Signal(str)
-
-    def __init__(self, index):
-        super().__init__()
-        self.index = index
-        self.condition = True
-
-    def run(self):
-        try:
-            self.parent().camera = cv2.VideoCapture(self.index, cv2.CAP_DSHOW)
-            while self.condition:
-
-                ret, frame = self.parent().camera.read()
-                if ret:
-                    # Flip the frame horizontally
-                    frame = cv2.flip(frame, 1)
-
-                    # Resize the frame to fit the label
-                    frame = cv2.resize(frame, (640, 360))
-
-                    # Convert the OpenCV frame to QImage
-                    rgb_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                    h, w, ch = frame.shape
-                    bytes_per_line = ch * w
-                    q_image = QImage(rgb_image.data, w, h, bytes_per_line, QImage.Format.Format_RGB888)
-
-                    # Convert the QImage to QPixmap for display
-                    pixmap = QPixmap.fromImage(q_image)
-
-                    # Set the pixmap on the image label
-                    self.parent().calibrate_preview_lbl.setPixmap(pixmap)
-                else:
-                    raise Exception("Camera read failed")
-        except Exception as e:
-            log.error(e)
-            self.error_msg.emit(str(e))
-
-    def stop_preview(self):
-        self.condition = False
-        self.parent().camera.release()
+from PostureRecognize.ExtractLandmark import extract_landmark
+from PostureRecognize.landmark_detect import LandmarkResult
 
 
 class PostureRecognizerThread(QThread):
@@ -66,7 +20,7 @@ class PostureRecognizerThread(QThread):
     def __init__(self):
         super().__init__()
         self.running = False
-        self.classifier = None
+        self.model = tf.keras.models.load_model("posture_detection_model.keras")
         self.old_time = read_elapsed_time_data()
         self.new_time = self.old_time
         self.badCount = 0
@@ -76,15 +30,23 @@ class PostureRecognizerThread(QThread):
 
     def run(self):
         try:
-            self.classifier = joblib.load(model_file)
             self.running = True
+            detector = LandmarkResult()
             # Create a VideoCapture object to capture video from the camera
             values = get_config()
             cap = cv2.VideoCapture(int(values.get('camera')), cv2.CAP_DSHOW)
             start_time = time.time()
+
+            # Control speed and calculate result
+            frame_count = 0
+            label = ""
+            results = []
+
+            # Control idle time
             idle_time = 0
             temp_time = 0
             counter = False
+
             while self.running:
                 ret, frame = cap.read()
                 frame = cv2.flip(frame, 1)
@@ -92,52 +54,90 @@ class PostureRecognizerThread(QThread):
                 if not ret:
                     log.error("Invalid video source, cap.read() failed")
                     raise Exception("cap.read() failed")
-                # Get landmark of frame
-                frame, landmark = get_landmark(frame)
-                if landmark is not None:
-                    labels = self.detect_posture(landmark)  # Get posture cat
 
-                    # Update the elapsed time
-                    if counter:  # If there is idle
-                        start_time += temp_time
-                    self.new_time = int(time.time() - start_time) + self.old_time
-                    self.elapsed_time_updated.emit(self.new_time)
+                frame_count += 1
+                if frame_count >= 25 and not counter:
+                    frame_count = 0
+                    if not len(results) == 0:
+                        average = sum(results) / len(results)
+                    else:
+                        average = 0
+                    predicted_labels = [0 if average < 0.6 else 1]
+                    results = []
 
-                    counter = False  # Reset idle flag
+                    if predicted_labels[0] == 0:
+                        label = "good"
+                    else:
+                        label = "bad"
 
-                    # Display the labels on the dev frame
-                    label_text = f"Posture: {labels}"
-                    cv2.putText(frame, label_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-                else:
-                    if not counter:  # If not idle before
-                        idle_time = time.time()
-                        counter = True
-                    else:  # If idle
-                        pass_time = int(time.time() - idle_time)
-                        # Check if the counter should be updated
-                        if pass_time >= float(values.get('idle')) * 60:  # If idle time > threshold
-                            temp_time = pass_time  # set temp time
+                elif frame_count % 5 == 0:
+                    # Get landmark of frame
+                    detector.detect_async(frame)
+                    result = detector.result
+                    try:
+                        landmark = extract_landmark(result)
+                        if landmark is not None:
+
+                            reshape_landmark = np.array(landmark).reshape(-1, 33 * 5)
+                            predictions = self.model.predict(
+                                reshape_landmark)  # Make predictions using the trained model
+                            results.append(predictions[0, 0])
+
+                            # Update the elapsed time
+                            if counter:  # If there is idle
+                                start_time += temp_time
+                            self.new_time = int(time.time() - start_time) + self.old_time
+                            self.elapsed_time_updated.emit(self.new_time)
+
+                            counter = False  # Reset idle flag
                         else:
-                            temp_time = 0  # reset temp time to avoid minus (line:104) if smaller then threshold
+                            label = "idle"
+                            if not counter:  # If not idle before
+                                idle_time = time.time()
+                                counter = True
+
+                            else:  # If idle
+                                pass_time = int(time.time() - idle_time)
+
+                                # Check if the counter should be updated
+                                if pass_time >= float(values.get('idle')) * 60:  # If idle time > threshold
+                                    temp_time = pass_time  # set temp time
+                                else:
+                                    temp_time = 0  # reset temp time to avoid minus if smaller then threshold
+                    except Exception as e:
+                        if str(e) not in ["cannot reshape array of size 1 into shape (165)",
+                                          "type object 'PoseLandmarkerResult' has no attribute 'pose_landmarks'"]:
+                            raise Exception(e)
+
+                # Display the labels on the dev frame
+                label_text = f"Posture: {label}"
+                self.update_overlay.emit(label)
+
                 if date.today() != self.date_today:  # Reset the time if pass 12am
                     save_elapsed_time_data(self.new_time, self.date_today)
                     self.new_time = 0
                     self.old_time = self.new_time
+
                 if values.get('dev') == "True":
+                    cv2.putText(frame, label_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
                     # Display the frame with pose landmarks and labels
                     cv2.imshow("Pose Landmarks", frame)
 
-                # Break the loop if 'q' is pressed
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     break
+
             self.save_usetime()
             # Release the VideoCapture and close the OpenCV windows
             cap.release()
+            detector.close()
             cv2.destroyAllWindows()
             self.finished.emit(self.running)
 
         except Exception as e:
+            log.warning(e)
             self.error_msg.emit(str(e))
+            self.stop_capture()
+            self.finished.emit(self.running)
 
     def stop_capture(self):
         self.running = False
@@ -146,119 +146,3 @@ class PostureRecognizerThread(QThread):
         save_elapsed_time_data(self.new_time, self.date_today)
         self.old_time = self.new_time
         self.total_time = 0
-
-    def detect_posture(self, landmark, threshold=65):
-        # Use the loaded model for predictions or other tasks
-        predictions = self.classifier.predict(landmark)
-
-        good_posture_count = np.count_nonzero(predictions == 0)
-        total_count = len(predictions)
-        percentage = (good_posture_count / total_count) * 100
-
-        result = "Detecting..."
-        # Determine the majority and print the result
-        if percentage >= threshold:
-            self.goodCount += 1
-            if self.goodCount >= 10:
-                result = "good"
-                self.update_overlay.emit(result)
-                self.badCount = 0
-        else:
-            self.badCount += 1
-            if self.badCount >= 10:
-                result = "bad"
-                self.update_overlay.emit(result)
-                self.goodCount = 0
-        return result
-
-
-class WorkerSignals(QObject):
-    counter = Signal()
-
-
-class CalibrateThread(QThread):
-    finished = Signal(str)
-    error_msg = Signal(str)
-
-    def __init__(self, cat):
-        super().__init__()
-        self.cat = cat
-        self.new_frame_count = 0
-        self.thread_pool = QThreadPool()
-
-    def run(self):
-        if self.cat == "append":
-            counter = 1
-            while True:
-                folder = os.path.join(temp_folder, f"append_{counter}")
-                if not os.path.exists(folder):
-                    os.makedirs(folder, exist_ok=True)
-                    break
-                counter += 1
-        else:
-            folder = os.path.join(temp_folder, self.cat)
-            # Make sure folder exists
-            os.makedirs(folder, exist_ok=True)
-
-        try:
-            # Iterate over the files in the folder
-            for file_name in os.listdir(folder):
-                file_path = os.path.join(folder, file_name)
-                os.remove(file_path)
-            log.info("Temp folder cleared")
-
-            # Create a shared counter
-            files = os.listdir(folder)
-            frame_count = len(files) + 1
-
-            try:
-                frames = buffer_frames(self.parent().camera)
-                self.parent().hint_lbl.setText("Relax yourself, processing data....")
-
-                log.debug("start pool")
-                for frame in frames:
-                    worker = ExtractLandmark(frame, folder, frame_count)
-                    worker.signals.counter.connect(self.counter_handler)
-                    frame_count += 1
-                    self.thread_pool.start(worker)
-                self.thread_pool.waitForDone()
-                log.debug("finish thread pool")
-                self.finished.emit(self.cat)
-                log.debug(self.new_frame_count)
-                if self.new_frame_count < 10:
-                    log.warning(f"Available frame count low.\nFrame_count: {self.new_frame_count}")
-                    self.error_msg.emit("Make sure your face can be clearly see in the preview window")
-                    self.new_frame_count = 0
-                log.info("Frames extraction completed")
-
-            except Exception as e:
-                self.error_msg.emit(str(e))
-                log.critical(e)
-                raise Exception
-
-        except PermissionError as e:
-            log.warning(e)
-            self.error_msg.emit(str(e))
-
-    def counter_handler(self):
-        self.new_frame_count += 1
-
-
-class ExtractLandmark(QRunnable):
-    def __init__(self, frame, folder, frame_count):
-        super().__init__()
-        self.frame = frame
-        self.folder = folder
-        self.signals = WorkerSignals()
-        self.frame_count = frame_count
-
-    def run(self):
-        threshold = 50
-        # Make exception for black image
-        mean_intensity = self.frame.mean()
-        if (255 - threshold) > mean_intensity > threshold:
-            frame, frame_landmark = get_landmark(self.frame)
-            if frame_landmark is not None:
-                frame_path = os.path.join(self.folder, f"frame_{self.frame_count}.npy")
-                np.save(frame_path, frame_landmark)
-                self.signals.counter.emit()
