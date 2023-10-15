@@ -4,7 +4,7 @@ import logging as log
 import threading
 import winreg
 
-from Funtionality.Config import key_path, app_name, exe_path, CONFIG_PATH
+from Funtionality.Config import key_path, app_name, exe_path, CONFIG_PATH, b_config
 from ParentalControl.AppUseTime import Tracking
 
 tracking_instance = Tracking()
@@ -47,9 +47,18 @@ def write_config(dictionary_str):
     else:
         stop_tracking()
     config = configparser.ConfigParser(allow_no_value=True)
+    config2 = configparser.ConfigParser(allow_no_value=True)
     config.read(CONFIG_PATH)
-    config.optionxform = str
-    config['Option'] = ast.literal_eval(str(dictionary_str))
-    with open(CONFIG_PATH, "w") as f:
-        config.write(f)
-        log.info("Config updated")
+    config2.read(b_config)
+    try:
+        if config.read(CONFIG_PATH) != config2.read(b_config):
+            config.optionxform = str
+            config['Option'] = ast.literal_eval(str(dictionary_str))
+            with open(b_config, "w") as f:
+                config.write(f)
+            with open(CONFIG_PATH, "w") as f:
+                config.write(f)
+            log.info("Config updated")
+    except:
+        log.info("No changed in config")
+        pass

@@ -46,7 +46,6 @@ except Exception as e:
 
 
 def cancel_handler(nid, action_id):
-    print("cancel handler")
     global cancel_signal, cancel_condition
     cancel_signal = True
     cancel_condition = True

@@ -13,7 +13,7 @@ def read_elapsed_time_data():
             elapsed_time = int(rows[0][1])
     except FileNotFoundError:
         log.warning("Usage time record not found.")
-    except Exception as e:
+    except:
         pass
     return elapsed_time
 

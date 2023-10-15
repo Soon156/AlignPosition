@@ -7,7 +7,7 @@ from datetime import datetime
 import zroya
 from PySide6 import QtCharts
 from PySide6.QtCore import Slot, Qt, QSize
-from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox, QSizePolicy, QLineEdit,\
+from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox, QSizePolicy, QLineEdit, \
     QTableWidgetItem, QSystemTrayIcon, QMenu
 from PySide6.QtCharts import QBarSet, QBarSeries, QBarCategoryAxis, QChart, QChartView
 from PySide6.QtGui import QPainter, QColor, QDesktopServices, QIcon, QAction
@@ -58,6 +58,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.use_time_btn.clicked.connect(self.show_chart)
         self.use_time_btn.setText("Program Use Time")
         self.refresh_chart_btn.clicked.connect(lambda: self.show_chart(True))
+        self.monitor_btn.clicked.connect(self.start_monitoring)
 
         # for monitoring button
         self.icon_start = QIcon()
@@ -140,7 +141,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.tray_icon.setIcon(QIcon(abs_logo_path))
         show_action = QAction("Show", self)
         show_action.triggered.connect(self.show)
-        detection_action = QAction("Start Detection", self)
+
+        detection_action = QAction("Detection", self)
         detection_action.triggered.connect(self.start_monitoring)
 
         exit_action = QAction("Exit", self)
@@ -166,12 +168,22 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.w4 = ParentalDialog(self)  # Parental Setting
         self.request = None
         self.show()
+
         if self.warning_msg is not None:
             QMessageBox.critical(self, "Error", f"{self.warning_msg}, reset your parental control setting or restore "
                                                 f"from a backup")
+
         if background:
             # Run the application in the background
             self.hide()
+
+        try:
+            data = read_table_data()
+            values = get_config()
+            if (data and data[1]) or values.get('monitoring') == "True":  # TODO add entry
+                self.start_monitoring()
+        except Exception as msg:
+            self.warning_msg = msg
 
     def reset_w3_control_state(self):
         self.w3_authorize_lock = False
@@ -247,27 +259,24 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     # Monitoring
     def change_monitoring_state(self, state):
         self.monitoring_state = state
-        self.monitor_btn.setIcon(self.icon_start)
-        self.w1.hide()
-        try:
-            self.w.start_btn.show()
-            self.w.stop_btn.hide()
-        except:
-            pass
-        log.info("Monitoring stop")
-
-    def start_monitoring(self):
-        if not self.monitoring_state:
-            self.monitoring_state = True
+        if not state:
+            self.monitor_btn.setIcon(self.icon_start)
+            self.w1.hide()
+            try:
+                self.w.start_btn.show()
+                self.w.stop_btn.hide()
+            except:
+                pass
+            log.info("Monitoring stop")
+        else:
+            self.monitor_btn.setIcon(self.icon_stop)
+            if self.values['overlay_enable'] == "True":
+                self.w1.show()
             try:
                 self.w.start_btn.hide()
                 self.w.stop_btn.show()
             except:
                 pass
-            self.monitor_btn.setIcon(self.icon_stop)
-            self.start_time = time.time()
-            if self.values['overlay_enable'] == "True":
-                self.w1.show()
             try:
                 self.posture_recognizer.start()
             except Exception as e:
@@ -275,8 +284,26 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 QMessageBox.critical(self, "Error", f"An error occurred: {str(e)}")
                 self.exit_main()
             log.info("Monitoring start")
+
+    def start_monitoring(self):
+        if not self.monitoring_state:
+            self.change_monitoring_state(True)
+            self.start_time = time.time()
         else:
-            self.posture_recognizer.stop_capture()
+            try:
+                data = read_table_data()
+                values = get_config()
+                if data and data[1]:
+                    if self.login_state:
+                        self.posture_recognizer.stop_capture()
+                    else:
+                        self.w3_authorize_lock = True
+                        self.request = "stop_monitor"
+                        self.show_authorize_win()
+                if (data and data[1]) or values.get('monitoring') == "True":
+                    self.start_monitoring()
+            except Exception as msg:
+                self.warning_msg = msg
 
     @Slot(int)
     def update_elapsed_time_label(self, elapsed_time):
@@ -325,7 +352,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.parental_box.setChecked(False)
         try:
             data = read_table_data()
-        except Exception as msg:
+        except:
             data = None
         if data:
             if data[1]:
@@ -378,11 +405,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.d_2.setStyleSheet('')
 
     def error_handler(self, msg):
-        # if msg.startswith("Model accuracy too low:"):
-        # self.cancel_ops(cond=True)
-        if "cap.read()" in msg:
-            self.change_monitoring_state(False)
-            msg = "Camera in use or not available, try change camera in settings"
         QMessageBox.warning(self, "Warning", f"Something wrong: {msg}")
 
     # Settings
@@ -735,6 +757,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     self.reinit_parental_table()
                 except Exception as e:
                     QMessageBox.critical(self, "Failed to remove data", str(e))
+            elif self.request == "stop_monitor":
+                self.posture_recognizer.stop_capture()
         else:
             self.hide()
             try:

@@ -11,6 +11,7 @@ import logging as log
 
 msg = "User parental use time file modified/corrupted"
 
+
 def user_register(password):
     key, salt = generate_password_derived_key(password)
     save_derived_key(key, salt)
@@ -89,7 +90,6 @@ def change_password(old_password, new_password):
 
 
 def write_use_time(data):
-
     key, salt = retrieve_key_salt()
     if key is not None:
         pickled_row = pickle.dumps(data)

@@ -34,7 +34,7 @@ def get_registry_value(key=winreg.HKEY_CURRENT_USER, subkey="SOFTWARE\Align Posi
         with winreg.OpenKey(key, subkey) as registry_key:
             value, _ = winreg.QueryValueEx(registry_key, value_name)
             return value
-    except Exception as e:
+    except:
         library_in_production = os.path.dirname(package_folder)
         return library_in_production
 
@@ -47,8 +47,8 @@ app_folder = os.path.join(appdata_path, 'AlignPosition')
 log_folder = os.path.join(app_folder, 'logs')
 model_file = 'posture_detection_model.keras'
 detection_file = 'pose_landmarker_full.task'
-oldTemp_folder = os.path.join(app_folder, 'old_temps')
 temp_folder = os.path.join(app_folder, 'temps')
+b_config = os.path.join(temp_folder, 'config_old.ini')
 userdata = os.path.join(app_folder, 'usr_data.bin')
 app_use_time_file = f"use_time_{current_month:02d}_{current_year}.bin"
 app_use_time = os.path.join(app_folder, app_use_time_file)
@@ -73,7 +73,6 @@ exe_path = os.path.join(install_path, "AlignPosition.exe --background")  # Produ
 os.makedirs(app_folder, exist_ok=True)
 os.makedirs(log_folder, exist_ok=True)
 os.makedirs(temp_folder, exist_ok=True)
-os.makedirs(oldTemp_folder, exist_ok=True)
 os.makedirs(os.path.dirname(key_file_path), exist_ok=True)  # Create the directory if it doesn't exist
 
 # LOGGING
@@ -105,6 +104,7 @@ DEFAULT_VAL = {
     'overlay': "Right",
     'overlay_enable': True,
     'auto': True,
+    'monitoring': True,
     'init': True,
     'dev': False
 }
@@ -238,10 +238,32 @@ def get_config():
         check_condition()
     except Exception as e:
         log.warning(e)
-        create_config()
+        try:
+            restore_config()
+            check_condition()
+        except:
+            log.warning("Config restore failed")
+            create_config()
     finally:
         var = read_config()
         return var
+
+
+def restore_config():  # CHECKME
+    if os.path.exists(b_config):
+        log.warning("Backup config found")
+        config = configparser.ConfigParser(allow_no_value=True)
+        config.read(b_config)
+        config_dict = dict(config['Option'])
+
+        config['Option'] = config_dict
+        with open(CONFIG_PATH, "w") as f:
+            config.write(f)
+        log.warning("Config Restore")
+
+    else:
+        log.warning("No backup config found")
+        create_config()
 
 
 # check config condition
@@ -261,10 +283,11 @@ def check_condition():
         f = values.get('app_tracking') == 'True' or values.get('app_tracking') == 'False'
         g = values.get('overlay') == 'Right' or values.get('overlay') == 'Left'
         h = values.get('overlay_enable') == 'True' or values.get('overlay_enable') == 'False'
-        if not (a and b and c and e and f and g and h and float(values.get('rest')) >= 1):
+        i = values.get('monitoring') == 'True' or values.get('monitoring') == 'False'
+        if not (a and b and c and e and f and g and h and i and float(values.get('rest')) >= 1):
             raise Exception("Invalid config value")
     except Exception as e:
-        log.warning(e)
+        raise Exception(e)
 
 
 def check_key():
