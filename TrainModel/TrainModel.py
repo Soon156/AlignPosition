@@ -1,13 +1,13 @@
 import math
-from concurrent.futures import ThreadPoolExecutor
-import tensorflow as tf
-from sklearn.model_selection import train_test_split
-import numpy as np
-from sklearn.utils import compute_class_weight
 import os
+from concurrent.futures import ThreadPoolExecutor
+from tensorflow.keras.callbacks import EarlyStopping
 import mediapipe as mp
-
+import numpy as np
+import tensorflow as tf
 from PostureRecognize.ExtractLandmark import extract_landmark
+from sklearn.model_selection import train_test_split
+from sklearn.utils import compute_class_weight
 
 
 def preprocess_img(epoch=100, batch_size=12):
@@ -62,7 +62,7 @@ def process_img(folder_path):
 
 
 def train_model(good_landmark, bad_landmark, batch_size, epoch=60, num_landmarks=33,
-                num_features_per_landmark=5):  # TODO automatic epoch
+                num_features_per_landmark=5):
     # Reshape the array to have the shape (number_of_samples, number_of_landmarks * number_of_features_per_landmark)
     # In your case, it would be (number_of_samples, 33 * 5)
     landmarks_good = good_landmark.reshape(-1, num_landmarks * num_features_per_landmark)
@@ -90,6 +90,8 @@ def train_model(good_landmark, bad_landmark, batch_size, epoch=60, num_landmarks
     # Compile the model
     model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
+    early_stopping = EarlyStopping(monitor='val_loss', patience=10, restore_best_weights=True)
+
     """cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath="training_1/cp.ckpt",
                                                      save_weights_only=True,
                                                      verbose=1,
@@ -101,7 +103,7 @@ def train_model(good_landmark, bad_landmark, batch_size, epoch=60, num_landmarks
 
     # Train the model
     model.fit(X_train, y_train, epochs=epoch, batch_size=batch_size,
-              validation_data=(X_test, y_test), class_weight=weights)  # callbacks=[cp_callback]
+              validation_data=(X_test, y_test), class_weight=weights, callbacks=[early_stopping])
 
     # Evaluate the model
     test_loss, test_accuracy = model.evaluate(X_test, y_test)
@@ -110,4 +112,4 @@ def train_model(good_landmark, bad_landmark, batch_size, epoch=60, num_landmarks
     model.save("..\posture_detection_model.keras")
 
 
-preprocess_img()
+preprocess_img(epoch=999, batch_size=12)

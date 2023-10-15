@@ -5,10 +5,10 @@ import time
 import logging as log
 import numpy as np
 from PySide6.QtCore import Signal, QThread
-from Funtionality.Config import get_config
+from Funtionality.Config import get_config, abs_model_file_path
 from PostureRecognize.ElapsedTime import read_elapsed_time_data, save_elapsed_time_data
 from PostureRecognize.ExtractLandmark import extract_landmark
-from PostureRecognize.landmark_detect import LandmarkResult
+from PostureRecognize.Prediction import LandmarkResult
 
 
 class PostureRecognizerThread(QThread):
@@ -20,7 +20,7 @@ class PostureRecognizerThread(QThread):
     def __init__(self):
         super().__init__()
         self.running = False
-        self.model = tf.keras.models.load_model("posture_detection_model.keras")
+        self.model = tf.keras.models.load_model(abs_model_file_path)
         self.old_time = read_elapsed_time_data()
         self.new_time = self.old_time
         self.badCount = 0

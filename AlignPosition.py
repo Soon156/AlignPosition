@@ -1,11 +1,10 @@
 import sys
 import argparse
 from PySide6 import QtWidgets
-from Funtionality.Config import check_key, check_logo
+from Funtionality.Config import check_key, check_logo, check_model, get_config, check_process, clear_log
 from Funtionality.ErrorMessage import WarningMessageBox
 from Funtionality.UpdateConfig import tracking_app_use_time
 from Window.main import MainWindow
-from Funtionality.Config import get_config, check_process, clear_log
 
 
 def main(background):
@@ -14,7 +13,7 @@ def main(background):
     # Create the application instance
     app = QtWidgets.QApplication(sys.argv)
 
-    if check_logo():
+    if check_logo() and check_model():
         if not check_process():
             get_config()
             clear_log()
@@ -34,7 +33,7 @@ def main(background):
             widget = WarningMessageBox(title, hint, error)
     else:
         title = "Error"
-        hint = "Missing Icon Resources, reinstall the application"
+        hint = "Missing Critical Resources, please reinstall the application"
         error = "File Not Found"
         widget = WarningMessageBox(title, hint, error)
 

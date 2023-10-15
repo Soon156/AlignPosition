@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="icon">
+    <file>icons8-control-48.png</file>
     <file>icons8-reset-48.png</file>
     <file>icons8-info-48.png</file>
     <file>access-title-resize.png</file>

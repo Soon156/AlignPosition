@@ -9,6 +9,7 @@ from cryptography.hazmat.primitives import hashes
 from Funtionality.Config import key_file_path, salt_file_path, userdata, app_use_time, allow_use_time
 import logging as log
 
+msg = "User parental use time file modified/corrupted"
 
 def user_register(password):
     key, salt = generate_password_derived_key(password)
@@ -77,15 +78,18 @@ def change_password(old_password, new_password):
     if login_user(old_password):  # Verify old password
         data1 = read_use_time()
         data = read_app_use_time()
+        table = read_table_data()
         user_register(new_password)
         write_app_use_time(data)
         write_use_time(data1)
+        save_table_data(table)
         log.info("Password changed")
         return True
     return False
 
 
 def write_use_time(data):
+
     key, salt = retrieve_key_salt()
     if key is not None:
         pickled_row = pickle.dumps(data)
@@ -109,7 +113,8 @@ def read_use_time():
                 unpicked_row = pickle.loads(decrypted_data)
 
         except pickle.UnpicklingError:
-            log.error("User file modified/corrupted")
+            log.error(msg)
+            raise Exception(msg)
         except FileNotFoundError:
             log.warning("No use time record found")
     return unpicked_row
@@ -188,7 +193,8 @@ def read_table_data():
                 unpicked_row = pickle.loads(decrypted_data)
 
         except pickle.UnpicklingError:
-            log.error("User file modified/corrupted")
+            log.error(msg)
+            raise Exception(msg)
         except FileNotFoundError:
             log.warning("No table data found")
     return unpicked_row

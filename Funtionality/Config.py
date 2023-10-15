@@ -45,7 +45,8 @@ overlay_logo_path = "Resources\overlay-pic.png"
 appdata_path = os.getenv('APPDATA')
 app_folder = os.path.join(appdata_path, 'AlignPosition')
 log_folder = os.path.join(app_folder, 'logs')
-model_file = os.path.join(app_folder, 'trained_model.joblib')
+model_file = 'posture_detection_model.keras'
+detection_file = 'pose_landmarker_full.task'
 oldTemp_folder = os.path.join(app_folder, 'old_temps')
 temp_folder = os.path.join(app_folder, 'temps')
 userdata = os.path.join(app_folder, 'usr_data.bin')
@@ -58,6 +59,8 @@ install_path = get_registry_value()
 
 abs_logo_path = os.path.join(install_path, logo_path)
 abs_overlay_pic_path = os.path.join(install_path, overlay_logo_path)
+abs_model_file_path = os.path.join(install_path, model_file)
+abs_detection_file_path = os.path.join(install_path, detection_file)
 hidden_file_path = os.path.expanduser('~/.AlignPosition')
 key_file_path = os.path.expanduser('~/.AlignPosition/user.key')
 salt_file_path = os.path.expanduser('~/.AlignPosition/salt.bin')
@@ -144,6 +147,13 @@ def check_process():
 
 def check_logo():
     if os.path.exists(abs_logo_path) and os.path.exists(abs_overlay_pic_path):
+        return True
+    else:
+        return False
+
+
+def check_model():
+    if os.path.exists(abs_model_file_path) and os.path.exists(abs_detection_file_path):
         return True
     else:
         return False

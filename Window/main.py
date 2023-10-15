@@ -7,28 +7,24 @@ from datetime import datetime
 import zroya
 from PySide6 import QtCharts
 from PySide6.QtCore import Slot, Qt, QSize
-from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox, QSizePolicy, QLineEdit, QFileDialog, \
+from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox, QSizePolicy, QLineEdit,\
     QTableWidgetItem, QSystemTrayIcon, QMenu
 from PySide6.QtCharts import QBarSet, QBarSeries, QBarCategoryAxis, QChart, QChartView
 from PySide6.QtGui import QPainter, QColor, QDesktopServices, QIcon, QAction
-from Funtionality.Config import model_file, get_config, get_available_cameras, create_config, \
-    key_file_path, desktop_path, abs_logo_path, remove_all_data, check_key, \
-    reset_parental, \
-    detection_file  # Bad_Posture, Good_Posture, Append_Posture, Cancel_Calibrate, Capture_Posture, Model_Training  #
+from Funtionality.Config import get_config, get_available_cameras, create_config, \
+    key_file_path, abs_logo_path, remove_all_data, check_key, reset_parental
 # parental_monitoring
 from Funtionality.UpdateConfig import write_config, tracking_instance, stop_tracking, use_time
 from Funtionality.Notification import first_notify, show_break
 from ParentalControl.Auth import change_password, login_user, read_use_time, \
     read_app_use_time, user_register, save_table_data, read_table_data
-from ParentalControl.Backup_Restore import extract_zip, zip_files
 from ParentalControl.ParentalControl import ParentalTracking
 from PostureRecognize.ElapsedTime import seconds_to_hms
-# from PostureRecognize.FrameProcess import temp_backup_restore
-# from PostureRecognize.Model import TrainModel
 from PostureRecognize.PositionDetect import PostureRecognizerThread, read_elapsed_time_data  # StartPreview
 from .Authorize import PINDialog
 from .Authorize_2 import PINDialog2
 from .OverlayWindow import OverlayWidget
+from .ParentalWindow import ParentalDialog
 from .ui_MainMenu import Ui_MainWindow
 from .minWindow import MinWindow
 import resource_rc  # DO NOT REMOVE
@@ -55,6 +51,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.parental_btn_2.clicked.connect(self.parental_page)
         self.settings_btn_2.clicked.connect(self.settings_page)
         self.parental_box.clicked.connect(self.update_parental_box)
+        self.warning_msg = None
 
         # Dashboard page
         self.popout_btn.clicked.connect(self.min_window)
@@ -88,11 +85,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.PIN_line.returnPressed.connect(self.PIN_btn.click)
 
         # Parental page
-        self.changePIN_btn.clicked.connect(self.change_pin_page)
-        self.exct_data_btn.clicked.connect(self.extract_data)
-        self.restore_btn.clicked.connect(self.restore_data)
         self.usetime_btn.clicked.connect(self.handle_submit)
-        self.reset_parental_btn.clicked.connect(self.reset_parental_settings)
+        self.parental_setting_btn.clicked.connect(self.call_parental_dialog)
 
         for day in range(7):  # Init table cell
             for hour in range(24):
@@ -128,8 +122,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.parental_thread = None
         self.parental_control_thread = False
         self.latest_usetime = read_elapsed_time_data()  # Get track on total use time
-
-        self.data = read_table_data()  # Retrieve computer access time data
+        try:
+            self.data = read_table_data()  # Retrieve computer access time data
+        except Exception as msg:
+            self.data = None
+            self.warning_msg = msg
         if self.data and self.data[1]:  # Check is the tracking data exist and is it enabled
             self.start_parental_control_thread()
             # Check condition state
@@ -161,14 +158,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.w = None  # Small Window
         self.w1 = OverlayWidget()  # PopOut Window
         self.w1.setScreen(self.screen())
-        self.w2 = PINDialog()
-        self.w3 = PINDialog2()
+        self.w2 = PINDialog()  # authorize window call by notification
+        self.w3 = PINDialog2()  # authorize window call normal operation
         self.w3.finished.connect(self.exit_main)
         self.w3.reset.connect(self.reset_w3_control_state)
         self.w3_authorize_lock = False
+        self.w4 = ParentalDialog(self)  # Parental Setting
         self.request = None
         self.show()
-
+        if self.warning_msg is not None:
+            QMessageBox.critical(self, "Error", f"{self.warning_msg}, reset your parental control setting or restore "
+                                                f"from a backup")
         if background:
             # Run the application in the background
             self.hide()
@@ -179,8 +179,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def start_parental_control_thread(self):
         self.parental_thread = ParentalTracking()
-        self.parental_thread.cancel.connect(self.call_window2)
         self.parental_thread.setParent(self)  # set parent failed, parent on other thread Checkme
+        self.parental_thread.cancel.connect(self.call_window2)
         self.parental_thread.start()
         self.parental_control_thread = True
 
@@ -212,23 +212,22 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.use_time_lbl.setText(seconds_to_hms(read_elapsed_time_data()))
             self.tut_chart()
             self.use_time_btn.setText("Program Use Time")
-            self.check_model()
         else:
             self.parental_page()
 
     def parental_page(self):
         self.reset_stylesheet()
         self.d_2.setStyleSheet(choice_side_menu)
-        self.cont_stackedwidget.setCurrentIndex(4)
+        self.cont_stackedwidget.setCurrentIndex(3)  # Authentic page
         if self.login_state:
             self.valid_pin(True)
         else:
             if os.path.exists(key_file_path):
-                self.PIN_stackedwidget.setCurrentIndex(1)
+                self.PIN_stackedwidget.setCurrentIndex(1)  # Parental page
                 self.change_PIN_btn.clicked.connect(self.change_pin)
             else:
                 self.OldPINFrame.hide()
-                self.PIN_stackedwidget.setCurrentIndex(0)
+                self.PIN_stackedwidget.setCurrentIndex(0)  # Go back to dashboard (new user & change psw)
                 self.change_PIN_btn.clicked.connect(lambda: self.change_pin(True))
         self.change_PIN_hint_lbl.hide()
         self.PIN_hint_lbl.hide()
@@ -237,34 +236,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def settings_page(self):
         self.reset_stylesheet()
         self.c_2.setStyleSheet(btm_side_menu)
-        self.cont_stackedwidget.setCurrentIndex(3)
+        self.cont_stackedwidget.setCurrentIndex(2)  # Setting page
         self.init_setting_page()
 
     def min_window(self):
         self.w = MinWindow(self)  # Small Window
         self.w.show()
         self.popout_btn.setEnabled(False)
-
-    def check_model(self):  # TODO change this
-        try:
-            self.monitor_btn.clicked.disconnect(self.start_monitoring)
-        except:
-            pass
-        if os.path.exists(model_file) and os.path.exists(detection_file):
-            self.monitor_btn.setStyleSheet("")
-            self.monitor_btn.clicked.connect(self.start_monitoring)
-            if self.monitoring_state:
-                self.monitor_btn.setIcon(self.icon_stop)
-            else:
-                self.monitor_btn.setIcon(self.icon_start)
-
-            self.monitor_btn.setText("")
-            self.popout_btn.setEnabled(True)
-            self.append_btn.show()
-        else:
-            log.warning("Model file not found")  # TODO change the response if no model
-            self.popout_btn.setEnabled(False)
-            self.append_btn.hide()
 
     # Monitoring
     def change_monitoring_state(self, state):
@@ -335,7 +313,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if cond:
             self.reinit_parental_table()
             self.update_parental_box()
-            self.cont_stackedwidget.setCurrentIndex(1)
+            self.cont_stackedwidget.setCurrentIndex(1)  # Parental page
 
     def update_parental_box(self):
         if self.parental_box.isChecked():
@@ -343,13 +321,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             self.parental_box.setText("Parental Control Deactivated")
 
-    def reinit_parental_table(self, use_time=8):
+    def reinit_parental_table(self, elapsed_time=8):
         self.parental_box.setChecked(False)
-        data = read_table_data()
+        try:
+            data = read_table_data()
+        except Exception as msg:
+            data = None
         if data:
             if data[1]:
                 self.parental_box.setChecked(True)
-            use_time = data[0]
+            elapsed_time = data[0]
             for day, hour in data[2:]:
                 table_item = self.usetime_table.item(day, hour)
                 table_item.setBackground(QColor(220, 20, 60))
@@ -358,7 +339,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 for hour in range(24):
                     table_item = self.usetime_table.item(day, hour)
                     table_item.setBackground(QColor(0, 0, 0, 0))
-        self.usetime_box.setValue(use_time)
+        self.usetime_box.setValue(elapsed_time)
 
     def change_pin(self, cond=False):  # True: create new PIN for first time user
         old = self.old_PIN_line.text()
@@ -388,72 +369,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.change_PIN_hint_lbl.setText("Fill in the blank")
             self.change_PIN_hint_lbl.show()
 
-    def change_pin_page(self):
-        self.cont_stackedwidget.setCurrentIndex(4)
-        self.PIN_stackedwidget.setCurrentIndex(0)
-
-    def extract_data(self):
-        path = os.path.join(desktop_path, "Use_Time_Extract.zip")
-        zip_files(path)
-        QMessageBox.information(self, "Success", f"Use time extract to {path}")
-
-    def reset_config(self):
-        create_config()
-        self.init_setting_page()
-
-    def reset_parental_settings(self):
-        msgbox = QMessageBox(self)
-        msgbox.setWindowTitle('Warning')
-        msgbox.setIcon(QMessageBox.Warning)
-        msgbox.setText('This action remove and reset all you parental control settings\nDo you wish to continue?')
-        msgbox.addButton('Yes', QMessageBox.YesRole)
-        msgbox.addButton('No', QMessageBox.NoRole)
-        result = msgbox.exec()
-
-        if result == 0:
-            self.w3_authorize_lock = True
-            self.request = "reset_parental_settings"
-            self.show_authorize_win()
-
-    def remove_data(self):
-        msgbox = QMessageBox(self)
-        msgbox.setWindowTitle('Warning')
-        msgbox.setIcon(QMessageBox.Warning)
-        msgbox.setText(
-            'This action will reset the whole program and all your data will be lost!\nBackup your data first before proceeding.\n\nDo you wish to continue?')
-        msgbox.addButton('Yes', QMessageBox.YesRole)
-        msgbox.addButton('No', QMessageBox.NoRole)
-        result = msgbox.exec()
-
-        if result == 0:
-            self.w3_authorize_lock = True
-            self.request = "remove_data"
-            self.show_authorize_win()
-
-    def restore_data(self):
-        msgbox = QMessageBox(self)
-        msgbox.setWindowTitle('Warning')
-        msgbox.setIcon(QMessageBox.Warning)
-        msgbox.setText('This action will overwrite the exist data\nDo you wish to continue?')
-        msgbox.addButton('Yes', QMessageBox.YesRole)
-        msgbox.addButton('No', QMessageBox.NoRole)
-        result = msgbox.exec()
-        if result == 0:
-            file_path, type = QFileDialog.getOpenFileName(self, "Open File", "", "(*.zip)")
-            if file_path != "":
-                try:
-                    extract_zip(file_path)
-                    data = read_table_data()
-                    self.reinit_parental_table()
-                    if data and data[1]:
-                        self.start_parental_control_thread()
-                    QMessageBox.information(self, "Success", "Data restored successfully")
-                except Exception as e:
-                    QMessageBox.warning(self, "Failed", f"{str(e)}")
+    def call_parental_dialog(self):
+        self.w4.show()
 
     def reset_stylesheet(self):
         self.a_2.setStyleSheet('')
-        self.b_2.setStyleSheet('')
         self.c_2.setStyleSheet('')
         self.d_2.setStyleSheet('')
 
@@ -468,7 +388,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     # Settings
     def init_setting_page(self):
         values = get_config()
-        data = read_table_data()
+        try:
+            data = read_table_data()
+        except Exception as msg:
+            data = None
+            self.warning_msg = msg
+
         # Set value from config
         if values.get('background') == "True":
             self.background_box.setChecked(True)
@@ -561,6 +486,26 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self.w1.win_geometry()
             except:
                 pass
+
+    def remove_data(self):
+        msgbox = QMessageBox(self)
+        msgbox.setWindowTitle('Warning')
+        msgbox.setIcon(QMessageBox.Warning)
+        msgbox.setText(
+            'This action will reset the whole program and all your data will be lost!\nBackup your data first before '
+            'proceeding.\n\nDo you wish to continue?')
+        msgbox.addButton('Yes', QMessageBox.YesRole)
+        msgbox.addButton('No', QMessageBox.NoRole)
+        result = msgbox.exec()
+
+        if result == 0:
+            self.w3_authorize_lock = True
+            self.request = "remove_data"
+            self.show_authorize_win()
+
+    def reset_config(self):
+        create_config()
+        self.init_setting_page()
 
     # Chart list
     def tut_chart(self):
@@ -806,7 +751,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 pass
 
             # Close all dialog window
-            windows = [self.w, self.w1, self.w2, self.w3]
+            windows = [self.w, self.w1, self.w2, self.w3, self.w4]
             for window in windows:
                 try:
                     window.destroy()

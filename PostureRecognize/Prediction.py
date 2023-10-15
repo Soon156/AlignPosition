@@ -1,6 +1,8 @@
 import time
 import mediapipe as mp
 
+from Funtionality.Config import abs_detection_file_path
+
 
 class LandmarkResult:
     def __init__(self):
@@ -13,9 +15,8 @@ class LandmarkResult:
         def update_result(result: mp.tasks.vision.PoseLandmarkerResult, output_image: mp.Image, timestamp_ms: int):
             self.result = result
 
-        # TODO add entry for model in config
         options = mp.tasks.vision.PoseLandmarkerOptions(
-            base_options=mp.tasks.BaseOptions(model_asset_path='pose_landmarker_heavy.task'),
+            base_options=mp.tasks.BaseOptions(model_asset_path=abs_detection_file_path),
             running_mode=mp.tasks.vision.RunningMode.LIVE_STREAM,
             result_callback=update_result)
 
