@@ -732,6 +732,18 @@ background: #a200ff;
                        </item>
                        <item alignment="Qt::AlignHCenter">
                         <widget class="QPushButton" name="use_time_btn">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="minimumSize">
+                          <size>
+                           <width>125</width>
+                           <height>0</height>
+                          </size>
+                         </property>
                          <property name="styleSheet">
                           <string notr="true"/>
                          </property>

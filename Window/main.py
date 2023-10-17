@@ -180,7 +180,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         try:
             data = read_table_data()
             values = get_config()
-            if (data and data[1]) or values.get('monitoring') == "True":
+            if ((data and data[1]) or values.get('monitoring') == "True") and check_key():
                 self.start_monitoring()
         except Exception as e:
             self.error_handler(e)
@@ -403,6 +403,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.change_PIN_hint_lbl.show()
 
     def call_parental_dialog(self):
+        self.w4.init_btn()
         self.w4.show()
 
     def reset_stylesheet(self):
@@ -735,6 +736,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.data = selected_cells
             if self.parental_box.isChecked():
                 self.values['auto'] = "True"
+                self.values['monitoring'] = "True"
                 write_config(self.values)
                 self.values = get_config()
                 if not self.parental_control_thread:
