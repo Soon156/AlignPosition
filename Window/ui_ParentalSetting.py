@@ -15,8 +15,8 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QDialog, QFrame, QPushButton,
-    QSizePolicy, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QCheckBox, QDialog, QFrame,
+    QPushButton, QSizePolicy, QVBoxLayout, QWidget)
 import resource_rc
 
 class Ui_Dialog(object):
@@ -27,7 +27,8 @@ class Ui_Dialog(object):
         icon = QIcon()
         icon.addFile(u":/icon/logo.ico", QSize(), QIcon.Normal, QIcon.Off)
         Dialog.setWindowIcon(icon)
-        Dialog.setStyleSheet(u"#Dialog {background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 rgb(26, 16, 57), stop:0.5 rgb(41, 14, 47), stop:1 rgb(26, 16, 57))}")
+        Dialog.setStyleSheet(u"#Dialog {background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 rgb(26, 16, 57), stop:0.5 rgb(41, 14, 47), stop:1 rgb(26, 16, 57))}\n"
+"")
         self.verticalLayout = QVBoxLayout(Dialog)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.ButtonFrame_2 = QFrame(Dialog)
@@ -44,6 +45,28 @@ class Ui_Dialog(object):
         self.verticalLayout_2 = QVBoxLayout(self.ButtonFrame_2)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.verticalLayout_2.setContentsMargins(-1, 0, -1, 0)
+        self.monitor_setting_box = QCheckBox(self.ButtonFrame_2)
+        self.monitor_setting_box.setObjectName(u"monitor_setting_box")
+        self.monitor_setting_box.setStyleSheet(u"QCheckBox {\n"
+"    spacing: 10px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator {\n"
+"    width: 24px;\n"
+"    height: 24px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked {\n"
+"    image: url(:/icon/icons8-toggle-off-48.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked {\n"
+"    image: url(:/icon/icons8-toggle-on-48.png);\n"
+"}\n"
+"")
+
+        self.verticalLayout_2.addWidget(self.monitor_setting_box)
+
         self.reset_parental_btn = QPushButton(self.ButtonFrame_2)
         self.reset_parental_btn.setObjectName(u"reset_parental_btn")
         self.reset_parental_btn.setMinimumSize(QSize(130, 0))
@@ -106,6 +129,7 @@ class Ui_Dialog(object):
 
     def retranslateUi(self, Dialog):
         Dialog.setWindowTitle(QCoreApplication.translate("Dialog", u"Parental Settings", None))
+        self.monitor_setting_box.setText(QCoreApplication.translate("Dialog", u"Monitor", None))
         self.reset_parental_btn.setText(QCoreApplication.translate("Dialog", u"Reset", None))
         self.restore_btn.setText(QCoreApplication.translate("Dialog", u"Restore Data", None))
         self.exct_data_btn.setText(QCoreApplication.translate("Dialog", u"Extract All Data", None))

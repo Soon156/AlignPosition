@@ -18,7 +18,8 @@
     <normaloff>:/icon/logo.ico</normaloff>:/icon/logo.ico</iconset>
   </property>
   <property name="styleSheet">
-   <string notr="true">#Dialog {background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 rgb(26, 16, 57), stop:0.5 rgb(41, 14, 47), stop:1 rgb(26, 16, 57))}</string>
+   <string notr="true">#Dialog {background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 rgb(26, 16, 57), stop:0.5 rgb(41, 14, 47), stop:1 rgb(26, 16, 57))}
+</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item alignment="Qt::AlignHCenter">
@@ -46,6 +47,32 @@ font-family: &quot;Roboto&quot;, sans-serif;</string>
       <property name="bottomMargin">
        <number>0</number>
       </property>
+      <item>
+       <widget class="QCheckBox" name="monitor_setting_box">
+        <property name="styleSheet">
+         <string notr="true">QCheckBox {
+    spacing: 10px;
+}
+
+QCheckBox::indicator {
+    width: 24px;
+    height: 24px;
+}
+
+QCheckBox::indicator:unchecked {
+    image: url(:/icon/icons8-toggle-off-48.png);
+}
+
+QCheckBox::indicator:checked {
+    image: url(:/icon/icons8-toggle-on-48.png);
+}
+</string>
+        </property>
+        <property name="text">
+         <string>Monitor</string>
+        </property>
+       </widget>
+      </item>
       <item>
        <widget class="QPushButton" name="reset_parental_btn">
         <property name="minimumSize">

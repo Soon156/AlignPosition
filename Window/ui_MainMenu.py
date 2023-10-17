@@ -365,30 +365,6 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_12.addWidget(self.monitor_btn)
 
-        self.monitor_box = QCheckBox(self.frame_11)
-        self.monitor_box.setObjectName(u"monitor_box")
-        self.monitor_box.setEnabled(True)
-        self.monitor_box.setFont(font4)
-        self.monitor_box.setStyleSheet(u"QCheckBox {\n"
-"    spacing: 10px;\n"
-"}\n"
-"\n"
-"QCheckBox::indicator {\n"
-"    width: 24px;\n"
-"    height: 24px;\n"
-"}\n"
-"\n"
-"QCheckBox::indicator:unchecked {\n"
-"    image: url(:/icon/icons8-toggle-off-48.png);\n"
-"}\n"
-"\n"
-"QCheckBox::indicator:checked {\n"
-"    image: url(:/icon/icons8-toggle-on-48.png);\n"
-"}")
-        self.monitor_box.setIconSize(QSize(20, 20))
-
-        self.verticalLayout_12.addWidget(self.monitor_box)
-
 
         self.horizontalLayout_16.addWidget(self.frame_11)
 
@@ -1219,7 +1195,6 @@ class Ui_MainWindow(object):
         self.popout_btn.setText("")
         self.use_time_lbl.setText(QCoreApplication.translate("MainWindow", u"00:00:00", None))
         self.monitor_btn.setText("")
-        self.monitor_box.setText(QCoreApplication.translate("MainWindow", u"Use Camera", None))
         self.refresh_chart_btn.setText(QCoreApplication.translate("MainWindow", u"Refresh", None))
         self.use_time_btn.setText(QCoreApplication.translate("MainWindow", u"Use Time", None))
         self.table_lbl.setText("")

@@ -59,7 +59,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.use_time_btn.setText("Program Use Time")
         self.refresh_chart_btn.clicked.connect(lambda: self.show_chart(True))
         self.monitor_btn.clicked.connect(self.start_monitoring)
-        self.monitor_box.toggled.connect(self.on_monitor_state_change)
 
         # for monitoring button
         self.icon_start = QIcon()
@@ -224,7 +223,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.show()
 
     # Page handler
-    def dashboard_page(self):  # TODO
+    def dashboard_page(self):
         self.reset_stylesheet()
         self.a_2.setStyleSheet(top_side_menu)
         if os.path.exists(key_file_path):
@@ -266,12 +265,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.popout_btn.setEnabled(False)
 
     # Monitoring
-    def on_monitor_state_change(self, state):  # TODO
-        if state == Qt.Checked:
-            print("Checkbox is checked")
-        else:
-            print("Checkbox is unchecked")
-        pass
 
     def change_monitoring_state(self, state):
         self.monitoring_state = state
