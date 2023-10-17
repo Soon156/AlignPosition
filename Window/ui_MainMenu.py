@@ -344,7 +344,18 @@ class Ui_MainWindow(object):
         self.horizontalLayout_16 = QHBoxLayout(self.MonitorFrame)
         self.horizontalLayout_16.setObjectName(u"horizontalLayout_16")
         self.horizontalLayout_16.setContentsMargins(0, 0, 0, 0)
-        self.monitor_btn = QPushButton(self.MonitorFrame)
+        self.frame_11 = QFrame(self.MonitorFrame)
+        self.frame_11.setObjectName(u"frame_11")
+        font4 = QFont()
+        font4.setFamilies([u"Roboto"])
+        self.frame_11.setFont(font4)
+        self.frame_11.setFrameShape(QFrame.StyledPanel)
+        self.frame_11.setFrameShadow(QFrame.Raised)
+        self.verticalLayout_12 = QVBoxLayout(self.frame_11)
+        self.verticalLayout_12.setSpacing(0)
+        self.verticalLayout_12.setObjectName(u"verticalLayout_12")
+        self.verticalLayout_12.setContentsMargins(-1, 0, -1, 0)
+        self.monitor_btn = QPushButton(self.frame_11)
         self.monitor_btn.setObjectName(u"monitor_btn")
         self.monitor_btn.setFont(font2)
         icon7 = QIcon()
@@ -352,10 +363,41 @@ class Ui_MainWindow(object):
         self.monitor_btn.setIcon(icon7)
         self.monitor_btn.setIconSize(QSize(55, 55))
 
-        self.horizontalLayout_16.addWidget(self.monitor_btn)
+        self.verticalLayout_12.addWidget(self.monitor_btn)
+
+        self.monitor_box = QCheckBox(self.frame_11)
+        self.monitor_box.setObjectName(u"monitor_box")
+        self.monitor_box.setEnabled(True)
+        self.monitor_box.setFont(font4)
+        self.monitor_box.setStyleSheet(u"QCheckBox {\n"
+"    spacing: 10px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator {\n"
+"    width: 24px;\n"
+"    height: 24px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked {\n"
+"    image: url(:/icon/icons8-toggle-off-48.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked {\n"
+"    image: url(:/icon/icons8-toggle-on-48.png);\n"
+"}")
+        self.monitor_box.setIconSize(QSize(20, 20))
+
+        self.verticalLayout_12.addWidget(self.monitor_box)
+
+
+        self.horizontalLayout_16.addWidget(self.frame_11)
 
         self.frame_3 = QFrame(self.MonitorFrame)
         self.frame_3.setObjectName(u"frame_3")
+        font5 = QFont()
+        font5.setFamilies([u"Roboto"])
+        font5.setPointSize(20)
+        self.frame_3.setFont(font5)
         self.frame_3.setStyleSheet(u"QPushButton {\n"
 "background-color: #5e00b0;\n"
 "padding: 5px 20px 5px 20px;\n"
@@ -1157,7 +1199,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.cont_stackedwidget.setCurrentIndex(1)
+        self.cont_stackedwidget.setCurrentIndex(0)
         self.PIN_stackedwidget.setCurrentIndex(0)
 
 
@@ -1177,6 +1219,7 @@ class Ui_MainWindow(object):
         self.popout_btn.setText("")
         self.use_time_lbl.setText(QCoreApplication.translate("MainWindow", u"00:00:00", None))
         self.monitor_btn.setText("")
+        self.monitor_box.setText(QCoreApplication.translate("MainWindow", u"Use Camera", None))
         self.refresh_chart_btn.setText(QCoreApplication.translate("MainWindow", u"Refresh", None))
         self.use_time_btn.setText(QCoreApplication.translate("MainWindow", u"Use Time", None))
         self.table_lbl.setText("")

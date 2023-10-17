@@ -21,16 +21,14 @@ class PostureRecognizerThread(QThread):
         super().__init__()
         self.running = False
         self.model = tf.keras.models.load_model(abs_model_file_path)
-        self.old_time = read_elapsed_time_data()
+        self.old_time, self.badCount = read_elapsed_time_data()
         self.new_time = self.old_time
-        self.badCount = 0
-        self.goodCount = 0
-        self.total_time = 0
         self.date_today = date.today()
 
     def run(self):
         try:
             self.running = True
+            average = 0
             detector = LandmarkResult()
             # Create a VideoCapture object to capture video from the camera
             values = get_config()
@@ -40,6 +38,7 @@ class PostureRecognizerThread(QThread):
             # Control speed and calculate result
             frame_count = 0
             label = ""
+            bad_control = False
             results = []
 
             # Control idle time
@@ -51,9 +50,11 @@ class PostureRecognizerThread(QThread):
                 ret, frame = cap.read()
                 frame = cv2.flip(frame, 1)
 
+                if not cap.isOpened():
+                    raise Exception("Camera not available")
+
                 if not ret:
-                    log.error("Invalid video source, cap.read() failed")
-                    raise Exception("cap.read() failed")
+                    raise Exception("Error reading frame")
 
                 frame_count += 1
                 if frame_count >= 25 and not counter:
@@ -80,7 +81,7 @@ class PostureRecognizerThread(QThread):
 
                             reshape_landmark = np.array(landmark).reshape(-1, 33 * 5)
                             predictions = self.model.predict(
-                                reshape_landmark)  # Make predictions using the trained model
+                                reshape_landmark, verbose=None)  # Make predictions using the trained model
                             results.append(predictions[0, 0])
 
                             # Update the elapsed time
@@ -110,15 +111,23 @@ class PostureRecognizerThread(QThread):
                             raise Exception(e)
 
                 # Display the labels on the dev frame
-                label_text = f"Posture: {label}"
                 self.update_overlay.emit(label)
 
+                if label == "bad":
+                    if bad_control:
+                        self.badCount += 1
+                        bad_control = False
+                else:
+                    bad_control = True
+
                 if date.today() != self.date_today:  # Reset the time if pass 12am
-                    save_elapsed_time_data(self.new_time, self.date_today)
+                    save_elapsed_time_data(self.new_time, self.date_today, self.badCount)
                     self.new_time = 0
                     self.old_time = self.new_time
+                    self.badCount = 0
 
                 if values.get('dev') == "True":
+                    label_text = f"Posture: {label}, {average}"
                     cv2.putText(frame, label_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
                     # Display the frame with pose landmarks and labels
                     cv2.imshow("Pose Landmarks", frame)
@@ -132,7 +141,6 @@ class PostureRecognizerThread(QThread):
             detector.close()
             cv2.destroyAllWindows()
             self.finished.emit(self.running)
-
         except Exception as e:
             log.warning(e)
             self.error_msg.emit(str(e))
@@ -143,6 +151,5 @@ class PostureRecognizerThread(QThread):
         self.running = False
 
     def save_usetime(self):
-        save_elapsed_time_data(self.new_time, self.date_today)
+        save_elapsed_time_data(self.new_time, self.date_today, self.badCount)
         self.old_time = self.new_time
-        self.total_time = 0

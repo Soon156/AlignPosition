@@ -17,7 +17,7 @@ from Funtionality.Config import get_config, get_available_cameras, create_config
 from Funtionality.UpdateConfig import write_config, tracking_instance, stop_tracking, use_time
 from Funtionality.Notification import first_notify, show_break
 from ParentalControl.Auth import change_password, login_user, read_use_time, \
-    read_app_use_time, user_register, save_table_data, read_table_data
+    read_app_use_time, user_register, save_table_data, read_table_data, msg
 from ParentalControl.ParentalControl import ParentalTracking
 from PostureRecognize.ElapsedTime import seconds_to_hms
 from PostureRecognize.PositionDetect import PostureRecognizerThread, read_elapsed_time_data  # StartPreview
@@ -59,6 +59,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.use_time_btn.setText("Program Use Time")
         self.refresh_chart_btn.clicked.connect(lambda: self.show_chart(True))
         self.monitor_btn.clicked.connect(self.start_monitoring)
+        self.monitor_box.toggled.connect(self.on_monitor_state_change)
 
         # for monitoring button
         self.icon_start = QIcon()
@@ -123,11 +124,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.parental_thread = None
         self.parental_control_thread = False
         self.latest_usetime = read_elapsed_time_data()  # Get track on total use time
+
         try:
             self.data = read_table_data()  # Retrieve computer access time data
-        except Exception as msg:
+        except Exception as e:
             self.data = None
-            self.warning_msg = msg
+            self.error_handler(e)
+
         if self.data and self.data[1]:  # Check is the tracking data exist and is it enabled
             self.start_parental_control_thread()
             # Check condition state
@@ -139,6 +142,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # System tray icon
         self.tray_icon = QSystemTrayIcon(self)
         self.tray_icon.setIcon(QIcon(abs_logo_path))
+        self.tray_icon.activated.connect(self.tray_action)
+
         show_action = QAction("Show", self)
         show_action.triggered.connect(self.show)
 
@@ -169,10 +174,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.request = None
         self.show()
 
-        if self.warning_msg is not None:
-            QMessageBox.critical(self, "Error", f"{self.warning_msg}, reset your parental control setting or restore "
-                                                f"from a backup")
-
         if background:
             # Run the application in the background
             self.hide()
@@ -180,10 +181,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         try:
             data = read_table_data()
             values = get_config()
-            if (data and data[1]) or values.get('monitoring') == "True":  # TODO add entry
+            if (data and data[1]) or values.get('monitoring') == "True":
                 self.start_monitoring()
-        except Exception as msg:
-            self.warning_msg = msg
+        except Exception as e:
+            self.error_handler(e)
+
+    def tray_action(self, react):
+        if react == QSystemTrayIcon.DoubleClick or react == QSystemTrayIcon.Trigger:
+            if self.isVisible():
+                self.hide()
+            else:
+                self.show()
 
     def reset_w3_control_state(self):
         self.w3_authorize_lock = False
@@ -216,12 +224,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.show()
 
     # Page handler
-    def dashboard_page(self):
+    def dashboard_page(self):  # TODO
         self.reset_stylesheet()
         self.a_2.setStyleSheet(top_side_menu)
         if os.path.exists(key_file_path):
             self.cont_stackedwidget.setCurrentIndex(0)
-            self.use_time_lbl.setText(seconds_to_hms(read_elapsed_time_data()))
+            elapsed_time, _ = read_elapsed_time_data()
+            self.use_time_lbl.setText(seconds_to_hms(elapsed_time))
             self.tut_chart()
             self.use_time_btn.setText("Program Use Time")
         else:
@@ -257,6 +266,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.popout_btn.setEnabled(False)
 
     # Monitoring
+    def on_monitor_state_change(self, state):  # TODO
+        if state == Qt.Checked:
+            print("Checkbox is checked")
+        else:
+            print("Checkbox is unchecked")
+        pass
+
     def change_monitoring_state(self, state):
         self.monitoring_state = state
         if not state:
@@ -277,33 +293,30 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self.w.stop_btn.show()
             except:
                 pass
-            try:
-                self.posture_recognizer.start()
-            except Exception as e:
-                log.error(e)
-                QMessageBox.critical(self, "Error", f"An error occurred: {str(e)}")
-                self.exit_main()
+            self.posture_recognizer.start()
             log.info("Monitoring start")
 
     def start_monitoring(self):
+        data = None
+
+        try:
+            data = read_table_data()
+        except Exception as e:
+            self.error_handler(e)
+
         if not self.monitoring_state:
-            self.change_monitoring_state(True)
             self.start_time = time.time()
+            self.change_monitoring_state(True)
         else:
-            try:
-                data = read_table_data()
-                values = get_config()
-                if data and data[1]:
-                    if self.login_state:
-                        self.posture_recognizer.stop_capture()
-                    else:
-                        self.w3_authorize_lock = True
-                        self.request = "stop_monitor"
-                        self.show_authorize_win()
-                if (data and data[1]) or values.get('monitoring') == "True":
-                    self.start_monitoring()
-            except Exception as msg:
-                self.warning_msg = msg
+            if data and data[1]:
+                if self.login_state:
+                    self.posture_recognizer.stop_capture()
+                else:
+                    self.w3_authorize_lock = True
+                    self.request = "stop_monitor"
+                    self.show_authorize_win()
+            else:
+                self.posture_recognizer.stop_capture()
 
     @Slot(int)
     def update_elapsed_time_label(self, elapsed_time):
@@ -404,17 +417,21 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.c_2.setStyleSheet('')
         self.d_2.setStyleSheet('')
 
-    def error_handler(self, msg):
-        QMessageBox.warning(self, "Warning", f"Something wrong: {msg}")
+    def error_handler(self, e):
+        if e is msg:  # ParentalControl.Auth.msg
+            QMessageBox.critical(self, "Error", f"{e}, reset your parental control setting or restore "
+                                                f"from a backup")
+        if e is not None:
+            QMessageBox.warning(self, "Warning", f"Something wrong: {e}")
 
     # Settings
     def init_setting_page(self):
         values = get_config()
         try:
             data = read_table_data()
-        except Exception as msg:
+        except Exception as e:
             data = None
-            self.warning_msg = msg
+            self.error_handler(e)
 
         # Set value from config
         if values.get('background') == "True":
@@ -458,18 +475,20 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self.values['background'] = "False"
                 log.info(f"Background Disable")
 
-            if len(self.data) == 0:
+            try:
+                if self.start_box.isChecked():
+                    self.values['auto'] = "True"
+                    log.info(f"Startup Enable")
+                elif not self.start_box.isChecked() and self.data[1]:
+                    self.start_box.setChecked(True)
+                    QMessageBox.warning(self, "Not allowed", "Auto start enabled by parental control")
+                else:
+                    self.values['auto'] = "False"
+                    log.info(f"Startup Disable")
+            except IndexError:
                 self.values['auto'] = "False"
                 log.info(f"Startup Disable")
-            elif self.start_box.isChecked() and not self.data[1]:
-                self.values['auto'] = "True"
-                log.info(f"Startup Enable")
-            elif not self.start_box.isChecked() and self.data[1]:
-                self.start_box.setChecked(True)
-                QMessageBox.warning(self, "Not allowed", "Auto start enabled by parental control")
-            else:
-                self.values['auto'] = "False"
-                log.info(f"Startup Disable")
+
             if self.app_time_track_box.isChecked() and check_key():
                 self.values['app_tracking'] = "True"
                 log.info(f"App Tracking Enable")
@@ -575,6 +594,51 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         chart_view.setSizePolicy(size_policy)
         self.update_chart(chart_view)
 
+    def but_chart(self):
+        rows = read_use_time()
+        rows.reverse()
+        # Create a single QBarSet to hold the data values
+        bar_set = QBarSet("Data Values")
+        categories = []
+        temp = []
+        # Add data values to the bar_set
+        for item in rows[:7]:
+            temp.append(item)
+        temp.reverse()
+        for item in temp:
+            bar_set.append(int(item[2]))
+            categories.append(datetime.strptime(item[0], "%Y-%m-%d").strftime("%b %d"))
+
+        # Create a QBarSeries and add the bar_set to it
+        series = QBarSeries()
+        series.append(bar_set)
+
+        chart = QChart()
+        chart.addSeries(series)
+        chart.setTitle("Total Bad Posture")
+
+        # Set up the X-axis with the date categories
+        axis = QBarCategoryAxis()
+        axis.append(categories)
+
+        chart.createDefaultAxes()
+        chart.setAxisX(axis, series)
+        y_axis = chart.axisY()
+        y_axis.setTitleText("Counts")
+
+        chart.legend().setVisible(False)
+        chart.legend().setAlignment(Qt.AlignBottom)
+
+        chart_view = QChartView(chart)
+        chart_view.setRenderHint(QPainter.Antialiasing)
+        chart_view.chart().setTheme(QChart.ChartThemeDark)
+        chart.setAnimationOptions(QChart.SeriesAnimations)
+
+        size_policy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        size_policy.setHeightForWidth(chart_view.sizePolicy().hasHeightForWidth())
+        chart_view.setSizePolicy(size_policy)
+        self.update_chart(chart_view)
+
     def put_chart(self):
         data = read_app_use_time()
         # Calculate the total time for each app
@@ -629,24 +693,28 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         chart_view.setSizePolicy(size_policy)
         self.update_chart(chart_view)
 
-    def show_chart(self, state=False):
-        try:
-            self.posture_recognizer.save_usetime()
-            tracking_instance.save_app_usetime()
-        except Exception as e:
-            log.warning(e)
+    def show_chart(self, refresh=False):
 
         # Update UI
         if self.use_time_btn.text() == "Program Use Time":
-            if not state:
-                self.use_time_btn.setText("Total Use Time")
+            if not refresh:
+                tracking_instance.save_app_usetime()
+                self.use_time_btn.setText("Total Bad Posture")
                 self.put_chart()
             else:
                 self.tut_chart()
-        else:
-            if not state:
+        elif self.use_time_btn.text() == "Total Use Time":
+            if not refresh:
+                self.posture_recognizer.save_usetime()
                 self.use_time_btn.setText("Program Use Time")
                 self.tut_chart()
+            else:
+                self.but_chart()
+        else:
+            if not refresh:
+                self.posture_recognizer.save_usetime()
+                self.use_time_btn.setText("Total Use Time")
+                self.but_chart()
             else:
                 self.put_chart()
 

@@ -180,21 +180,20 @@ def save_table_data(data):
 
 
 def read_table_data():
-    unpicked_row = []
+    unpicked_row = None
     key, salt = retrieve_key_salt()
     if key is not None:
         try:
-
             with open(allow_use_time, 'rb') as file:
                 encrypted_data = file.read()
                 iv = encrypted_data[:16]
                 encrypted_data = encrypted_data[16:]
                 decrypted_data = decrypt_data(encrypted_data, key, iv)
                 unpicked_row = pickle.loads(decrypted_data)
-
         except pickle.UnpicklingError:
             log.error(msg)
             raise Exception(msg)
         except FileNotFoundError:
             log.warning("No table data found")
+
     return unpicked_row

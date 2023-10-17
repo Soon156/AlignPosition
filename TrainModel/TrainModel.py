@@ -36,7 +36,7 @@ def preprocess_img(epoch=100, batch_size=12):
 
 
 def process_img(folder_path):
-    base_options = mp.tasks.BaseOptions(model_asset_path='../pose_landmarker_heavy.task')
+    base_options = mp.tasks.BaseOptions(model_asset_path='pose_landmarker_heavy.task')
     options = mp.tasks.vision.PoseLandmarkerOptions(base_options=base_options)
     detector = mp.tasks.vision.PoseLandmarker.create_from_options(options)
     landmark_vectors = []

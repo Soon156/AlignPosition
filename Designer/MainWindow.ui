@@ -646,31 +646,102 @@ border-radius: 25px;
                      <number>0</number>
                     </property>
                     <item>
-                     <widget class="QPushButton" name="monitor_btn">
+                     <widget class="QFrame" name="frame_11">
                       <property name="font">
                        <font>
                         <family>Roboto</family>
-                        <pointsize>12</pointsize>
-                        <kerning>true</kerning>
                        </font>
                       </property>
-                      <property name="text">
-                       <string/>
+                      <property name="frameShape">
+                       <enum>QFrame::StyledPanel</enum>
                       </property>
-                      <property name="icon">
-                       <iconset resource="resource.qrc">
-                        <normaloff>:/icon/icons8-startup.png</normaloff>:/icon/icons8-startup.png</iconset>
+                      <property name="frameShadow">
+                       <enum>QFrame::Raised</enum>
                       </property>
-                      <property name="iconSize">
-                       <size>
-                        <width>55</width>
-                        <height>55</height>
-                       </size>
-                      </property>
+                      <layout class="QVBoxLayout" name="verticalLayout_12">
+                       <property name="spacing">
+                        <number>0</number>
+                       </property>
+                       <property name="topMargin">
+                        <number>0</number>
+                       </property>
+                       <property name="bottomMargin">
+                        <number>0</number>
+                       </property>
+                       <item>
+                        <widget class="QPushButton" name="monitor_btn">
+                         <property name="font">
+                          <font>
+                           <family>Roboto</family>
+                           <pointsize>12</pointsize>
+                           <kerning>true</kerning>
+                          </font>
+                         </property>
+                         <property name="text">
+                          <string/>
+                         </property>
+                         <property name="icon">
+                          <iconset resource="resource.qrc">
+                           <normaloff>:/icon/icons8-startup.png</normaloff>:/icon/icons8-startup.png</iconset>
+                         </property>
+                         <property name="iconSize">
+                          <size>
+                           <width>55</width>
+                           <height>55</height>
+                          </size>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QCheckBox" name="monitor_box">
+                         <property name="enabled">
+                          <bool>true</bool>
+                         </property>
+                         <property name="font">
+                          <font>
+                           <family>Roboto</family>
+                          </font>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">QCheckBox {
+    spacing: 10px;
+}
+
+QCheckBox::indicator {
+    width: 24px;
+    height: 24px;
+}
+
+QCheckBox::indicator:unchecked {
+    image: url(:/icon/icons8-toggle-off-48.png);
+}
+
+QCheckBox::indicator:checked {
+    image: url(:/icon/icons8-toggle-on-48.png);
+}</string>
+                         </property>
+                         <property name="text">
+                          <string>Use Camera</string>
+                         </property>
+                         <property name="iconSize">
+                          <size>
+                           <width>20</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
                      </widget>
                     </item>
                     <item>
                      <widget class="QFrame" name="frame_3">
+                      <property name="font">
+                       <font>
+                        <family>Roboto</family>
+                        <pointsize>20</pointsize>
+                       </font>
+                      </property>
                       <property name="styleSheet">
                        <string notr="true">QPushButton {
 background-color: #5e00b0;
