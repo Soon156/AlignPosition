@@ -49,11 +49,14 @@ class PostureRecognizerThread(QThread):
             temp_time = 0
             counter = False
 
-            # Threshold & controller
+            # Threshold & controller for posture monitoring
             switch = False
-            threshold = 70
+            threshold = 70  # black image
             blank_counter = 0
             bad_threshold = float(values.get('bad_posture')) * 60
+            last_frame = None
+            major_change = 2050000
+            diff_sum = 0
 
             while self.running and not switch:
 
@@ -100,11 +103,21 @@ class PostureRecognizerThread(QThread):
                         try:
                             landmark = extract_landmark(result)
                             if landmark is not None:
-
                                 reshape_landmark = np.array(landmark).reshape(-1, 33 * 5)
-                                predictions = self.model.predict(
-                                    reshape_landmark, verbose=None)  # Make predictions using the trained model
-                                results.append(predictions[0, 0])
+                                gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+                                if last_frame is not None:
+                                    frame_diff = cv2.absdiff(last_frame, gray)
+                                    diff_sum = np.sum(frame_diff)
+                                last_frame = gray
+
+                                if diff_sum < major_change:
+                                    predictions = self.model.predict(
+                                        reshape_landmark, verbose=None)  # Make predictions using the trained model
+                                    results.append(predictions[0, 0])
+                                else:
+                                    results = []
+                                    label = "moving"
 
                                 # Update the elapsed time
                                 if counter:  # If there is idle
