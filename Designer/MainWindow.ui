@@ -170,6 +170,12 @@ border-radius: 25px;
                 </property>
                 <item>
                  <widget class="QPushButton" name="dashboard_btn_2">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="font">
                    <font>
                     <family>Roboto</family>
@@ -233,6 +239,12 @@ border-radius: 25px;
                 </property>
                 <item>
                  <widget class="QPushButton" name="parental_btn_2">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="font">
                    <font>
                     <family>Roboto</family>
@@ -297,6 +309,12 @@ border-radius: 25px;
                 </property>
                 <item>
                  <widget class="QPushButton" name="settings_btn_2">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="font">
                    <font>
                     <family>Roboto</family>
