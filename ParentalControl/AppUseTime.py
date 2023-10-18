@@ -12,7 +12,6 @@ from ParentalControl.Auth import write_app_use_time, read_app_use_time
 
 class Tracking:
 
-    cond_usetime = True
     current_date = str(date.today())
 
     def __init__(self):
@@ -22,6 +21,7 @@ class Tracking:
         self.specific_date = str(date.today())
         self.usage_time_for_specific_date = {}
         self.values = get_config()
+        self.cond_usetime = True
 
     def update_condition(self):
         self.cond_usetime = False
@@ -37,7 +37,9 @@ class Tracking:
             if self.specific_date in self.app_use_times:
                 self.usage_time_for_specific_date = self.app_use_times[self.specific_date]
 
-        while self.cond_usetime and self.values['app_tracking'] == "True":
+        self.cond_usetime = True
+
+        while self.cond_usetime:
             self.values = get_config()  # keep track update
             pid = win32process.GetWindowThreadProcessId(win32gui.GetForegroundWindow())[1]
             try:
@@ -63,4 +65,6 @@ class Tracking:
 
             except Exception:
                 pass
+
+        log.info("App use time tracking stop")
         self.save_app_usetime()

@@ -8,14 +8,33 @@ from Funtionality.Config import key_path, app_name, exe_path, CONFIG_PATH, b_con
 from ParentalControl.AppUseTime import Tracking
 
 tracking_instance = Tracking()
-use_time = threading.Thread(target=tracking_instance.run)
+use_time = None
 
 
 def tracking_app_use_time():
+    global use_time
     try:
+        use_time = threading.Thread(target=tracking_instance.run)
         use_time.start()
-    except RuntimeError:
+    except RuntimeError as e:
         log.warning("App time tracking ald start")
+
+
+def waiting():
+    try:
+        use_time.join()
+    except:
+        pass
+
+
+def get_app_tracking_state():
+    try:
+        if use_time.is_alive():
+            return True
+        else:
+            return False
+    except Exception as e:
+        return False
 
 
 def stop_tracking():

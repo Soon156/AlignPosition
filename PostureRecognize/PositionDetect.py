@@ -53,6 +53,7 @@ class PostureRecognizerThread(QThread):
             switch = False
             threshold = 70
             blank_counter = 0
+            bad_threshold = float(values.get('bad_posture')) * 60
 
             while self.running and not switch:
 
@@ -108,10 +109,11 @@ class PostureRecognizerThread(QThread):
                                 # Update the elapsed time
                                 if counter:  # If there is idle
                                     start_time += temp_time
+                                counter = False  # Reset idle flag
+
                                 self.new_time = int(time.time() - start_time) + self.old_time
                                 self.elapsed_time_updated.emit(self.new_time)
 
-                                counter = False  # Reset idle flag
                             else:
                                 label = "idle"
                                 if not counter:  # If not idle before
@@ -141,10 +143,9 @@ class PostureRecognizerThread(QThread):
                             bad_control = False
                         else:
                             bad_posture_time = time.time() - self.bad_time
-                            bad_threshold = float(values.get('bad_posture')) * 60
                             if bad_posture_time > bad_threshold:
                                 zroya.show(posture_notify)
-                            self.bad_time = time.time()
+                                self.bad_time = time.time()
                     else:
                         bad_control = True
                 else:  # TODO active input thread
@@ -156,8 +157,10 @@ class PostureRecognizerThread(QThread):
                 if date.today() != self.date_today:  # Reset the time if pass 12am
                     save_elapsed_time_data(self.new_time, self.date_today, self.badCount)
                     self.new_time = 0
-                    self.old_time = self.new_time
                     self.badCount = 0
+                    self.old_time = self.new_time
+                    self.date_today = date.today()
+                    start_time = time.time()
 
                 if values.get('dev') == "True":
                     label_text = f"Posture: {label}, {average}"
@@ -202,4 +205,4 @@ class PostureRecognizerThread(QThread):
 
     def save_usetime(self):
         save_elapsed_time_data(self.new_time, self.date_today, self.badCount)
-        self.old_time = self.new_time
+        # self.old_time = self.new_time

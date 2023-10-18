@@ -14,7 +14,8 @@ from PySide6.QtGui import QPainter, QColor, QDesktopServices, QIcon, QAction
 from Funtionality.Config import get_config, get_available_cameras, create_config, \
     key_file_path, abs_logo_path, remove_all_data, check_key, reset_parental
 # parental_monitoring
-from Funtionality.UpdateConfig import write_config, tracking_instance, stop_tracking, use_time
+from Funtionality.UpdateConfig import write_config, tracking_instance, stop_tracking, use_time, waiting, \
+    get_app_tracking_state
 from Funtionality.Notification import first_notify, break_notify
 from ParentalControl.Auth import change_password, login_user, read_use_time, \
     read_app_use_time, user_register, save_table_data, read_table_data, msg
@@ -692,21 +693,27 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # Update UI
         if self.use_time_btn.text() == "Program Use Time":
             if not refresh:
-                tracking_instance.save_app_usetime()
+                try:
+                    if get_app_tracking_state():
+                        tracking_instance.save_app_usetime()
+                except Exception as e:
+                    pass
                 self.use_time_btn.setText("Total Bad Posture")
                 self.put_chart()
             else:
                 self.tut_chart()
         elif self.use_time_btn.text() == "Total Use Time":
             if not refresh:
-                self.posture_recognizer.save_usetime()
+                if self.monitoring_state:
+                    self.posture_recognizer.save_usetime()
                 self.use_time_btn.setText("Program Use Time")
                 self.tut_chart()
             else:
                 self.but_chart()
         else:
             if not refresh:
-                self.posture_recognizer.save_usetime()
+                if self.monitoring_state:
+                    self.posture_recognizer.save_usetime()
                 self.use_time_btn.setText("Total Use Time")
                 self.but_chart()
             else:
@@ -845,7 +852,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 except Exception:
                     pass
             try:
-                use_time.join()
+                waiting()
             except Exception:
                 pass
 
