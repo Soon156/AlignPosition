@@ -754,6 +754,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 if self.parental_thread is not None:
                     self.parental_thread.stop_parental_thread()
                     self.parental_control_thread = False
+            QMessageBox.information(self, "Parental Control", "Setting is applied!")
 
     def toggle_cell(self, row, column):
         item = self.usetime_table.item(row, column)
@@ -825,6 +826,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     reset_parental()
                     QMessageBox.information(self, "Parental reset", "All data has been reset successfully")
                     self.reinit_parental_table()
+                    self.login_state = False
                 except Exception as e:
                     QMessageBox.critical(self, "Failed to remove data", str(e))
             elif self.request == "stop_monitor":
