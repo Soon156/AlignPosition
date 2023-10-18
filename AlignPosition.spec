@@ -1,16 +1,16 @@
 # -*- mode: python ; coding: utf-8 -*-
-from PyInstaller.utils.hooks import collect_data_files
+from PyInstaller.utils.hooks import collect_submodules
 
-datas = []
-datas += collect_data_files('mediapipe')
+hiddenimports = []
+hiddenimports += collect_submodules('mediapipe')
 
 
 a = Analysis(
     ['C:/Users/soonk/PycharmProjects/AlignPosition/AlignPosition.py'],
     pathex=[],
     binaries=[],
-    datas=datas,
-    hiddenimports=[],
+    datas=[],
+    hiddenimports=hiddenimports,
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
