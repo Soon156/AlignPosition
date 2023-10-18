@@ -37,6 +37,12 @@ try:
     sleep_notify.setSecondLine("Your computer will be sleep in " + str(sleep_time) + " seconds!")
     sleep_notify.addAction("Cancel")
 
+    posture_notify = zroya.Template(zroya.TemplateType.ImageAndText2)
+    posture_notify.setFirstLine("Bad Posture Alerted")
+    posture_notify.setSecondLine("You maintain in a bad posture for too long time!")
+    posture_notify.setExpiration(clear_time)
+
+
 except Exception as e:
     app = QtWidgets.QApplication(sys.argv)
     title = "Error"
@@ -76,7 +82,3 @@ def show_control():
                 log.info("System Sleep")
                 os.system("rundll32.exe powrprof.dll,SetSuspendState 0,1,0")
             break
-
-
-def show_break():
-    zroya.show(break_notify)

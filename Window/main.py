@@ -15,7 +15,7 @@ from Funtionality.Config import get_config, get_available_cameras, create_config
     key_file_path, abs_logo_path, remove_all_data, check_key, reset_parental
 # parental_monitoring
 from Funtionality.UpdateConfig import write_config, tracking_instance, stop_tracking, use_time
-from Funtionality.Notification import first_notify, show_break
+from Funtionality.Notification import first_notify, break_notify
 from ParentalControl.Auth import change_password, login_user, read_use_time, \
     read_app_use_time, user_register, save_table_data, read_table_data, msg
 from ParentalControl.ParentalControl import ParentalTracking
@@ -325,7 +325,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         a = time.time() - self.start_time
         b = float(self.values.get('rest')) * 60
         if a >= b:
-            show_break()
+            zroya.show(break_notify)
             self.start_time = time.time()
 
     def update_overlay(self, posture):  # Change overlay window state

@@ -16,7 +16,8 @@ class MinWindow(QDialog, Ui_minDialog):
         self.center()
         self.setWindowFlag(Qt.WindowStaysOnTopHint, True)
         self.setWindowFlag(Qt.FramelessWindowHint)
-        self.use_time_lbl.setText(seconds_to_hms(read_elapsed_time_data()))
+        old_time, _ = read_elapsed_time_data()
+        self.use_time_lbl.setText(seconds_to_hms(old_time))
         self.start_btn.clicked.connect(self.start_monitor)
         self.stop_btn.clicked.connect(self.stop_monitor)
         if self.parent.monitoring_state:

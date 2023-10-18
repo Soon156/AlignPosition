@@ -3,8 +3,10 @@ import tensorflow as tf
 import cv2
 import time
 import numpy as np
+import zroya
 from PySide6.QtCore import Signal, QThread
 from Funtionality.Config import get_config, abs_model_file_path
+from Funtionality.Notification import posture_notify
 from PostureRecognize.ElapsedTime import read_elapsed_time_data, save_elapsed_time_data
 from PostureRecognize.ExtractLandmark import extract_landmark
 from PostureRecognize.Prediction import LandmarkResult
@@ -24,6 +26,7 @@ class PostureRecognizerThread(QThread):
         self.old_time, self.badCount = read_elapsed_time_data()
         self.new_time = self.old_time
         self.date_today = date.today()
+        self.bad_time = 0
 
     def run(self):
         try:
@@ -67,7 +70,6 @@ class PostureRecognizerThread(QThread):
                     mean_value = np.mean(frame)
                     if mean_value < threshold:
                         blank_counter += 1
-                        print(blank_counter)
                         if blank_counter >= 250:  # about 30 sec base on cpu power
                             switch = True
                     else:
@@ -134,8 +136,15 @@ class PostureRecognizerThread(QThread):
 
                     if label == "bad":
                         if bad_control:
+                            self.bad_time = time.time()
                             self.badCount += 1
                             bad_control = False
+                        else:
+                            bad_posture_time = time.time() - self.bad_time
+                            bad_threshold = float(values.get('bad_posture')) * 60
+                            if bad_posture_time > bad_threshold:
+                                zroya.show(posture_notify)
+                            self.bad_time = time.time()
                     else:
                         bad_control = True
                 else:  # TODO active input thread

@@ -98,6 +98,7 @@ DEFAULT_VAL = {
     'camera': 0,
     'rest': 60,
     'idle': 0.1,
+    'bad_posture': 5,
     'notifications': True,
     'background': True,
     'app_tracking': False,
@@ -276,6 +277,7 @@ def check_condition():
             raise Exception("Invalid config option")
         int(values.get('camera'))
         float(values.get('idle'))
+        float(values.get('bad_posture'))
         a = values.get('background') == 'True' or values.get('background') == 'False'
         b = values.get('notifications') == 'True' or values.get('notifications') == 'False'
         c = values.get('init') == 'True' or values.get('init') == 'False'
