@@ -55,7 +55,7 @@ class PostureRecognizerThread(QThread):
             blank_counter = 0
             bad_threshold = float(values.get('bad_posture')) * 60
             last_frame = None
-            major_change = 2050000
+            major_change = 3800000
             diff_sum = 0
 
             while self.running and not switch:
@@ -88,13 +88,16 @@ class PostureRecognizerThread(QThread):
                             average = sum(results) / len(results)
                         else:
                             average = 0
-                        predicted_labels = [0 if average < 0.6 else 1]
-                        results = []
 
-                        if predicted_labels[0] == 0:
-                            label = "good"
-                        else:
-                            label = "bad"
+                        predicted_labels = [0 if average < 0.6 else 1]
+
+                        if not len(results) == 0:
+                            if predicted_labels[0] == 0:
+                                label = "good"
+                            else:
+                                label = "bad"
+
+                        results = []
 
                     elif frame_count % 5 == 0:
                         # Get landmark of frame
@@ -118,6 +121,7 @@ class PostureRecognizerThread(QThread):
                                 else:
                                     results = []
                                     label = "moving"
+                                    average = 0
 
                                 # Update the elapsed time
                                 if counter:  # If there is idle

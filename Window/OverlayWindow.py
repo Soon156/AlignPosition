@@ -1,3 +1,5 @@
+import time
+
 from PySide6.QtWidgets import QWidget, QLabel, QVBoxLayout
 from PySide6.QtGui import QPixmap, QTransform
 from PySide6.QtCore import Qt, QRect, QPropertyAnimation, QParallelAnimationGroup, QEasingCurve, QSize
@@ -31,6 +33,8 @@ class OverlayWidget(QWidget):
         self.animation_group = QParallelAnimationGroup()
 
         self.state = False
+        self.last_movement_time = None
+        self.last_posture = "good"
 
     def show_with_animation(self, target_geometry, duration=300):
         self.clear_animations()
@@ -51,14 +55,26 @@ class OverlayWidget(QWidget):
             animation.deleteLater()
 
     def change_state(self, posture):
+        if self.last_movement_time is not None:
+            temp = time.time() - self.last_movement_time
+        else:
+            temp = None
+
+        if temp is not None and temp < 3:
+            posture = self.last_posture
+
         if posture == "bad":
+            self.last_posture = "bad"
             if self.pos == "left":
                 self.show_with_animation(QRect(-15, -15, 100, 100))
             else:
                 self.show_with_animation(QRect(self.width_geo - 90, -10, 100, 100))
             self.setWindowOpacity(1.0)
             self.state = True
+        elif posture == "moving":
+            self.last_movement_time = time.time()
         else:
+            self.last_posture = "good"
             if self.state:
                 if self.pos == "left":
                     self.show_with_animation(QRect(-30, -30, 100, 100))
