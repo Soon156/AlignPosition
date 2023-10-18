@@ -93,9 +93,9 @@ class ParentalDialog(QDialog, Ui_Dialog):
             if data and data[1]:
                 if self.values.get('monitoring') != "True":
                     self.values['monitoring'] = "True"
-                    self.monitor_setting_box.setText("Monitor activated")
-                    self.monitor_setting_box.setChecked(True)
                     write_config(self.values)
+                self.monitor_setting_box.setText("Monitor activated")
+                self.monitor_setting_box.setChecked(True)
                 QMessageBox.warning(self, "Warning", "The parental control is active, monitoring cannot be disable")
             else:
                 self.values['monitoring'] = "False"

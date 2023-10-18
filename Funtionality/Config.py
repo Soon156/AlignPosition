@@ -9,25 +9,12 @@ from pygrabber.dshow_graph import FilterGraph
 
 import shutil
 
-Good_Posture = "Maintain your good posture 5 seconds, clicked proceed to start"
-Bad_Posture = "Maintain your bad posture 5 seconds, clicked proceed to start"
-Append_Posture = "Append bad posture, clicked proceed to start"
-Cancel_Calibrate = "Calibration Cancel"
-Append_Finish = "Append done"
-Model_Training = "Training model, please wait patiently...."
-Cancel = "Cancelling..."
-Capture_Posture = "Capturing posture, stay still...."
-
-# ACCURACY AND PERFORMANCE
-DETECTION_RATE = 0.5  # second
-
 # Get the current month and year
 now = datetime.datetime.now()
 current_month, current_year = now.month, now.year
 
 # App_Use_Time Filter List
 filter_list = ["Align Position", "null", "Application Frame Host", "", "Pick an app"]
-
 
 def get_registry_value(key=winreg.HKEY_CURRENT_USER, subkey="SOFTWARE\Align Position", value_name="Resource Folder"):
     try:
