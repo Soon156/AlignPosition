@@ -128,7 +128,7 @@ def check_process():
     for p in process_iter():
         if p.name() == "AlignPosition.exe":
             counter += 1
-        if counter > 2:
+        if counter > 1:
             return True
     return False
 
