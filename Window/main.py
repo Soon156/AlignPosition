@@ -601,7 +601,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             temp.append(item)
         temp.reverse()
         for item in temp:
-            bar_set.append(int(item[2]))
+            bar_set.append(int(item[2]) / 60)
             categories.append(datetime.strptime(item[0], "%Y-%m-%d").strftime("%b %d"))
 
         # Create a QBarSeries and add the bar_set to it
@@ -610,7 +610,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         chart = QChart()
         chart.addSeries(series)
-        chart.setTitle("Total Bad Posture")
+        chart.setTitle("Total Bad Posture Time")
 
         # Set up the X-axis with the date categories
         axis = QBarCategoryAxis()
@@ -619,7 +619,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         chart.createDefaultAxes()
         chart.setAxisX(axis, series)
         y_axis = chart.axisY()
-        y_axis.setTitleText("Counts")
+        y_axis.setTitleText("Minutes")
 
         chart.legend().setVisible(False)
         chart.legend().setAlignment(Qt.AlignBottom)

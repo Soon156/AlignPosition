@@ -26,10 +26,9 @@ class PostureRecognizerThread(QThread):
         self.last_movement_time = None
         self.running = False
         self.model = tf.keras.models.load_model(abs_model_file_path)
-        self.old_time, self.badCount = read_elapsed_time_data()
+        self.old_time, self.bad_time = read_elapsed_time_data()
         self.new_time = self.old_time
         self.date_today = date.today()
-        self.bad_time = 0
 
     def run(self):
         try:
@@ -62,7 +61,9 @@ class PostureRecognizerThread(QThread):
             diff_sum = 0
             posture = None
             brightness = False
-            notify_time = None
+            notify_time = 0
+            bad_temp_time = 0
+            bad_posture_time = 0
 
             while self.running and not switch:
 
@@ -103,15 +104,14 @@ class PostureRecognizerThread(QThread):
                                 if mean_value < threshold:
                                     if blank_counter >= 250 and not brightness:  # about 30 sec base on cpu power
                                         zroya.show(brightness_notify)
-                                        brightness = True
                                         notify_time = time.time()
+                                        brightness = True
                                     elif time.time() - notify_time > 1800:
                                         brightness = False
                                     else:
                                         blank_counter += 1
                                 else:
                                     blank_counter = 0
-                                    switch = False
 
                                 reshape_landmark = np.array(landmark).reshape(-1, 33 * 5)
                                 gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -199,14 +199,17 @@ class PostureRecognizerThread(QThread):
 
                     if posture == "bad":
                         if bad_control:
-                            self.bad_time = time.time()
-                            self.badCount += 1
+                            if bad_posture_time > 3:
+                                self.bad_time += bad_posture_time
+                            bad_temp_time = time.time()
+                            bad_posture_time = 0
                             bad_control = False
                         else:
-                            bad_posture_time = time.time() - self.bad_time
+                            bad_posture_time = time.time() - bad_temp_time
+
                             if bad_posture_time > bad_threshold:
                                 zroya.show(posture_notify)
-                                self.bad_time = time.time()
+                                bad_temp_time = time.time()
                     else:
                         bad_control = True
 
@@ -220,12 +223,18 @@ class PostureRecognizerThread(QThread):
                     log.info("Switching to input detection, this will be implement in future....")
 
                 if date.today() != self.date_today:  # Reset the time if pass 12am
-                    save_elapsed_time_data(self.new_time, self.date_today, self.badCount)
+                    self.save_usetime()
                     self.new_time = 0
-                    self.badCount = 0
+                    self.bad_time = 0
                     self.old_time = self.new_time
                     self.date_today = date.today()
                     start_time = time.time()
+
+                if time.time() - start_time > 600:  # CHECKME possible solution for crash after long time use
+                    start_time = time.time()
+                    self.save_usetime()
+                    self.old_time = self.new_time
+                    self.new_time = 0
 
             self.save_usetime()
             # Release the VideoCapture and close the OpenCV windows
@@ -243,5 +252,4 @@ class PostureRecognizerThread(QThread):
         self.running = False
 
     def save_usetime(self):
-        save_elapsed_time_data(self.new_time, self.date_today, self.badCount)
-        # self.old_time = self.new_time
+        save_elapsed_time_data(self.new_time, self.date_today, self.bad_time)
