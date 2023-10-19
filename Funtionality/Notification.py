@@ -42,6 +42,11 @@ try:
     posture_notify.setSecondLine("You maintain in a bad posture for too long time!")
     posture_notify.setExpiration(clear_time)
 
+    brightness_notify = zroya.Template(zroya.TemplateType.ImageAndText2)
+    brightness_notify.setFirstLine("Environment Alerted")
+    brightness_notify.setSecondLine("Please make use to use devices in a bright environment")
+    brightness_notify.setExpiration(clear_time)
+
 
 except Exception as e:
     app = QtWidgets.QApplication(sys.argv)
