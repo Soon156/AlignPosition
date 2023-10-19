@@ -261,9 +261,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.popout_btn.setEnabled(False)
 
     # Monitoring
-
     def change_monitoring_state(self, state):
-        self.monitoring_state = state
         if not state:
             self.monitor_btn.setIcon(self.icon_start)
             self.w1.hide()
@@ -284,6 +282,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 pass
             self.posture_recognizer.start()
             log.info("Monitoring start")
+        self.monitoring_state = state
 
     def start_monitoring(self):
         data = None
@@ -454,9 +453,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.alert_box.setCurrentIndex(index)
 
     def update_setting(self):
+        message = None
         break_time = self.reminder_box.value()
         if break_time <= 1:
-            QMessageBox.warning(self, "Action not allowed", "Break time cannot smaller than 1 minute")
+            message = ["warning", "Action not allowed", "Break time cannot smaller than 1 minute"]
         else:
             if self.background_box.isChecked():
                 self.values['background'] = "True"
@@ -471,7 +471,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     log.info(f"Startup Enable")
                 elif not self.start_box.isChecked() and self.data[1]:
                     self.start_box.setChecked(True)
-                    QMessageBox.warning(self, "Not allowed", "Auto start enabled by parental control")
+                    message = ["warning", "Action not allowed", "Auto start enabled by parental control"]
                 else:
                     self.values['auto'] = "False"
                     log.info(f"Startup Disable")
@@ -484,7 +484,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 log.info(f"App Tracking Enable")
             else:
                 if not check_key():
-                    QMessageBox.information(self, "Action not allowed", "You must set your PIN first")
+                    message = ["warning", "Action not allowed", "You must set your PIN first"]
                 self.values['app_tracking'] = "False"
                 log.info(f"App Tracking Disable")
 
@@ -517,6 +517,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self.w1.win_geometry()
             except:
                 pass
+
+            if message is not None:
+                QMessageBox.warning(self, message[1], message[2])
+            else:
+                QMessageBox.information(self, "Settings", "Setting is applied!")
 
     def remove_data(self):
         msgbox = QMessageBox(self)

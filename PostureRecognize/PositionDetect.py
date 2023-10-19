@@ -1,3 +1,4 @@
+import os.path
 from datetime import date, datetime
 import tensorflow as tf
 import cv2
@@ -5,7 +6,7 @@ import time
 import numpy as np
 import zroya
 from PySide6.QtCore import Signal, QThread
-from Funtionality.Config import get_config, abs_model_file_path
+from Funtionality.Config import get_config, abs_model_file_path, temp_folder
 from Funtionality.Notification import posture_notify, brightness_notify
 from PostureRecognize.ElapsedTime import read_elapsed_time_data, save_elapsed_time_data
 from PostureRecognize.ExtractLandmark import extract_landmark
@@ -170,14 +171,16 @@ class PostureRecognizerThread(QThread):
                         if temp1 == ord('g'):
                             timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
                             frame_filename = f'good_{timestamp}.jpg'
-                            cv2.imwrite(frame_filename, frame)
-                            log.info(f"{frame_filename} is write")
+                            file_path = os.path.join(temp_folder, frame_filename)
+                            cv2.imwrite(file_path, frame)
+                            log.info(f"{frame_filename} is write to {file_path}")
 
                         if temp1 & 0xFF == ord('b'):
                             timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
                             frame_filename = f'bad_{timestamp}.jpg'
                             cv2.imwrite(frame_filename, frame)
-                            log.info(f"{frame_filename} is write")
+                            file_path = os.path.join(temp_folder, frame_filename)
+                            log.info(f"{frame_filename} is write to {file_path}")
 
                         if temp1 == ord('q'):
                             self.running = False
