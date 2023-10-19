@@ -37,7 +37,7 @@ choice_side_menu = "background: #7346ad;"
 
 class MainWindow(QMainWindow, Ui_MainWindow):
 
-    def __init__(self, background):
+    def __init__(self):
         super().__init__()
         # Window Attribute
         self.setupUi(self)
@@ -172,11 +172,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.w3_authorize_lock = False
         self.w4 = ParentalDialog(self)  # Parental Setting
         self.request = None
-        self.show()
-
-        if background:
-            # Run the application in the background
-            self.hide()
 
         try:
             data = read_table_data()
@@ -690,30 +685,30 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def show_chart(self, refresh=False):
 
+        if self.monitoring_state:
+            self.posture_recognizer.save_usetime()
+        try:
+            if get_app_tracking_state():
+                tracking_instance.save_app_usetime()
+        except Exception as e:
+            log.debug(str(e))
+            pass
+
         # Update UI
         if self.use_time_btn.text() == "Program Use Time":
             if not refresh:
-                try:
-                    if get_app_tracking_state():
-                        tracking_instance.save_app_usetime()
-                except Exception as e:
-                    pass
                 self.use_time_btn.setText("Total Bad Posture")
                 self.put_chart()
             else:
                 self.tut_chart()
         elif self.use_time_btn.text() == "Total Use Time":
             if not refresh:
-                if self.monitoring_state:
-                    self.posture_recognizer.save_usetime()
                 self.use_time_btn.setText("Program Use Time")
                 self.tut_chart()
             else:
                 self.but_chart()
         else:
             if not refresh:
-                if self.monitoring_state:
-                    self.posture_recognizer.save_usetime()
                 self.use_time_btn.setText("Total Use Time")
                 self.but_chart()
             else:
@@ -771,14 +766,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.move(qr.topLeft())
 
     def mousePressEvent(self, event):
-        self.dragPos = event.globalPosition().toPoint()
+        if event.button() == Qt.LeftButton:
+            self.dragPos = event.globalPos()
 
     def mouseMoveEvent(self, event):
-        try:
-            self.move(self.pos() + event.globalPosition().toPoint() - self.dragPos)
-            self.dragPos = event.globalPosition().toPoint()
-        except:
-            pass
+        if event.buttons() == Qt.LeftButton:
+            self.move(self.pos() + event.globalPos() - self.dragPos)
+            self.dragPos = event.globalPos()
         event.accept()
 
     # Close Event handler
