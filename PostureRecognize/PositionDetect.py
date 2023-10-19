@@ -6,7 +6,7 @@ import numpy as np
 import zroya
 from PySide6.QtCore import Signal, QThread
 from Funtionality.Config import get_config, abs_model_file_path
-from Funtionality.Notification import posture_notify
+from Funtionality.Notification import posture_notify, brightness_notify
 from PostureRecognize.ElapsedTime import read_elapsed_time_data, save_elapsed_time_data
 from PostureRecognize.ExtractLandmark import extract_landmark
 from PostureRecognize.Prediction import LandmarkResult
@@ -21,6 +21,8 @@ class PostureRecognizerThread(QThread):
 
     def __init__(self):
         super().__init__()
+        self.last_posture = "good"
+        self.last_movement_time = None
         self.running = False
         self.model = tf.keras.models.load_model(abs_model_file_path)
         self.old_time, self.badCount = read_elapsed_time_data()
@@ -40,7 +42,7 @@ class PostureRecognizerThread(QThread):
 
             # Control speed and calculate result
             frame_count = 0
-            label = ""
+            label = "detecting..."
             bad_control = False
             results = []
 
@@ -51,12 +53,15 @@ class PostureRecognizerThread(QThread):
 
             # Threshold & controller for posture monitoring
             switch = False
-            threshold = 70  # black image
+            threshold = 30  # black image
             blank_counter = 0
             bad_threshold = float(values.get('bad_posture')) * 60
             last_frame = None
             major_change = 3800000
             diff_sum = 0
+            posture = None
+            brightness = False
+            notify_time = None
 
             while self.running and not switch:
 
@@ -70,15 +75,6 @@ class PostureRecognizerThread(QThread):
                 if not ret and not switch:
                     switch = True
                     log.error("Error reading frame")
-                else:
-                    mean_value = np.mean(frame)
-                    if mean_value < threshold:
-                        blank_counter += 1
-                        if blank_counter >= 250:  # about 30 sec base on cpu power
-                            switch = True
-                    else:
-                        blank_counter = 0
-                        switch = False
 
                 if not switch:
                     frame_count += 1
@@ -86,12 +82,7 @@ class PostureRecognizerThread(QThread):
                         frame_count = 0
                         if not len(results) == 0:
                             average = sum(results) / len(results)
-                        else:
-                            average = 0
-
-                        predicted_labels = [0 if average < 0.6 else 1]
-
-                        if not len(results) == 0:
+                            predicted_labels = [0 if average < 0.6 else 1]
                             if predicted_labels[0] == 0:
                                 label = "good"
                             else:
@@ -106,6 +97,21 @@ class PostureRecognizerThread(QThread):
                         try:
                             landmark = extract_landmark(result)
                             if landmark is not None:
+
+                                mean_value = np.mean(frame)
+                                if mean_value < threshold:
+                                    if blank_counter >= 250 and not brightness:  # about 30 sec base on cpu power
+                                        zroya.show(brightness_notify)
+                                        brightness = True
+                                        notify_time = time.time()
+                                    elif time.time() - notify_time > 1800:
+                                        brightness = False
+                                    else:
+                                        blank_counter += 1
+                                else:
+                                    blank_counter = 0
+                                    switch = False
+
                                 reshape_landmark = np.array(landmark).reshape(-1, 33 * 5)
                                 gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
@@ -150,10 +156,45 @@ class PostureRecognizerThread(QThread):
                                               "type object 'PoseLandmarkerResult' has no attribute 'pose_landmarks'"]:
                                 raise Exception(e)
 
-                    # Display the labels on the dev frame
-                    self.update_overlay.emit(label)
+                    if values.get('dev') == "True":
+                        label_text = f"Posture: {label}, {average}"
+                        cv2.putText(frame, label_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+                        # Display the frame with pose landmarks and labels
+                        cv2.imshow("Pose Landmarks", frame)
+                        temp = cv2.waitKey(1) & 0xFF
+                        temp1 = 255
 
-                    if label == "bad":
+                        if temp != 255:
+                            temp1 = temp
+
+                        if temp1 == ord('g'):
+                            timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+                            frame_filename = f'good_{timestamp}.jpg'
+                            cv2.imwrite(frame_filename, frame)
+                            log.info(f"{frame_filename} is write")
+
+                        if temp1 & 0xFF == ord('b'):
+                            timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+                            frame_filename = f'bad_{timestamp}.jpg'
+                            cv2.imwrite(frame_filename, frame)
+                            log.info(f"{frame_filename} is write")
+
+                        if temp1 == ord('q'):
+                            self.running = False
+
+                    if label != "moving":
+                        self.last_posture = label
+                    else:
+                        self.last_movement_time = time.time()
+
+                    if self.last_movement_time is not None:
+                        temp = time.time() - self.last_movement_time
+                        if temp < 3:
+                            posture = self.last_posture
+                        else:
+                            self.last_movement_time = None
+
+                    if posture == "bad":
                         if bad_control:
                             self.bad_time = time.time()
                             self.badCount += 1
@@ -165,6 +206,10 @@ class PostureRecognizerThread(QThread):
                                 self.bad_time = time.time()
                     else:
                         bad_control = True
+
+                    # Display the labels on the dev frame
+                    self.update_overlay.emit(posture)
+
                 else:  # TODO active input thread
                     self.running = False
                     self.error_msg.emit("Camera reading failed, please make sure you are in bright environment, "
@@ -178,32 +223,6 @@ class PostureRecognizerThread(QThread):
                     self.old_time = self.new_time
                     self.date_today = date.today()
                     start_time = time.time()
-
-                if values.get('dev') == "True":
-                    label_text = f"Posture: {label}, {average}"
-                    cv2.putText(frame, label_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-                    # Display the frame with pose landmarks and labels
-                    cv2.imshow("Pose Landmarks", frame)
-                    temp = cv2.waitKey(1) & 0xFF
-                    temp1 = 255
-
-                    if temp != 255:
-                        temp1 = temp
-
-                    if temp1 == ord('g'):
-                        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-                        frame_filename = f'good_{timestamp}.jpg'
-                        cv2.imwrite(frame_filename, frame)
-                        log.info(f"{frame_filename} is write")
-
-                    if temp1 & 0xFF == ord('b'):
-                        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-                        frame_filename = f'bad_{timestamp}.jpg'
-                        cv2.imwrite(frame_filename, frame)
-                        log.info(f"{frame_filename} is write")
-
-                    if temp1 == ord('q'):
-                        self.running = False
 
             self.save_usetime()
             # Release the VideoCapture and close the OpenCV windows
