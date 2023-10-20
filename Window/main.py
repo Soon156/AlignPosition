@@ -257,7 +257,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def min_window(self):
         self.w = MinWindow(self)  # Small Window
-        self.w.show()
+        self.w.init()
         self.popout_btn.setEnabled(False)
 
     # Monitoring
@@ -266,8 +266,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.monitor_btn.setIcon(self.icon_start)
             self.w1.hide()
             try:
-                self.w.start_btn.show()
-                self.w.stop_btn.hide()
+                self.w.update_btn_state()
             except:
                 pass
             log.info("Monitoring stop")
@@ -276,8 +275,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             if self.values['overlay_enable'] == "True":
                 self.w1.show()
             try:
-                self.w.start_btn.hide()
-                self.w.stop_btn.show()
+                self.w.update_btn_state(True)
             except:
                 pass
             self.posture_recognizer.start()
@@ -763,13 +761,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             item.setBackground(QColor(220, 20, 60))
 
-    # Draggable handler
     def center(self):
         qr = self.frameGeometry()
         cp = self.screen().availableGeometry().center()
         qr.moveCenter(cp)
         self.move(qr.topLeft())
 
+    # Draggable handler
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
             self.dragPos = event.globalPos()

@@ -11,20 +11,25 @@ class MinWindow(QDialog, Ui_minDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.dragPos = None
         self.parent = parent
         self.setupUi(self)
         self.center()
         self.setWindowFlag(Qt.WindowStaysOnTopHint, True)
         self.setWindowFlag(Qt.FramelessWindowHint)
-        old_time, _ = read_elapsed_time_data()
-        self.use_time_lbl.setText(seconds_to_hms(old_time))
         self.start_btn.clicked.connect(self.start_monitor)
-        self.stop_btn.clicked.connect(self.stop_monitor)
+        self.stop_btn.clicked.connect(self.start_monitor)
+        self.close_btn.clicked.connect(self.close_me)
+
+    def init(self):
         if self.parent.monitoring_state:
+            self.parent.posture_recognizer.save_usetime()
             self.start_btn.hide()
         else:
             self.stop_btn.hide()
-        self.close_btn.clicked.connect(self.close_me)
+        old_time, _ = read_elapsed_time_data()
+        self.use_time_lbl.setText(seconds_to_hms(old_time))
+        self.show()
 
     def close_me(self):
         self.parent.popout_btn.setEnabled(True)
@@ -33,14 +38,15 @@ class MinWindow(QDialog, Ui_minDialog):
             self.parent.show()
 
     def start_monitor(self):
-        self.start_btn.hide()
-        self.stop_btn.show()
         self.parent.start_monitoring()
 
-    def stop_monitor(self):
-        self.start_btn.show()
-        self.stop_btn.hide()
-        self.parent.start_monitoring()
+    def update_btn_state(self, condition = False):
+        if condition:
+            self.start_btn.hide()
+            self.stop_btn.show()
+        else:
+            self.start_btn.show()
+            self.stop_btn.hide()
 
     # Draggable handler
     def center(self):
@@ -50,9 +56,11 @@ class MinWindow(QDialog, Ui_minDialog):
         self.move(qr.topLeft())
 
     def mousePressEvent(self, event):
-        self.dragPos = event.globalPosition().toPoint()
+        if event.button() == Qt.LeftButton:
+            self.dragPos = event.globalPos()
 
     def mouseMoveEvent(self, event):
-        self.move(self.pos() + event.globalPosition().toPoint() - self.dragPos)
-        self.dragPos = event.globalPosition().toPoint()
+        if event.buttons() == Qt.LeftButton:
+            self.move(self.pos() + event.globalPos() - self.dragPos)
+            self.dragPos = event.globalPos()
         event.accept()
