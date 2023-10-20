@@ -8,6 +8,7 @@ import zroya
 from PySide6.QtCore import Signal, QThread
 from Funtionality.Config import get_config, abs_model_file_path, temp_folder
 from Funtionality.Notification import posture_notify, brightness_notify
+from ParentalControl.Auth import read_table_data
 from PostureRecognize.ElapsedTime import read_elapsed_time_data, save_elapsed_time_data
 from PostureRecognize.ExtractLandmark import extract_landmark
 from PostureRecognize.Prediction import LandmarkResult
@@ -38,6 +39,8 @@ class PostureRecognizerThread(QThread):
             # Create a VideoCapture object to capture video from the camera
             values = get_config()
             cap = cv2.VideoCapture(int(values.get('camera')), cv2.CAP_DSHOW)
+            cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+            cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
             start_time = time.time()
 
             # Control speed and calculate result
@@ -57,13 +60,20 @@ class PostureRecognizerThread(QThread):
             blank_counter = 0
             bad_threshold = float(values.get('bad_posture')) * 60
             last_frame = None
-            major_change = 3800000
-            diff_sum = 0
-            posture = None
+            major_change = 10000000
+            diff_sum_record = []
+            diff_count = 0
             brightness = False
             notify_time = 0
             bad_temp_time = 0
             bad_posture_time = 0
+
+            data = False
+
+            try:
+                data = read_table_data()
+            except:
+                pass
 
             while self.running and not switch:
 
@@ -72,7 +82,6 @@ class PostureRecognizerThread(QThread):
                     log.warning("Camera not available")
 
                 ret, frame = cap.read()
-                frame = cv2.flip(frame, 1)
 
                 if not ret and not switch:
                     switch = True
@@ -119,9 +128,16 @@ class PostureRecognizerThread(QThread):
                                 if last_frame is not None:
                                     frame_diff = cv2.absdiff(last_frame, gray)
                                     diff_sum = np.sum(frame_diff)
-                                last_frame = gray
+                                    if len(diff_sum_record) > 3:
+                                        diff_sum_record.pop(0)
+                                    diff_sum_record.append(diff_sum)
 
-                                if diff_sum < major_change:
+                                last_frame = gray
+                                for value in diff_sum_record:
+                                    if value > major_change:
+                                        diff_count += 1
+
+                                if diff_count < 3:
                                     predictions = self.model.predict(
                                         reshape_landmark, verbose=None)  # Make predictions using the trained model
                                     results.append(predictions[0, 0])
@@ -129,6 +145,8 @@ class PostureRecognizerThread(QThread):
                                     results = []
                                     label = "moving"
                                     average = 0
+
+                                diff_count = 0
 
                                 # Update the elapsed time
                                 if counter:  # If there is idle
@@ -157,7 +175,9 @@ class PostureRecognizerThread(QThread):
                                               "type object 'PoseLandmarkerResult' has no attribute 'pose_landmarks'"]:
                                 raise Exception(e)
 
-                    if values.get('dev') == "True":
+                    if values.get('dev') == "True" and not data[1]:
+                        frame = cv2.flip(frame, 1)
+                        frame = cv2.resize(frame, (640, 360))
                         label_text = f"Posture: {label}, {average}"
                         cv2.putText(frame, label_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
                         # Display the frame with pose landmarks and labels
@@ -185,19 +205,7 @@ class PostureRecognizerThread(QThread):
                         if temp1 == ord('q'):
                             self.running = False
 
-                    if label != "moving":
-                        self.last_posture = label
-                    else:
-                        self.last_movement_time = time.time()
-
-                    if self.last_movement_time is not None:
-                        temp = time.time() - self.last_movement_time
-                        if temp < 3:
-                            posture = self.last_posture
-                        else:
-                            self.last_movement_time = None
-
-                    if posture == "bad":
+                    if label == "bad":
                         if bad_control:
                             if bad_posture_time > 3:
                                 self.bad_time += bad_posture_time
@@ -214,7 +222,7 @@ class PostureRecognizerThread(QThread):
                         bad_control = True
 
                     # Display the labels on the dev frame
-                    self.update_overlay.emit(posture)
+                    self.update_overlay.emit(label)
 
                 else:  # TODO active input thread
                     self.running = False
