@@ -85,7 +85,7 @@ DEFAULT_VAL = {
     'camera': 0,
     'rest': 60,
     'idle': 0.1,
-    'bad_posture': 0.5,
+    'bad_posture': 1,
     'notifications': True,
     'background': True,
     'app_tracking': False,

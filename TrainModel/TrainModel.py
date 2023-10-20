@@ -112,4 +112,4 @@ def train_model(good_landmark, bad_landmark, batch_size, epoch=60, num_landmarks
     model.save("..\posture_detection_model.keras")
 
 
-preprocess_img(epoch=999, batch_size=12)
+preprocess_img(epoch=999, batch_size=8)
