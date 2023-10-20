@@ -128,7 +128,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         try:
             self.data = read_table_data()  # Retrieve computer access time data
         except Exception as e:
-            self.data = None
             self.error_handler(e)
 
         if self.data and self.data[1]:  # Check is the tracking data exist and is it enabled
@@ -426,9 +425,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             self.background_box.setChecked(False)
 
-        if values.get('auto') == "True" or (data and data[1]):
+        if values.get('auto') == "True":
             self.start_box.setChecked(True)
         else:
+            if data is not None:
+                if data[1]:
+                    self.start_box.setChecked(True)
+                    QMessageBox.information(self, "Parental Control", "Autostart enable by parental control")
             self.start_box.setChecked(False)
 
         if values.get('app_tracking') == "True":
@@ -463,19 +466,20 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self.values['background'] = "False"
                 log.info(f"Background Disable")
 
-            try:
-                if self.start_box.isChecked():
-                    self.values['auto'] = "True"
-                    log.info(f"Startup Enable")
-                elif not self.start_box.isChecked() and self.data[1]:
-                    self.start_box.setChecked(True)
-                    message = ["warning", "Action not allowed", "Auto start enabled by parental control"]
+            if self.start_box.isChecked():
+                self.values['auto'] = "True"
+                log.info(f"Startup Enable")
+            else:
+                if self.data is not None:
+                    if self.data[1]:
+                        self.start_box.setChecked(True)
+                        message = ["warning", "Action not allowed", "Auto start enabled by parental control"]
+                    else:
+                        self.values['auto'] = "False"
+                        log.info(f"Startup Disable")
                 else:
                     self.values['auto'] = "False"
                     log.info(f"Startup Disable")
-            except IndexError:
-                self.values['auto'] = "False"
-                log.info(f"Startup Disable")
 
             if self.app_time_track_box.isChecked() and check_key():
                 self.values['app_tracking'] = "True"
@@ -540,6 +544,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def reset_config(self):
         create_config()
         self.init_setting_page()
+        QMessageBox.information(self, "Settings", "Config has been reset")
 
     # Chart list
     def tut_chart(self):

@@ -12,7 +12,7 @@ def main(background):
     w = GifAnimationDialog()
     w.setScreen(app.primaryScreen())
     w.check_background(background)
-    app.exec()
+    sys.exit(app.exec())
 
 
 if __name__ == '__main__':

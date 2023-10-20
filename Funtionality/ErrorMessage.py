@@ -1,12 +1,6 @@
 import sys
 from PySide6 import QtWidgets, QtCore
-from PySide6.QtWidgets import QMessageBox
-
-
-def button_clicked(button):
-    if button.text() == "OK":
-        sys.exit()
-        pass
+from PySide6.QtWidgets import QMessageBox, QApplication
 
 
 class WarningMessageBox(QtWidgets.QMainWindow):
@@ -19,5 +13,7 @@ class WarningMessageBox(QtWidgets.QMainWindow):
         if error == "Application Running":
             message_box.setIcon(QMessageBox.Warning)
             message_box.setStandardButtons(QMessageBox.Ok)
-            message_box.buttonClicked.connect(button_clicked)
         message_box.exec()
+        self.destroy()
+        QApplication.exit()
+        sys.exit()

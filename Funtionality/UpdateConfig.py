@@ -13,6 +13,7 @@ use_time = None
 
 def tracking_app_use_time():
     global use_time
+    waiting()
     try:
         use_time = threading.Thread(target=tracking_instance.run)
         use_time.start()
