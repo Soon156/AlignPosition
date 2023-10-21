@@ -125,8 +125,11 @@ def clear_log():
 
 # check alive of program
 def check_process():
+    counter = 0
     for p in process_iter():
         if p.name() == "AlignPosition.exe":
+            counter += 1
+        if counter > 1:
             return True
     return False
 
