@@ -63,7 +63,8 @@ def write_config(dictionary_str):
             pass
         log.info("Auto-start Disable")
     if dictionary_str['app_tracking'] == "True":
-        tracking_app_use_time()
+        if not get_app_tracking_state():
+            tracking_app_use_time()
     else:
         stop_tracking()
     config = configparser.ConfigParser(allow_no_value=True)
