@@ -23,22 +23,30 @@ class PostureRecognizerThread(QThread):
 
     def __init__(self):
         super().__init__()
-        self.last_posture = "good"
+        self.old_time = 0
+        self.average = 0
+        self.bad_time = 0
+        self.new_time = 0
+        self.model = None
+        self.date_today = None
+        self.values = None
         self.last_movement_time = None
         self.running = False
-        self.model = tf.keras.models.load_model(abs_model_file_path)
-        self.old_time, self.bad_time = read_elapsed_time_data()
-        self.new_time = self.old_time
-        self.date_today = date.today()
+        self.last_posture = "good"
 
     def run(self):
         try:
             self.running = True
-            average = 0
+            self.old_time, self.bad_time = read_elapsed_time_data()
+            self.new_time = self.old_time
+            self.model = tf.keras.models.load_model(abs_model_file_path)
+            self.date_today = date.today()
+            self.average = 0
+            self.values = get_config()
+
             detector = LandmarkResult()
             # Create a VideoCapture object to capture video from the camera
-            values = get_config()
-            cap = cv2.VideoCapture(int(values.get('camera')), cv2.CAP_DSHOW)
+            cap = cv2.VideoCapture(int(self.values.get('camera')), cv2.CAP_DSHOW)
             cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
             cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
             start_time = time.time()
@@ -58,7 +66,7 @@ class PostureRecognizerThread(QThread):
             switch = False
             threshold = 30  # black image
             blank_counter = 0
-            bad_threshold = float(values.get('bad_posture')) * 60
+            bad_threshold = float(self.values.get('bad_posture')) * 60
             last_frame = None
             major_change = 10000000
             diff_sum_record = []
@@ -92,8 +100,8 @@ class PostureRecognizerThread(QThread):
                     if frame_count >= 25 and not counter:
                         frame_count = 0
                         if not len(results) == 0:
-                            average = sum(results) / len(results)
-                            predicted_labels = [0 if average < 0.6 else 1]
+                            self.average = sum(results) / len(results)
+                            predicted_labels = [0 if self.average < 0.6 else 1]
                             if predicted_labels[0] == 0:
                                 label = "good"
                             else:
@@ -144,7 +152,7 @@ class PostureRecognizerThread(QThread):
                                 else:
                                     results = []
                                     label = "moving"
-                                    average = 0
+                                    self.average = 0
 
                                 diff_count = 0
 
@@ -166,7 +174,7 @@ class PostureRecognizerThread(QThread):
                                     pass_time = int(time.time() - idle_time)
 
                                     # Check if the counter should be updated
-                                    if pass_time >= float(values.get('idle')) * 60:  # If idle time > threshold
+                                    if pass_time >= float(self.values.get('idle')) * 60:  # If idle time > threshold
                                         temp_time = pass_time  # set temp time
                                     else:
                                         temp_time = 0  # reset temp time to avoid minus if smaller then threshold
@@ -175,35 +183,11 @@ class PostureRecognizerThread(QThread):
                                               "type object 'PoseLandmarkerResult' has no attribute 'pose_landmarks'"]:
                                 raise Exception(e)
 
-                    if values.get('dev') == "True" and not data[1]:
-                        frame = cv2.flip(frame, 1)
-                        frame = cv2.resize(frame, (640, 360))
-                        label_text = f"Posture: {label}, {average}"
-                        cv2.putText(frame, label_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-                        # Display the frame with pose landmarks and labels
-                        cv2.imshow("Pose Landmarks", frame)
-                        temp = cv2.waitKey(1) & 0xFF
-                        temp1 = 255
-
-                        if temp != 255:
-                            temp1 = temp
-
-                        if temp1 == ord('g'):
-                            timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-                            frame_filename = f'good_{timestamp}.jpg'
-                            file_path = os.path.join(temp_folder, frame_filename)
-                            cv2.imwrite(file_path, frame)
-                            log.info(f"{frame_filename} is write to {file_path}")
-
-                        if temp1 & 0xFF == ord('b'):
-                            timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-                            frame_filename = f'bad_{timestamp}.jpg'
-                            cv2.imwrite(frame_filename, frame)
-                            file_path = os.path.join(temp_folder, frame_filename)
-                            log.info(f"{frame_filename} is write to {file_path}")
-
-                        if temp1 == ord('q'):
-                            self.running = False
+                    if data is not None:
+                        if not data[1]:
+                            self.show_dev(frame, label)
+                    else:
+                        self.show_dev(frame, label)
 
                     if label == "bad":
                         if bad_control:
@@ -261,3 +245,34 @@ class PostureRecognizerThread(QThread):
 
     def save_usetime(self):
         save_elapsed_time_data(self.new_time, self.date_today, self.bad_time)
+
+    def show_dev(self, frame, label):
+        if self.values.get('dev') == "True":
+            frame = cv2.flip(frame, 1)
+            frame = cv2.resize(frame, (640, 360))
+            label_text = f"Posture: {label}, {self.average}"
+            cv2.putText(frame, label_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+            # Display the frame with pose landmarks and labels
+            cv2.imshow("Pose Landmarks", frame)
+            temp = cv2.waitKey(1) & 0xFF
+            temp1 = 255
+
+            if temp != 255:
+                temp1 = temp
+
+            if temp1 == ord('g'):
+                timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+                frame_filename = f'good_{timestamp}.jpg'
+                file_path = os.path.join(temp_folder, frame_filename)
+                cv2.imwrite(file_path, frame)
+                log.info(f"{frame_filename} is write to {file_path}")
+
+            if temp1 & 0xFF == ord('b'):
+                timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+                frame_filename = f'bad_{timestamp}.jpg'
+                file_path = os.path.join(temp_folder, frame_filename)
+                cv2.imwrite(file_path, frame)
+                log.info(f"{frame_filename} is write to {file_path}")
+
+            if temp1 == ord('q'):
+                self.running = False
