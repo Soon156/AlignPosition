@@ -12,9 +12,8 @@ from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox, QSizePolic
 from PySide6.QtCharts import QBarSet, QBarSeries, QBarCategoryAxis, QChart, QChartView
 from PySide6.QtGui import QPainter, QColor, QDesktopServices, QIcon, QAction
 from Funtionality.Config import get_config, get_available_cameras, create_config, \
-    key_file_path, abs_logo_path, remove_all_data, check_key, reset_parental
-# parental_monitoring
-from Funtionality.UpdateConfig import write_config, tracking_instance, stop_tracking, use_time, waiting, \
+    key_file_path, abs_logo_path, remove_all_data, check_key, reset_parental  # parental_monitoring
+from Funtionality.UpdateConfig import write_config, tracking_instance, stop_tracking, waiting, \
     get_app_tracking_state
 from Funtionality.Notification import first_notify, break_notify
 from ParentalControl.Auth import change_password, login_user, read_use_time, \
@@ -192,6 +191,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.request = None
 
     def start_parental_control_thread(self):
+        # parental_monitoring(value=1)
         self.parental_thread = ParentalTracking()
         self.parental_thread.setParent(self)  # set parent failed, parent on other thread Checkme
         self.parental_thread.cancel.connect(self.call_window2)
@@ -848,18 +848,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             except:
                 pass
 
-            # Close all dialog window
-            windows = [self.w, self.w1, self.w2, self.w3, self.w4]
-            for window in windows:
-                try:
-                    window.destroy()
-                except Exception:
-                    pass
-            try:
-                waiting()
-            except Exception:
-                pass
-
             try:
                 while self.parental_thread.isRunning():
                     pass
@@ -870,6 +858,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     pass
             except Exception:
                 pass
+            try:
+                waiting()
+            except Exception:
+                pass
+
+            # Close all dialog window
+            windows = [self.w, self.w1, self.w2, self.w3, self.w4]
+            for window in windows:
+                try:
+                    window.destroy()
+                except Exception:
+                    pass
+
             self.destroy()  # End Main Window
             QApplication.exit()
             sys.exit()

@@ -1,4 +1,4 @@
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtCore import Qt
 from PySide6.QtGui import QMovie, QPixmap
 from PySide6.QtWidgets import QDialog, QLabel, QVBoxLayout
 
@@ -48,8 +48,14 @@ class GifAnimationDialog(QDialog):
         values = get_config()
         if check_logo() and check_model():
             if not check_process():
-                get_config()
-                clear_log()
+                try:
+                    get_config()
+                    clear_log()
+                except Exception as e:
+                    title = "Warning"
+                    hint = str(e)
+                    error = "Something Wrong"
+                    WarningMessageBox(title, hint, error)
 
                 if values['app_tracking'] == "True" and check_key():
                     tracking_app_use_time()

@@ -3,7 +3,7 @@ import time
 import logging as log
 from datetime import datetime
 from PySide6.QtCore import QThread, Signal
-from Funtionality.Config import get_config  # parental_monitoring
+from Funtionality.Config import get_config # parental_monitoring
 from Funtionality.Notification import show_control, reset_signal, get_signal
 from ParentalControl.Auth import read_table_data
 
@@ -25,8 +25,8 @@ class ParentalTracking(QThread):
         # parental_monitoring(value=1)
 
     def stop_parental_thread(self):
+        # parental_monitoring(value=0)
         self.cond_usetime = False
-        # parental_monitoring()
 
     def update_table_data(self):
         self.data = read_table_data()

@@ -16,6 +16,7 @@ current_month, current_year = now.month, now.year
 # App_Use_Time Filter List
 filter_list = ["Align Position", "null", "Application Frame Host", "", "Pick an app"]
 
+
 def get_registry_value(key=winreg.HKEY_CURRENT_USER, subkey="SOFTWARE\Align Position", value_name="Resource Folder"):
     try:
         with winreg.OpenKey(key, subkey) as registry_key:
@@ -124,11 +125,8 @@ def clear_log():
 
 # check alive of program
 def check_process():
-    counter = 0
     for p in process_iter():
         if p.name() == "AlignPosition.exe":
-            counter += 1
-        if counter > 1:
             return True
     return False
 
