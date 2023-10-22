@@ -27,8 +27,9 @@ class Tracking:
         self.cond_usetime = False
 
     def save_app_usetime(self):
-        self.app_use_times[self.specific_date] = self.usage_time_for_specific_date
-        write_app_use_time(self.app_use_times)
+        if self.app_use_times is not None:
+            self.app_use_times[self.specific_date] = self.usage_time_for_specific_date
+            write_app_use_time(self.app_use_times)
 
     def run(self):
         log.info("App use time tracking start")

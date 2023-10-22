@@ -812,6 +812,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if self.w3_authorize_lock:
             self.w3_authorize_lock = False
             if self.request == "remove_data":
+                self.stop_waiting_all()
                 try:
                     remove_all_data()
                     QMessageBox.information(self, "App Reset", "All data has been removed successfully!")
@@ -835,33 +836,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self.posture_recognizer.stop_capture()
         else:
             self.hide()
-            try:
-                self.posture_recognizer.stop_capture()  # Stop posture detection
-            except:
-                pass
-            try:
-                self.parental_thread.stop_parental_thread()  # Stop parental time tracking
-            except:
-                pass
-            try:
-                stop_tracking()  # Stop app use time tracking
-            except:
-                pass
-
-            try:
-                while self.parental_thread.isRunning():
-                    pass
-            except Exception:
-                pass
-            try:
-                while self.posture_recognizer.isRunning():
-                    pass
-            except Exception:
-                pass
-            try:
-                waiting()
-            except Exception:
-                pass
+            self.stop_waiting_all()
 
             # Close all dialog window
             windows = [self.w, self.w1, self.w2, self.w3, self.w4]
@@ -874,3 +849,32 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.destroy()  # End Main Window
             QApplication.exit()
             sys.exit()
+
+    def stop_waiting_all(self):
+        try:
+            self.posture_recognizer.stop_capture()  # Stop posture detection
+        except:
+            pass
+        try:
+            self.parental_thread.stop_parental_thread()  # Stop parental time tracking
+        except:
+            pass
+        try:
+            stop_tracking()  # Stop app use time tracking
+        except:
+            pass
+
+        try:
+            while self.parental_thread.isRunning():
+                pass
+        except Exception:
+            pass
+        try:
+            while self.posture_recognizer.isRunning():
+                pass
+        except Exception:
+            pass
+        try:
+            waiting()
+        except Exception:
+            pass
