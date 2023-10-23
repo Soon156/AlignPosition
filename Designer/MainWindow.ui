@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1057</width>
-    <height>508</height>
+    <width>1173</width>
+    <height>526</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -107,11 +107,69 @@ background-color: transparent;}</string>
           <enum>QFrame::Raised</enum>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_11">
+          <property name="spacing">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
           <property name="bottomMargin">
            <number>0</number>
           </property>
           <item>
+           <widget class="QFrame" name="frame_12">
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_13">
+             <property name="spacing">
+              <number>0</number>
+             </property>
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="user_lbl">
+               <property name="font">
+                <font>
+                 <family>Roboto</family>
+                 <pointsize>11</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Hi User</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
            <widget class="QFrame" name="frame1">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>178</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="styleSheet">
              <string notr="true">QFrame {background: rgba(46, 2, 102, 0.5);
 border-radius: 25px;
@@ -469,7 +527,7 @@ border-radius: 25px;
           <string notr="true">background-color: transparent;</string>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="Dashboard">
           <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -859,11 +917,461 @@ background: #a200ff;
                    </property>
                   </widget>
                  </item>
+                 <item alignment="Qt::AlignRight">
+                  <widget class="QPushButton" name="parental_setting_btn">
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="resource.qrc">
+                     <normaloff>:/icon/icons8-control-48.png</normaloff>:/icon/icons8-control-48.png</iconset>
+                   </property>
+                   <property name="iconSize">
+                    <size>
+                     <width>30</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QFrame" name="frame_13">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="frameShape">
+                 <enum>QFrame::StyledPanel</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Raised</enum>
+                </property>
+                <layout class="QHBoxLayout" name="horizontalLayout_20">
+                 <property name="spacing">
+                  <number>15</number>
+                 </property>
+                 <property name="leftMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <widget class="QFrame" name="frame_14">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <family>Roboto</family>
+                     <pointsize>1</pointsize>
+                    </font>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">QDoubleSpinBox {
+	padding: 5px;
+    border: 1px solid #000;
+    border-radius: 5px;
+    border-color: white;
+}
+
+QDoubleSpinBox::up-button {
+    subcontrol-origin: border;
+    subcontrol-position: top right;
+    border-image: url(:/icon/icons8-up-48.png) 1;
+}
+
+QDoubleSpinBox::down-button {
+    subcontrol-origin: border;
+    subcontrol-position: bottom right;
+    border-image: url(:/icon/icons8-down-48.png) 1;
+}</string>
+                   </property>
+                   <property name="frameShape">
+                    <enum>QFrame::StyledPanel</enum>
+                   </property>
+                   <property name="frameShadow">
+                    <enum>QFrame::Raised</enum>
+                   </property>
+                   <layout class="QGridLayout" name="gridLayout_2">
+                    <property name="leftMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="topMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="rightMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="bottomMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="horizontalSpacing">
+                     <number>13</number>
+                    </property>
+                    <property name="verticalSpacing">
+                     <number>3</number>
+                    </property>
+                    <item row="6" column="0">
+                     <widget class="QLabel" name="label_8">
+                      <property name="font">
+                       <font>
+                        <family>Roboto</family>
+                        <pointsize>10</pointsize>
+                       </font>
+                      </property>
+                      <property name="text">
+                       <string>Sat</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="3" column="1">
+                     <widget class="QDoubleSpinBox" name="wed_box"/>
+                    </item>
+                    <item row="7" column="0">
+                     <widget class="QLabel" name="label_9">
+                      <property name="font">
+                       <font>
+                        <family>Roboto</family>
+                        <pointsize>10</pointsize>
+                       </font>
+                      </property>
+                      <property name="text">
+                       <string>Sun</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="0">
+                     <widget class="QLabel" name="label_10">
+                      <property name="font">
+                       <font>
+                        <family>Roboto</family>
+                        <pointsize>12</pointsize>
+                       </font>
+                      </property>
+                      <property name="text">
+                       <string>Day</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="5" column="0">
+                     <widget class="QLabel" name="label_7">
+                      <property name="font">
+                       <font>
+                        <family>Roboto</family>
+                        <pointsize>10</pointsize>
+                       </font>
+                      </property>
+                      <property name="text">
+                       <string>Fri</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="1">
+                     <widget class="QDoubleSpinBox" name="mon_box"/>
+                    </item>
+                    <item row="6" column="1">
+                     <widget class="QDoubleSpinBox" name="sat_box"/>
+                    </item>
+                    <item row="7" column="1">
+                     <widget class="QDoubleSpinBox" name="sun_box"/>
+                    </item>
+                    <item row="1" column="0">
+                     <widget class="QLabel" name="label">
+                      <property name="font">
+                       <font>
+                        <family>Roboto</family>
+                        <pointsize>10</pointsize>
+                       </font>
+                      </property>
+                      <property name="text">
+                       <string>Mon</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="4" column="0">
+                     <widget class="QLabel" name="label_5">
+                      <property name="font">
+                       <font>
+                        <family>Roboto</family>
+                        <pointsize>10</pointsize>
+                       </font>
+                      </property>
+                      <property name="text">
+                       <string>Thu</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="2" column="1">
+                     <widget class="QDoubleSpinBox" name="tue_box"/>
+                    </item>
+                    <item row="3" column="0">
+                     <widget class="QLabel" name="label_4">
+                      <property name="font">
+                       <font>
+                        <family>Roboto</family>
+                        <pointsize>10</pointsize>
+                       </font>
+                      </property>
+                      <property name="text">
+                       <string>Wed</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="2" column="0">
+                     <widget class="QLabel" name="label_2">
+                      <property name="font">
+                       <font>
+                        <family>Roboto</family>
+                        <pointsize>10</pointsize>
+                       </font>
+                      </property>
+                      <property name="text">
+                       <string>Tue</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="5" column="1">
+                     <widget class="QDoubleSpinBox" name="fri_box"/>
+                    </item>
+                    <item row="0" column="1">
+                     <widget class="QLabel" name="label_11">
+                      <property name="font">
+                       <font>
+                        <family>Roboto</family>
+                        <pointsize>12</pointsize>
+                       </font>
+                      </property>
+                      <property name="text">
+                       <string>Time Limit</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="4" column="1">
+                     <widget class="QDoubleSpinBox" name="thu_box"/>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QTableWidget" name="usetime_table">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>770</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">QTableWidget { border: none; gridline-color: #956a9e;
+}
+
+QTableWidget QHeaderView::section ,QTableCornerButton::section{
+    background-color: #9D43C9;
+}</string>
+                   </property>
+                   <property name="selectionMode">
+                    <enum>QAbstractItemView::MultiSelection</enum>
+                   </property>
+                   <property name="showGrid">
+                    <bool>true</bool>
+                   </property>
+                   <property name="gridStyle">
+                    <enum>Qt::DashLine</enum>
+                   </property>
+                   <attribute name="horizontalHeaderVisible">
+                    <bool>true</bool>
+                   </attribute>
+                   <attribute name="horizontalHeaderDefaultSectionSize">
+                    <number>31</number>
+                   </attribute>
+                   <attribute name="verticalHeaderVisible">
+                    <bool>false</bool>
+                   </attribute>
+                   <row>
+                    <property name="text">
+                     <string>Mon</string>
+                    </property>
+                   </row>
+                   <row>
+                    <property name="text">
+                     <string>Tue</string>
+                    </property>
+                   </row>
+                   <row>
+                    <property name="text">
+                     <string>Wed</string>
+                    </property>
+                   </row>
+                   <row>
+                    <property name="text">
+                     <string>Thu</string>
+                    </property>
+                   </row>
+                   <row>
+                    <property name="text">
+                     <string>Fri</string>
+                    </property>
+                   </row>
+                   <row>
+                    <property name="text">
+                     <string>Sat</string>
+                    </property>
+                   </row>
+                   <row>
+                    <property name="text">
+                     <string>Sun</string>
+                    </property>
+                   </row>
+                   <column>
+                    <property name="text">
+                     <string>0</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>1</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>2</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>3</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>4</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>5</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>6</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>7</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>8</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>9</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>10</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>11</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>12</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>13</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>14</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>15</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>16</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>17</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>18</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>19</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>20</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>21</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>22</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>23</string>
+                    </property>
+                   </column>
+                  </widget>
+                 </item>
                 </layout>
                </widget>
               </item>
               <item>
                <widget class="QFrame" name="frame_5">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="frameShape">
                  <enum>QFrame::StyledPanel</enum>
                 </property>
@@ -871,7 +1379,10 @@ background: #a200ff;
                  <enum>QFrame::Raised</enum>
                 </property>
                 <layout class="QHBoxLayout" name="horizontalLayout_11">
-                 <item>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <item alignment="Qt::AlignLeft">
                   <widget class="QCheckBox" name="parental_box">
                    <property name="font">
                     <font>
@@ -904,337 +1415,15 @@ QCheckBox::indicator:checked {
                   </widget>
                  </item>
                  <item alignment="Qt::AlignRight">
-                  <widget class="QPushButton" name="parental_setting_btn">
-                   <property name="text">
-                    <string/>
-                   </property>
-                   <property name="icon">
-                    <iconset resource="resource.qrc">
-                     <normaloff>:/icon/icons8-control-48.png</normaloff>:/icon/icons8-control-48.png</iconset>
-                   </property>
-                   <property name="iconSize">
-                    <size>
-                     <width>30</width>
-                     <height>30</height>
-                    </size>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-              <item alignment="Qt::AlignLeft|Qt::AlignVCenter">
-               <widget class="QTableWidget" name="usetime_table">
-                <property name="minimumSize">
-                 <size>
-                  <width>803</width>
-                  <height>234</height>
-                 </size>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">QTableWidget { background-color: transparent; border: none;
-}
-QTableWidget QHeaderView::section ,QTableCornerButton::section{
-    background-color: #A4BAFE;
-}</string>
-                </property>
-                <property name="lineWidth">
-                 <number>0</number>
-                </property>
-                <property name="cornerButtonEnabled">
-                 <bool>false</bool>
-                </property>
-                <attribute name="horizontalHeaderDefaultSectionSize">
-                 <number>32</number>
-                </attribute>
-                <row>
-                 <property name="text">
-                  <string>Mon</string>
-                 </property>
-                </row>
-                <row>
-                 <property name="text">
-                  <string>Tue</string>
-                 </property>
-                </row>
-                <row>
-                 <property name="text">
-                  <string>Wed</string>
-                 </property>
-                </row>
-                <row>
-                 <property name="text">
-                  <string>Thu</string>
-                 </property>
-                </row>
-                <row>
-                 <property name="text">
-                  <string>Fri</string>
-                 </property>
-                </row>
-                <row>
-                 <property name="text">
-                  <string>Sat</string>
-                 </property>
-                </row>
-                <row>
-                 <property name="text">
-                  <string>Sun</string>
-                 </property>
-                </row>
-                <column>
-                 <property name="text">
-                  <string>0</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>1</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>2</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>3</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>4</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>5</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>6</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>7</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>8</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>9</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>10</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>11</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>12</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>13</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>14</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>15</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>16</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>17</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>18</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>19</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>20</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>21</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>22</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>23</string>
-                 </property>
-                </column>
-               </widget>
-              </item>
-              <item>
-               <widget class="QFrame" name="TotalUsetimeFame">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="frameShape">
-                 <enum>QFrame::StyledPanel</enum>
-                </property>
-                <property name="frameShadow">
-                 <enum>QFrame::Raised</enum>
-                </property>
-                <layout class="QHBoxLayout" name="horizontalLayout_10">
-                 <property name="spacing">
-                  <number>0</number>
-                 </property>
-                 <property name="leftMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="topMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="rightMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="bottomMargin">
-                  <number>0</number>
-                 </property>
-                 <item>
-                  <widget class="QFrame" name="frame_4">
-                   <property name="frameShape">
-                    <enum>QFrame::StyledPanel</enum>
-                   </property>
-                   <property name="frameShadow">
-                    <enum>QFrame::Raised</enum>
-                   </property>
-                   <layout class="QVBoxLayout" name="verticalLayout_7">
-                    <item>
-                     <widget class="QFrame" name="frame_6">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="frameShape">
-                       <enum>QFrame::StyledPanel</enum>
-                      </property>
-                      <property name="frameShadow">
-                       <enum>QFrame::Raised</enum>
-                      </property>
-                      <layout class="QHBoxLayout" name="horizontalLayout_12">
-                       <property name="spacing">
-                        <number>0</number>
-                       </property>
-                       <property name="leftMargin">
-                        <number>0</number>
-                       </property>
-                       <property name="topMargin">
-                        <number>0</number>
-                       </property>
-                       <item alignment="Qt::AlignLeft">
-                        <widget class="QFrame" name="frame_9">
-                         <property name="frameShape">
-                          <enum>QFrame::StyledPanel</enum>
-                         </property>
-                         <property name="frameShadow">
-                          <enum>QFrame::Raised</enum>
-                         </property>
-                         <layout class="QHBoxLayout" name="horizontalLayout_17">
-                          <item>
-                           <widget class="QLabel" name="usetime_lbl">
-                            <property name="sizePolicy">
-                             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                              <horstretch>0</horstretch>
-                              <verstretch>0</verstretch>
-                             </sizepolicy>
-                            </property>
-                            <property name="font">
-                             <font>
-                              <family>Roboto</family>
-                              <pointsize>12</pointsize>
-                             </font>
-                            </property>
-                            <property name="text">
-                             <string>Total Use Time per day (h)</string>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QDoubleSpinBox" name="usetime_box">
-                            <property name="styleSheet">
-                             <string notr="true">QDoubleSpinBox {
-	padding: 5px;
-}
-
-QDoubleSpinBox::up-button {
-    subcontrol-origin: border;
-    subcontrol-position: top right;
-    border-image: url(:/icon/icons8-up-48.png) 1;
-}
-
-QDoubleSpinBox::down-button {
-    subcontrol-origin: border;
-    subcontrol-position: bottom right;
-    border-image: url(:/icon/icons8-down-48.png) 1;
-}</string>
-                            </property>
-                           </widget>
-                          </item>
-                         </layout>
-                        </widget>
-                       </item>
-                       <item alignment="Qt::AlignRight">
-                        <widget class="QPushButton" name="usetime_btn">
-                         <property name="styleSheet">
-                          <string notr="true">QPushButton {background-color: #00d991;}
+                  <widget class="QPushButton" name="usetime_btn">
+                   <property name="styleSheet">
+                    <string notr="true">QPushButton {background-color: #00d991;}
 QPushButton:hover{background-color: #00fca8;}
 QPushButton:pressed{background-color: #00fca8;}</string>
-                         </property>
-                         <property name="text">
-                          <string>Apply</string>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </widget>
-                    </item>
-                   </layout>
+                   </property>
+                   <property name="text">
+                    <string>Apply</string>
+                   </property>
                   </widget>
                  </item>
                 </layout>
@@ -1479,6 +1668,9 @@ QComboBox::down-arrow:on { /* shift the arrow when popup is open */
                       <property name="styleSheet">
                        <string notr="true">QDoubleSpinBox {
 	padding: 5px;
+border: 1px solid #000;
+border-radius: 5px;
+border-color: white;
 }
 
 QDoubleSpinBox::up-button {
@@ -1491,7 +1683,8 @@ QDoubleSpinBox::down-button {
     subcontrol-origin: border;
     subcontrol-position: bottom right;
     border-image: url(:/icon/icons8-down-48.png) 1;
-}</string>
+}
+</string>
                       </property>
                      </widget>
                     </item>
@@ -1599,10 +1792,16 @@ QDoubleSpinBox::down-button {
                  <item alignment="Qt::AlignLeft">
                   <widget class="QComboBox" name="alert_box">
                    <property name="sizePolicy">
-                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                    <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                      <horstretch>0</horstretch>
                      <verstretch>0</verstretch>
                     </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>118</width>
+                     <height>0</height>
+                    </size>
                    </property>
                    <property name="styleSheet">
                     <string notr="true"/>
@@ -1680,10 +1879,16 @@ QDoubleSpinBox::down-button {
                  <item alignment="Qt::AlignLeft">
                   <widget class="QComboBox" name="camera_box">
                    <property name="sizePolicy">
-                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                    <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                      <horstretch>0</horstretch>
                      <verstretch>0</verstretch>
                     </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>118</width>
+                     <height>0</height>
+                    </size>
                    </property>
                   </widget>
                  </item>
@@ -1709,7 +1914,7 @@ background: #a200ff;
 }
 
 QPushButton#apply_btn{
-background-color: #00d991;
+background-color: #02a36e;
 }
 
 QPushButton#apply_btn:hover{
@@ -1808,7 +2013,7 @@ background: #d10000;
                  <item alignment="Qt::AlignHCenter">
                   <widget class="QPushButton" name="web_btn">
                    <property name="text">
-                    <string>Info</string>
+                    <string>Info/Help</string>
                    </property>
                    <property name="icon">
                     <iconset resource="resource.qrc">
@@ -1861,7 +2066,7 @@ background: #d10000;
                 <number>0</number>
                </property>
                <item alignment="Qt::AlignLeft">
-                <widget class="QLabel" name="label_7">
+                <widget class="QLabel" name="page_hint_lbl">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
                    <horstretch>0</horstretch>
@@ -1880,6 +2085,35 @@ background: #d10000;
                  <property name="alignment">
                   <set>Qt::AlignCenter</set>
                  </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QFrame" name="UsernameFrame">
+                 <property name="frameShape">
+                  <enum>QFrame::StyledPanel</enum>
+                 </property>
+                 <property name="frameShadow">
+                  <enum>QFrame::Raised</enum>
+                 </property>
+                 <layout class="QHBoxLayout" name="horizontalLayout_19">
+                  <item>
+                   <widget class="QLabel" name="username_lbl">
+                    <property name="text">
+                     <string>Username</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLineEdit" name="username_line">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
                 </widget>
                </item>
                <item>
@@ -1905,7 +2139,14 @@ background: #d10000;
                    </widget>
                   </item>
                   <item>
-                   <widget class="QLineEdit" name="old_PIN_line"/>
+                   <widget class="QLineEdit" name="old_PIN_line">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </widget>
@@ -1933,7 +2174,14 @@ background: #d10000;
                    </widget>
                   </item>
                   <item>
-                   <widget class="QLineEdit" name="new_PIN_line"/>
+                   <widget class="QLineEdit" name="new_PIN_line">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </widget>
@@ -1961,7 +2209,14 @@ background: #d10000;
                    </widget>
                   </item>
                   <item>
-                   <widget class="QLineEdit" name="confirm_PIN_line"/>
+                   <widget class="QLineEdit" name="confirm_PIN_line">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </widget>

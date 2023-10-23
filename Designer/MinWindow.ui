@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>200</width>
-    <height>46</height>
+    <width>194</width>
+    <height>47</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -22,11 +22,20 @@
 </string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
-   <property name="spacing">
-    <number>10</number>
-   </property>
    <item alignment="Qt::AlignVCenter">
     <widget class="QLabel" name="use_time_lbl">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>100</width>
+       <height>0</height>
+      </size>
+     </property>
      <property name="font">
       <font>
        <family>Roboto</family>

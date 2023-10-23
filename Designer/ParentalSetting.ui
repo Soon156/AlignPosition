@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>258</width>
-    <height>198</height>
+    <width>219</width>
+    <height>229</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,6 +19,10 @@
   </property>
   <property name="styleSheet">
    <string notr="true">#Dialog {background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 rgb(26, 16, 57), stop:0.5 rgb(41, 14, 47), stop:1 rgb(26, 16, 57))}
+
+QPushButton{
+padding: 5px 20px 5px 20px;
+}
 </string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -77,7 +81,7 @@ QCheckBox::indicator:checked {
        <widget class="QPushButton" name="reset_parental_btn">
         <property name="minimumSize">
          <size>
-          <width>130</width>
+          <width>150</width>
           <height>0</height>
          </size>
         </property>
@@ -102,7 +106,7 @@ background: #d10000;
         </property>
         <property name="minimumSize">
          <size>
-          <width>130</width>
+          <width>150</width>
           <height>0</height>
          </size>
         </property>
@@ -120,7 +124,7 @@ QPushButton:pressed{background-color: #00fca8;}</string>
        <widget class="QPushButton" name="exct_data_btn">
         <property name="minimumSize">
          <size>
-          <width>130</width>
+          <width>150</width>
           <height>0</height>
          </size>
         </property>
@@ -143,7 +147,7 @@ background: #a200ff;
        <widget class="QPushButton" name="changePIN_btn">
         <property name="minimumSize">
          <size>
-          <width>130</width>
+          <width>150</width>
           <height>0</height>
          </size>
         </property>
