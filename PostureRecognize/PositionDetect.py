@@ -191,19 +191,18 @@ class PostureRecognizerThread(QThread):
 
                     if label == "bad":
                         if bad_control:
-                            if bad_posture_time > 3:
-                                self.bad_time += bad_posture_time
                             bad_temp_time = time.time()
-                            bad_posture_time = 0
                             bad_control = False
                         else:
                             bad_posture_time = time.time() - bad_temp_time
-
                             if bad_posture_time > bad_threshold:
                                 zroya.show(posture_notify)
                                 bad_temp_time = time.time()
                     else:
                         bad_control = True
+                        if bad_posture_time > 3:
+                            self.bad_time += (bad_posture_time - 2)  # Subtract processing time
+                            bad_posture_time = 0
 
                     # Display the labels on the dev frame
                     self.update_overlay.emit(label)
