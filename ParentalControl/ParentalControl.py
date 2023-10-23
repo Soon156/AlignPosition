@@ -44,7 +44,6 @@ class ParentalTracking(QThread):
         while self.cond_usetime:
             time.sleep(1)
             self.update_time()
-            # TODO Check total use time
 
             limit_time = self.data[0][self.current_day]
             limit_time_in_sec = limit_time * 60 * 60
