@@ -144,7 +144,7 @@ def read_app_use_time():
                 return json.loads(json_data)
         except FileNotFoundError:
             log.info("No app use time found")
-        return encrypted_data
+    return encrypted_data
 
 
 def encrypt_data(data, key):
