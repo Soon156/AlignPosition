@@ -34,6 +34,13 @@ btm_side_menu = "background: #7346ad;border-bottom-left-radius: 25px;border-bott
 choice_side_menu = "background: #7346ad;"
 
 
+def toggle_cell(item):
+    if item.background() == QColor(0, 0, 0, 0):
+        item.setBackground(QColor(113, 94, 117))
+    else:
+        item.setBackground(QColor(0, 0, 0, 0))
+
+
 class MainWindow(QMainWindow, Ui_MainWindow):
 
     def __init__(self):
@@ -52,6 +59,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.settings_btn_2.clicked.connect(self.settings_page)
         self.parental_box.clicked.connect(self.update_parental_box)
         self.warning_msg = None
+        self.user_lbl.hide()
+        self.UsernameFrame.hide()
 
         # Dashboard page
         self.popout_btn.clicked.connect(self.min_window)
@@ -70,8 +79,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.init_setting_page()
         self.reset_btn.clicked.connect(self.reset_config)
         self.apply_btn.clicked.connect(self.update_setting)
-        self.usetime_table.cellClicked.connect(self.toggle_cell)
-        self.web_btn.clicked.connect(lambda: QDesktopServices.openUrl("https://github.com/Soon156/AlignPosition/"))
+        self.usetime_table.itemClicked.connect(toggle_cell)
+        self.web_btn.clicked.connect(lambda: QDesktopServices.openUrl("https://github.com/Soon156/AlignPosition/wiki"))
         self.remove_data_btn.clicked.connect(self.remove_data)
 
         # Authenticate page
@@ -98,6 +107,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.dragPos = None  # Window Draggable
         self.start_time = 0  # Monitoring start time for break calculation
         self.monitoring_state = False  # is camera in use
+        self.usetime_table.viewport().setMouseTracking(True)
+        self.usetime_table.viewport().installEventFilter(self)
 
         # monitoring thread object
         self.posture_recognizer = PostureRecognizerThread()
@@ -160,7 +171,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.tray_icon.show()
 
         # Init window
-        self.w = None  # Small Window
+        self.w = MinWindow(self)  # Small Window
         self.w1 = OverlayWidget()  # PopOut Window
         self.w1.setScreen(self.screen())
         self.w2 = PINDialog()  # authorize window call by notification
@@ -193,7 +204,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def start_parental_control_thread(self):
         # parental_monitoring(value=1)
         self.parental_thread = ParentalTracking()
-        self.parental_thread.setParent(self)  # set parent failed, parent on other thread Checkme
+        self.parental_thread.setParent(self)
         self.parental_thread.cancel.connect(self.call_window2)
         self.parental_thread.start()
         self.parental_control_thread = True
@@ -254,10 +265,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.cont_stackedwidget.setCurrentIndex(2)  # Setting page
         self.init_setting_page()
 
-    def min_window(self):
-        self.w = MinWindow(self)  # Small Window
+    def min_window(self):  # Small Window
         self.w.init()
         self.popout_btn.setEnabled(False)
+        self.hide()
 
     # Monitoring
     def change_monitoring_state(self, state):
@@ -346,7 +357,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             self.parental_box.setText("Parental Control Deactivated")
 
-    def reinit_parental_table(self, elapsed_time=8):
+    def reinit_parental_table(self):
+        box_list = [self.mon_box, self.tue_box, self.wed_box, self.thu_box, self.fri_box, self.sat_box, self.sun_box]
+        hour_list = [0, 1, 2, 3, 4, 5, 6, 7, 23]
         self.parental_box.setChecked(False)
         try:
             data = read_table_data()
@@ -355,25 +368,34 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if data:
             if data[1]:
                 self.parental_box.setChecked(True)
-            elapsed_time = data[0]
-            for day, hour in data[2:]:
+
+            for day, box_name in enumerate(box_list):
+                box_name.setValue(data[0][day])
+
+            for cell in data[2]:
+                day = cell[0]
+                hour = cell[1]
                 table_item = self.usetime_table.item(day, hour)
-                table_item.setBackground(QColor(220, 20, 60))
+                table_item.setBackground(QColor(113, 94, 117))
         else:
             for day in range(7):  # Re-init table cell
                 for hour in range(24):
                     table_item = self.usetime_table.item(day, hour)
-                    table_item.setBackground(QColor(0, 0, 0, 0))
-        self.usetime_box.setValue(elapsed_time)
+                    if hour in hour_list:
+                        table_item.setBackground(QColor(113, 94, 117))
+                    else:
+                        table_item.setBackground(QColor(0, 0, 0, 0))
+            for day, box_name in enumerate(box_list):
+                box_name.setValue(8)
 
-    def change_pin(self, cond=False):  # True: create new PIN for first time user
+    def change_pin(self, new_user=False):  # True: create new PIN for first time user
         old = self.old_PIN_line.text()
         new1 = self.new_PIN_line.text()
         new2 = self.confirm_PIN_line.text()
         if new1 != "" and new2 != "":
             if new1 == new2:
                 if len(new1) >= 6 and new1.isdigit():
-                    if cond:
+                    if new_user:
                         user_register(self.new_PIN_line.text())
                         self.dashboard_page()
                     else:
@@ -699,7 +721,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             if get_app_tracking_state():
                 tracking_instance.save_app_usetime()
         except Exception as e:
-            log.debug(str(e))
+            log.warning(str(e))
             pass
 
         # Update UI
@@ -732,17 +754,27 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     # Table view
     def handle_submit(self):
-        value = self.usetime_box.value()
-        if value > 24 or value < 1:
-            QMessageBox.warning(self, "Not allowed", "Usetime cannot be larger than 24 or smaller than 1")
-        else:
-            selected_cells = [self.usetime_box.value(), self.parental_box.isChecked()]
-            for day in range(7):
+        box_list = [self.mon_box, self.tue_box, self.wed_box, self.thu_box, self.fri_box, self.sat_box, self.sun_box]
+        time_limit_list = []
+        state = True
+        for day, box_name in enumerate(box_list):
+            time_limit = box_name.value()
+            if time_limit > 24 or time_limit < 1:
+                QMessageBox.warning(self, "Not allowed", "Usetime cannot be larger than 24 or smaller than 1")
+                state = False
+                break
+            else:
+                time_limit_list.append(box_name.value())
+
+        if state:
+            selected_cells = []
+            for days in range(7):
                 for hour in range(24):
-                    item = self.usetime_table.item(day, hour)
-                    if item.background() == QColor(220, 20, 60):
-                        selected_cells.append((day, hour))
-            save_table_data(selected_cells)
+                    item = self.usetime_table.item(days, hour)
+                    if item.background() == QColor(113, 94, 117):
+                        selected_cells.append((days, hour))
+            parental_data = [time_limit_list, self.parental_box.isChecked(), selected_cells]
+            save_table_data(parental_data)
             self.data = selected_cells
             if self.parental_box.isChecked():
                 self.values['auto'] = "True"
@@ -757,14 +789,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 if self.parental_thread is not None:
                     self.parental_thread.stop_parental_thread()
                     self.parental_control_thread = False
-            QMessageBox.information(self, "Parental Control", "Setting is applied!")
-
-    def toggle_cell(self, row, column):
-        item = self.usetime_table.item(row, column)
-        if item.background() == QColor(220, 20, 60):
-            item.setBackground(QColor(0, 0, 0, 0))
-        else:
-            item.setBackground(QColor(220, 20, 60))
+            QMessageBox.information(self, "Parental Control", "Setting is applied")
 
     def center(self):
         qr = self.frameGeometry()
