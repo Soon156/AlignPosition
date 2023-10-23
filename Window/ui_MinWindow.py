@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'MinWindow.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.5.2
+## Created by: Qt User Interface Compiler version 6.5.3
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -23,17 +23,22 @@ class Ui_minDialog(object):
     def setupUi(self, minDialog):
         if not minDialog.objectName():
             minDialog.setObjectName(u"minDialog")
-        minDialog.resize(200, 46)
+        minDialog.resize(194, 47)
         icon = QIcon()
         icon.addFile(u":/icon/logo.ico", QSize(), QIcon.Normal, QIcon.Off)
         minDialog.setWindowIcon(icon)
         minDialog.setStyleSheet(u"#minDialog {background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 rgb(26, 16, 57), stop:0.5 rgb(41, 14, 47), stop:1 rgb(26, 16, 57))}\n"
 "")
         self.horizontalLayout = QHBoxLayout(minDialog)
-        self.horizontalLayout.setSpacing(10)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.use_time_lbl = QLabel(minDialog)
         self.use_time_lbl.setObjectName(u"use_time_lbl")
+        sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.use_time_lbl.sizePolicy().hasHeightForWidth())
+        self.use_time_lbl.setSizePolicy(sizePolicy)
+        self.use_time_lbl.setMinimumSize(QSize(100, 0))
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(12)

@@ -23,11 +23,15 @@ class Ui_Dialog(object):
     def setupUi(self, Dialog):
         if not Dialog.objectName():
             Dialog.setObjectName(u"Dialog")
-        Dialog.resize(258, 198)
+        Dialog.resize(219, 229)
         icon = QIcon()
         icon.addFile(u":/icon/logo.ico", QSize(), QIcon.Normal, QIcon.Off)
         Dialog.setWindowIcon(icon)
         Dialog.setStyleSheet(u"#Dialog {background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 rgb(26, 16, 57), stop:0.5 rgb(41, 14, 47), stop:1 rgb(26, 16, 57))}\n"
+"\n"
+"QPushButton{\n"
+"padding: 5px 20px 5px 20px;\n"
+"}\n"
 "")
         self.verticalLayout = QVBoxLayout(Dialog)
         self.verticalLayout.setObjectName(u"verticalLayout")
@@ -69,7 +73,7 @@ class Ui_Dialog(object):
 
         self.reset_parental_btn = QPushButton(self.ButtonFrame_2)
         self.reset_parental_btn.setObjectName(u"reset_parental_btn")
-        self.reset_parental_btn.setMinimumSize(QSize(130, 0))
+        self.reset_parental_btn.setMinimumSize(QSize(150, 0))
         self.reset_parental_btn.setStyleSheet(u"QPushButton{\n"
 "background-color: #a10000;\n"
 "}\n"
@@ -83,7 +87,7 @@ class Ui_Dialog(object):
         self.restore_btn = QPushButton(self.ButtonFrame_2)
         self.restore_btn.setObjectName(u"restore_btn")
         self.restore_btn.setEnabled(True)
-        self.restore_btn.setMinimumSize(QSize(130, 0))
+        self.restore_btn.setMinimumSize(QSize(150, 0))
         self.restore_btn.setStyleSheet(u"QPushButton {background-color: #00d991;}\n"
 "QPushButton:hover{background-color: #00fca8;}\n"
 "QPushButton:pressed{background-color: #00fca8;}")
@@ -92,7 +96,7 @@ class Ui_Dialog(object):
 
         self.exct_data_btn = QPushButton(self.ButtonFrame_2)
         self.exct_data_btn.setObjectName(u"exct_data_btn")
-        self.exct_data_btn.setMinimumSize(QSize(130, 0))
+        self.exct_data_btn.setMinimumSize(QSize(150, 0))
         self.exct_data_btn.setStyleSheet(u"QPushButton{\n"
 "background-color: #3b006e;\n"
 "padding: 5px 20px 5px 20px;\n"
@@ -106,7 +110,7 @@ class Ui_Dialog(object):
 
         self.changePIN_btn = QPushButton(self.ButtonFrame_2)
         self.changePIN_btn.setObjectName(u"changePIN_btn")
-        self.changePIN_btn.setMinimumSize(QSize(130, 0))
+        self.changePIN_btn.setMinimumSize(QSize(150, 0))
         self.changePIN_btn.setStyleSheet(u"QPushButton{\n"
 "background-color: #3b006e;\n"
 "padding: 5px 20px 5px 20px;\n"
