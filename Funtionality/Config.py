@@ -1,7 +1,9 @@
 import configparser
+import json
 import os
 import logging as log
 import datetime
+import pickle
 import winreg
 
 from psutil import process_iter
@@ -14,7 +16,7 @@ now = datetime.datetime.now()
 current_month, current_year = now.month, now.year
 
 # App_Use_Time Filter List
-filter_list = ["Align Position", "null", "Application Frame Host", "", "Pick an app"]
+filter_list = {"Align Position", "null", "Application Frame Host", "", "Pick an app", "LockApp.exe"}
 
 
 def get_registry_value(key=winreg.HKEY_CURRENT_USER, subkey="SOFTWARE\Align Position", value_name="Resource Folder"):
@@ -37,10 +39,11 @@ model_file = 'posture_detection_model.keras'
 detection_file = 'pose_landmarker_full.task'
 temp_folder = os.path.join(app_folder, 'temps')
 b_config = os.path.join(temp_folder, 'config_old.ini')
-userdata = os.path.join(app_folder, 'usr_data.bin')
-app_use_time_file = f"use_time_{current_month:02d}_{current_year}.bin"
+userdata = os.path.join(app_folder, 'usetime_data.bin')
+app_use_time_file = f"program_usetime.bin"
 app_use_time = os.path.join(app_folder, app_use_time_file)
 allow_use_time = os.path.join(app_folder, "table_time.bin")
+app_filter_list = os.path.join(app_folder, "filter.json")
 package_folder = os.path.dirname(os.path.abspath(__file__))
 
 install_path = get_registry_value()
@@ -115,7 +118,7 @@ FONT = 'Calibri'
 def clear_log():
     log_files = [f for f in os.listdir(log_folder) if f.endswith('.log')]
     log_files.sort(key=lambda x: os.path.getmtime(os.path.join(log_folder, x)))
-    if len(log_files) > 3:
+    if len(log_files) > 5:
         files_to_remove = log_files[:-3]  # Get the files to remove (excluding the newest 3)
         for file_name in files_to_remove:
             file_path = os.path.join(log_folder, file_name)
@@ -280,9 +283,42 @@ def check_condition():
         raise Exception(e)
 
 
+# check init
 def check_key():
     path = [key_file_path, salt_file_path]
     for item in path:
         if not os.path.exists(item):
             return False
     return True
+
+
+# Filter list
+def init_filter():
+    with open(app_filter_list, 'w') as json_file:
+        filter_set = list(filter_list)
+        json.dump(filter_set, json_file, indent=4)
+        log.info("Filter list created")
+
+
+def read_filter():
+    with open(app_filter_list, 'r') as json_file:
+        loaded_list = json.load(json_file)
+        log.info("Filter list read")
+    return loaded_list
+
+
+def retrieve_filter():
+    var = []
+    try:
+        if os.path.exists(app_filter_list):
+            var = read_filter()
+        else:
+            log.warning("Filter list not found")
+            init_filter()
+            var = read_filter()
+
+    except Exception as e:
+        log.warning("Filter list: " + str(e))
+        init_filter()
+        var = read_filter()
+    return var
