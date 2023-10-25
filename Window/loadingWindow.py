@@ -2,7 +2,8 @@ from PySide6.QtCore import Qt
 from PySide6.QtGui import QMovie, QPixmap
 from PySide6.QtWidgets import QDialog, QLabel, QVBoxLayout
 
-from Funtionality.Config import check_logo, check_model, check_process, clear_log, check_key, get_config
+from Funtionality.Config import check_logo, check_model, check_process, clear_log, check_key, get_config, \
+    retrieve_filter
 from Funtionality.ErrorMessage import WarningMessageBox
 from Funtionality.UpdateConfig import tracking_app_use_time
 from Window.main import MainWindow
@@ -50,8 +51,9 @@ class GifAnimationDialog(QDialog):
             if not check_process():
                 try:
                     get_config()
+                    retrieve_filter()
                     clear_log()
-                except Exception as e:
+                except Exception as e:  # warning when file in use
                     title = "Warning"
                     hint = str(e)
                     error = "Something Wrong"
