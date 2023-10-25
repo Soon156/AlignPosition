@@ -1,13 +1,13 @@
 import os
 
-from PySide6.QtCore import Qt
+import logging as log
 from PySide6.QtWidgets import QDialog, QMessageBox, QFileDialog
 from Funtionality.Config import desktop_path
 from ParentalControl.Auth import read_table_data
 from ParentalControl.Backup_Restore import zip_files, extract_zip
 from Window.ui_ParentalSetting import Ui_Dialog
 from Funtionality.Config import get_config
-from Funtionality.UpdateConfig import write_config
+from Funtionality.UpdateConfig import write_config, get_app_tracking_state, tracking_instance
 
 
 class ParentalDialog(QDialog, Ui_Dialog):
@@ -30,8 +30,18 @@ class ParentalDialog(QDialog, Ui_Dialog):
 
     def extract_data(self):
         path = os.path.join(desktop_path, "Use_Time_Extract.zip")
-        zip_files(path)
-        QMessageBox.information(self, "Success", f"Use time extract to {path}")
+        if self.parent.monitoring_state:
+            self.parent.posture_recognizer.save_usetime()
+        try:
+            if get_app_tracking_state():
+                tracking_instance.save_app_usetime()
+            zip_files(path)
+            QMessageBox.information(self, "Success", f"Use time extract to {path}")
+
+        except Exception as e:
+            log.warning(str(e))
+            QMessageBox.information(self, "Warning", f"Something wrong: {str(e)}")
+            pass
         self.hide()
 
     def restore_data(self):
@@ -46,12 +56,10 @@ class ParentalDialog(QDialog, Ui_Dialog):
             file_path, type = QFileDialog.getOpenFileName(self, "Open File", "", "(*.zip)")
             if file_path != "":
                 try:
+                    self.parent.stop_waiting_all()
                     extract_zip(file_path)
-                    data = read_table_data()
-                    self.parent.reinit_parental_table()
-                    if data and data[1]:
-                        self.parent.start_parental_control_thread()
-                    QMessageBox.information(self, "Success", "Data restored successfully")
+                    QMessageBox.information(self, "Success", "Data restored successfully, app shutting down")
+                    self.parent.exit_main()
                 except Exception as e:
                     QMessageBox.warning(self, "Failed", f"{str(e)}")
         self.hide()
