@@ -1,17 +1,19 @@
 import csv
 import json
 import os
+import shutil
 import zipfile
-from Funtionality.Config import desktop_path
+from Funtionality.Config import app_folder, app_filter_list, temp_folder
 from ParentalControl.Auth import read_use_time, read_app_use_time, write_use_time, write_app_use_time, \
     read_table_data, save_table_data
 
-files = ["use_time.csv", "app_use_time.csv", "table_data.json"]
+files = ["use_time.csv", "app_use_time.csv", "table_data.json", "filter.json"]
 
 
 def extract_use_time():
     data = read_use_time()
-    with open(files[0], mode="w", newline="") as file:
+    path = os.path.join(temp_folder, files[0])
+    with open(path, mode="w", newline="") as file:
         writer = csv.writer(file)
         writer.writerows(data)
 
@@ -23,8 +25,10 @@ def extract_app_use_time():
     for inner_dict in data.values():
         columns.update(inner_dict.keys())
 
+    path = os.path.join(temp_folder, files[1])
+
     # Write the data to the CSV file
-    with open(files[1], mode="w", newline="") as file:
+    with open(path, mode="w", newline="") as file:
         writer = csv.DictWriter(file, fieldnames=['Date'] + sorted(columns))
         writer.writeheader()
 
@@ -35,8 +39,9 @@ def extract_app_use_time():
 
 
 def extract_table_data():
+    path = os.path.join(temp_folder, files[2])
     data = read_table_data()
-    with open(files[2], "w") as file:
+    with open(path, "w") as file:
         json.dump(data, file)
 
 
@@ -85,16 +90,20 @@ def zip_files(path):
     extract_table_data()
     with zipfile.ZipFile(path, 'w') as zipf:
         for file in files:
-            zipf.write(file, os.path.basename(file))
-            os.remove(file)
+            temp_path = os.path.join(temp_folder, file)
+            if file is not files[3]:
+                zipf.write(temp_path, os.path.basename(file))
+                os.remove(temp_path)
+            else:
+                zipf.write(app_filter_list, os.path.basename(file))
     return path
 
 
 def extract_zip(zip_file_path):
     with zipfile.ZipFile(zip_file_path, 'r') as zip_ref:
-        zip_ref.extractall(desktop_path)
+        zip_ref.extractall(temp_folder)
     for file in files:
-        path = os.path.join(desktop_path, file)
+        path = os.path.join(temp_folder, file)
         if file == files[0]:
             use_time = retrieve_use_time(path)
             write_use_time(use_time)
@@ -104,6 +113,9 @@ def extract_zip(zip_file_path):
         if file == files[2]:
             table_data = retrieve_table_data(path)
             save_table_data(table_data)
+        if file == files[3]:
+            os.remove(app_filter_list)
+            shutil.move(path, app_folder)
         try:
             os.remove(path)
         except FileNotFoundError:
