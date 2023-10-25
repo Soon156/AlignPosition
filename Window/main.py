@@ -340,13 +340,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             if login_user(self.PIN_line.text()):
                 cond = True
                 if self.PIN_checkbox.isChecked():
+                    log.info("Login state set to True")
                     self.login_state = True
             else:
                 self.PIN_hint_lbl.setText("Incorrect PIN")
                 self.PIN_hint_lbl.show()
-        else:
-            cond = True
+
         if cond:
+            log.info("Login Successful")
             self.reinit_parental_table()
             self.update_parental_box()
             self.cont_stackedwidget.setCurrentIndex(1)  # Parental page
@@ -542,10 +543,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             except:
                 pass
 
-            if message is not None:
-                QMessageBox.warning(self, message[1], message[2])
-            else:
-                QMessageBox.information(self, "Settings", "Setting is applied!")
+        if message is not None:
+            QMessageBox.warning(self, message[1], message[2])
+        else:
+            QMessageBox.information(self, "Settings", "Setting is applied!")
 
     def remove_data(self):
         msgbox = QMessageBox(self)
@@ -564,6 +565,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.show_authorize_win()
 
     def reset_config(self):
+        stop_tracking()
         create_config()
         self.init_setting_page()
         QMessageBox.information(self, "Settings", "Config has been reset")
