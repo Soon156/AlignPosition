@@ -13,7 +13,6 @@ use_time = None
 
 def tracking_app_use_time():
     global use_time
-    waiting()
     try:
         use_time = threading.Thread(target=tracking_instance.run)
         use_time.start()
@@ -41,6 +40,7 @@ def get_app_tracking_state():
 def stop_tracking():
     try:
         tracking_instance.update_condition()
+        waiting()
     except RuntimeError:
         log.warning("App time tracking ald stop")
 
@@ -71,8 +71,10 @@ def write_config(dictionary_str):
     config2 = configparser.ConfigParser(allow_no_value=True)
     config.read(CONFIG_PATH)
     config2.read(b_config)
+
     try:
-        if config.read(CONFIG_PATH) != config2.read(b_config):
+        config_dict = dict(config2['Option'])
+        if config_dict != dictionary_str:
             config.optionxform = str
             config['Option'] = ast.literal_eval(str(dictionary_str))
             with open(b_config, "w") as f:
@@ -80,6 +82,14 @@ def write_config(dictionary_str):
             with open(CONFIG_PATH, "w") as f:
                 config.write(f)
             log.info("Config updated")
+        else:
+            log.info("No changed in config")
     except:
-        log.info("No changed in config")
+        config.optionxform = str
+        config['Option'] = ast.literal_eval(str(dictionary_str))
+        with open(b_config, "w") as f:
+            config.write(f)
+        with open(CONFIG_PATH, "w") as f:
+            config.write(f)
+        log.info("Config Saved")
         pass
