@@ -6,7 +6,7 @@ import win32api
 import win32gui
 import logging as log
 
-from Funtionality.Config import get_config, filter_list
+from Funtionality.Config import get_config, retrieve_filter
 from ParentalControl.Auth import write_app_use_time, read_app_use_time
 
 
@@ -22,6 +22,7 @@ class Tracking:
         self.usage_time_for_specific_date = {}
         self.values = get_config()
         self.cond_usetime = True
+        self.filter_list = retrieve_filter()
 
     def update_condition(self):
         self.cond_usetime = False
@@ -33,6 +34,7 @@ class Tracking:
 
     def run(self):
         log.info("App use time tracking start")
+        self.filter_list = retrieve_filter()
         # Access the app usage data for the specific
         if self.app_use_times is not None:
             if self.specific_date in self.app_use_times:
@@ -50,7 +52,7 @@ class Tracking:
                 key = r'StringFileInfo\%04x%04x\FileDescription' % (langs[0][0], langs[0][1])
                 app_name = (win32api.GetFileVersionInfo(ExecutablePath, key))
                 start_time = time.time()
-                if app_name not in filter_list and "window" not in app_name.lower():
+                if app_name not in self.filter_list and "window" not in app_name.lower():
                     while pid == win32process.GetWindowThreadProcessId(win32gui.GetForegroundWindow())[1]:
                         time.sleep(1)
                         self.active_time = int(time.time() - start_time)
