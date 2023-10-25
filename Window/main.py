@@ -777,7 +777,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                         selected_cells.append((days, hour))
             parental_data = [time_limit_list, self.parental_box.isChecked(), selected_cells]
             save_table_data(parental_data)
-            self.data = selected_cells
+            self.data = read_table_data()
             if self.parental_box.isChecked():
                 self.values['auto'] = "True"
                 self.values['monitoring'] = "True"
