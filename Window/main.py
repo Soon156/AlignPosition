@@ -219,7 +219,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         try:
             if self.w.isVisible():
                 self.hide()
-        except AttributeError:
+            else:
+                self.showMinimized()
+        except:
             self.showMinimized()
 
     def if_visible(self):  # Check main window visibility (tray icon)
