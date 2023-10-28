@@ -3,11 +3,11 @@ import json
 import os
 import shutil
 import zipfile
-from Funtionality.Config import app_folder, app_filter_list, temp_folder
+from Funtionality.Config import app_folder, app_filter_list, temp_folder, CONFIG_PATH
 from ParentalControl.Auth import read_use_time, read_app_use_time, write_use_time, write_app_use_time, \
     read_table_data, save_table_data
 
-files = ["use_time.csv", "app_use_time.csv", "table_data.json", "filter.json"]
+files = ["use_time.csv", "app_use_time.csv", "table_data.json", "filter.json", "config.ini"]
 
 
 def extract_use_time():
@@ -91,11 +91,15 @@ def zip_files(path):
     with zipfile.ZipFile(path, 'w') as zipf:
         for file in files:
             temp_path = os.path.join(temp_folder, file)
-            if file is not files[3]:
+            if file is not files[3] and file is not files[4]:
                 zipf.write(temp_path, os.path.basename(file))
                 os.remove(temp_path)
             else:
-                zipf.write(app_filter_list, os.path.basename(file))
+                if file is files[4]:
+                    print(CONFIG_PATH)
+                    zipf.write(CONFIG_PATH, os.path.basename(file))
+                else:
+                    zipf.write(app_filter_list, os.path.basename(file))
     return path
 
 
@@ -115,6 +119,9 @@ def extract_zip(zip_file_path):
             save_table_data(table_data)
         if file == files[3]:
             os.remove(app_filter_list)
+            shutil.move(path, app_folder)
+        if file == files[4]:
+            os.remove(CONFIG_PATH)
             shutil.move(path, app_folder)
         try:
             os.remove(path)
