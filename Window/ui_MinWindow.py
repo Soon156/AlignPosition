@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'MinWindow.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.5.3
+## Created by: Qt User Interface Compiler version 6.6.0
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -23,13 +23,14 @@ class Ui_minDialog(object):
     def setupUi(self, minDialog):
         if not minDialog.objectName():
             minDialog.setObjectName(u"minDialog")
-        minDialog.resize(194, 47)
+        minDialog.resize(158, 46)
         icon = QIcon()
         icon.addFile(u":/icon/logo.ico", QSize(), QIcon.Normal, QIcon.Off)
         minDialog.setWindowIcon(icon)
         minDialog.setStyleSheet(u"#minDialog {background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 rgb(26, 16, 57), stop:0.5 rgb(41, 14, 47), stop:1 rgb(26, 16, 57))}\n"
 "")
         self.horizontalLayout = QHBoxLayout(minDialog)
+        self.horizontalLayout.setSpacing(0)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.use_time_lbl = QLabel(minDialog)
         self.use_time_lbl.setObjectName(u"use_time_lbl")
@@ -38,7 +39,7 @@ class Ui_minDialog(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.use_time_lbl.sizePolicy().hasHeightForWidth())
         self.use_time_lbl.setSizePolicy(sizePolicy)
-        self.use_time_lbl.setMinimumSize(QSize(100, 0))
+        self.use_time_lbl.setMinimumSize(QSize(80, 0))
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(12)
@@ -59,23 +60,13 @@ class Ui_minDialog(object):
 
         self.horizontalLayout.addWidget(self.stop_btn)
 
-        self.start_btn = QPushButton(minDialog)
-        self.start_btn.setObjectName(u"start_btn")
-        self.start_btn.setStyleSheet(u"background: transparent;\n"
-"")
-        icon2 = QIcon()
-        icon2.addFile(u":/icon/icons8-play-48.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.start_btn.setIcon(icon2)
-
-        self.horizontalLayout.addWidget(self.start_btn)
-
         self.close_btn = QPushButton(minDialog)
         self.close_btn.setObjectName(u"close_btn")
         self.close_btn.setStyleSheet(u"background: transparent;\n"
 "")
-        icon3 = QIcon()
-        icon3.addFile(u":/icon/icons8-close-48.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.close_btn.setIcon(icon3)
+        icon2 = QIcon()
+        icon2.addFile(u":/icon/icons8-close-48.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.close_btn.setIcon(icon2)
         self.close_btn.setIconSize(QSize(20, 20))
 
         self.horizontalLayout.addWidget(self.close_btn)
@@ -90,7 +81,6 @@ class Ui_minDialog(object):
         minDialog.setWindowTitle(QCoreApplication.translate("minDialog", u"Align Position", None))
         self.use_time_lbl.setText(QCoreApplication.translate("minDialog", u"00:00:00", None))
         self.stop_btn.setText("")
-        self.start_btn.setText("")
         self.close_btn.setText("")
     # retranslateUi
 
