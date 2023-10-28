@@ -40,7 +40,7 @@ class ParentalDialog(QDialog, Ui_Dialog):
 
         except Exception as e:
             log.warning(str(e))
-            QMessageBox.information(self, "Warning", f"Something wrong: {str(e)}")
+            QMessageBox.warning(self, "Warning", f"Something wrong: {str(e)}")
             pass
         self.hide()
 
