@@ -50,7 +50,6 @@ class PostureRecognizerThread(QThread):
             cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
             cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
             start_time = time.time()
-            landmark = None
 
             # Control speed and calculate result
             frame_count = 0
@@ -186,9 +185,9 @@ class PostureRecognizerThread(QThread):
 
                     if data is not None:
                         if not data[1]:
-                            self.show_dev(frame, label, landmark)
+                            self.show_dev(frame, label)
                     else:
-                        self.show_dev(frame, label, landmark)
+                        self.show_dev(frame, label)
 
                     if label == "bad":
                         if bad_control:
@@ -246,25 +245,12 @@ class PostureRecognizerThread(QThread):
     def save_usetime(self):
         save_elapsed_time_data(self.new_time, self.date_today, self.bad_time)
 
-    def show_dev(self, frame, label, result):
+    def show_dev(self, frame, label):
         if self.values.get('dev') == "True":
             frame = cv2.flip(frame, 1)
             frame = cv2.resize(frame, (640, 360))
             label_text = f"Posture: {label}, {self.average}"
             cv2.putText(frame, label_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-
-            if result is not None:
-                for landmark_vector in result:
-                    x, y, z, visibility, presence = landmark_vector
-
-                    # Convert x and y to pixel coordinates (assuming normalized coordinates)
-                    x_pixel = int((1 - x) * frame.shape[1])
-                    y_pixel = int(y * frame.shape[0])
-
-                    # Draw a point (circle) at the landmark location
-                    if visibility > 0.5:  # You can adjust the visibility threshold as needed
-                        cv2.circle(frame, (x_pixel, y_pixel), 5, (0, 255, 0), -1)
-
             # Display the frame with pose landmarks and labels
             cv2.imshow("Pose Landmarks", frame)
             temp = cv2.waitKey(1) & 0xFF

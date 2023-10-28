@@ -75,5 +75,4 @@ class ParentalTracking(QThread):
             if cancel_signal:
                 self.cancel.emit()
                 reset_signal()
-        self.parent().parental_control_thread = False
         log.info("Parental tracking stop")

@@ -630,7 +630,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             temp.append(item)
         temp.reverse()
         for item in temp:
-            bar_set.append(float(item[2]) / 60)
+            bar_set.append(int(item[2]) / 60)
             categories.append(datetime.strptime(item[0], "%Y-%m-%d").strftime("%b %d"))
 
         # Create a QBarSeries and add the bar_set to it
@@ -785,7 +785,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self.values['monitoring'] = "True"
                 write_config(self.values)
                 self.values = get_config()
-
                 if not self.parental_control_thread:
                     self.start_parental_control_thread()
                 else:
@@ -793,8 +792,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             else:
                 if self.parental_thread is not None:
                     self.parental_thread.stop_parental_thread()
-                    while self.parental_control_thread:
-                        pass
+                    self.parental_control_thread = False
             QMessageBox.information(self, "Parental Control", "Setting is applied")
 
     def center(self):
@@ -853,6 +851,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             elif self.request == "reset_parental_settings":
                 try:
                     self.parental_thread.stop_parental_thread()
+                    self.parental_control_thread = False
                 except:
                     pass
                 try:
