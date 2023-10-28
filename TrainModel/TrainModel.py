@@ -64,7 +64,6 @@ def process_img(folder_path):
 def train_model(good_landmark, bad_landmark, batch_size, epoch=60, num_landmarks=33,
                 num_features_per_landmark=5):
     # Reshape the array to have the shape (number_of_samples, number_of_landmarks * number_of_features_per_landmark)
-    # In your case, it would be (number_of_samples, 33 * 5)
     landmarks_good = good_landmark.reshape(-1, num_landmarks * num_features_per_landmark)
     landmarks_bad = bad_landmark.reshape(-1, num_landmarks * num_features_per_landmark)
     features = np.concatenate((landmarks_good, landmarks_bad), axis=0)
@@ -92,10 +91,6 @@ def train_model(good_landmark, bad_landmark, batch_size, epoch=60, num_landmarks
 
     early_stopping = EarlyStopping(monitor='val_loss', patience=10, restore_best_weights=True)
 
-    """cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath="training_1/cp.ckpt",
-                                                     save_weights_only=True,
-                                                     verbose=1,
-                                                     save_freq=5*batch_size)"""
     weights = dict(enumerate(class_weights))
 
     print(f"Class weights [good, bad]: {class_weights}")
