@@ -1,9 +1,11 @@
-from PySide6.QtCore import Signal
+from PySide6.QtCore import Signal, QSize
+from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QDialog, QApplication
 
 from PostureRecognize.ElapsedTime import read_elapsed_time_data, seconds_to_hms
 from .ui_MinWindow import Ui_minDialog
 from PySide6.QtCore import Qt
+import resource_rc
 
 
 class MinWindow(QDialog, Ui_minDialog):
@@ -14,9 +16,12 @@ class MinWindow(QDialog, Ui_minDialog):
         self.dragPos = None
         self.parent = parent
         self.setupUi(self)
+        self.icon_start = QIcon()
+        self.icon_start.addFile(u":/icon/icons8-play-48.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.icon_stop = QIcon()
+        self.icon_stop.addFile(u":/icon/icons8-stop-48.png", QSize(), QIcon.Normal, QIcon.Off)
         self.setWindowFlag(Qt.WindowStaysOnTopHint, True)
         self.setWindowFlag(Qt.FramelessWindowHint)
-        self.start_btn.clicked.connect(self.start_monitor)
         self.stop_btn.clicked.connect(self.start_monitor)
         self.close_btn.clicked.connect(self.close_me)
         self.stick_threshold = 70
@@ -25,9 +30,9 @@ class MinWindow(QDialog, Ui_minDialog):
     def init(self):
         if self.parent.monitoring_state:
             self.parent.posture_recognizer.save_usetime()
-            self.start_btn.hide()
+            self.stop_btn.setIcon(self.icon_stop)
         else:
-            self.stop_btn.hide()
+            self.stop_btn.setIcon(self.icon_start)
         old_time, _ = read_elapsed_time_data()
         self.use_time_lbl.setText(seconds_to_hms(old_time))
         self.show()
@@ -43,11 +48,9 @@ class MinWindow(QDialog, Ui_minDialog):
 
     def update_btn_state(self, condition=False):
         if condition:
-            self.start_btn.hide()
-            self.stop_btn.show()
+            self.stop_btn.setIcon(self.icon_stop)
         else:
-            self.start_btn.show()
-            self.stop_btn.hide()
+            self.stop_btn.setIcon(self.icon_start)
 
     # Draggable handler
     def center(self):
