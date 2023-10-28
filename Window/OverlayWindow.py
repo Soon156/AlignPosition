@@ -56,7 +56,7 @@ class OverlayWidget(QWidget):
 
         if posture == "bad":
             if self.pos == "left":
-                self.show_with_animation(QRect(-15, -15, 100, 100))
+                self.show_with_animation(QRect(-18, -15, 100, 100))
             else:
                 self.show_with_animation(QRect(self.width_geo - 90, -10, 100, 100))
             self.setWindowOpacity(1.0)

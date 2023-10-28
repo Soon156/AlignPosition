@@ -84,7 +84,7 @@ log.basicConfig(
 )
 
 # DEFAULT
-CONFIG_PATH = f'{app_folder}/config.ini'
+CONFIG_PATH = os.path.join(app_folder, "config.ini")
 DEFAULT_VAL = {
     'camera': 0,
     'rest': 60,
