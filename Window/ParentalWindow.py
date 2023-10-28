@@ -91,6 +91,7 @@ class ParentalDialog(QDialog, Ui_Dialog):
     def monitor_state_change(self, state):
         if state:
             self.values['monitoring'] = "True"
+            self.monitor_setting_box.setText("Monitor activated")
             write_config(self.values)
         else:
             data = None
