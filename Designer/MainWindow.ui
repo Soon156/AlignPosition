@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1173</width>
+    <width>1094</width>
     <height>526</height>
    </rect>
   </property>
@@ -527,7 +527,7 @@ border-radius: 25px;
           <string notr="true">background-color: transparent;</string>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>3</number>
          </property>
          <widget class="QWidget" name="Dashboard">
           <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -1167,16 +1167,10 @@ QDoubleSpinBox::down-button {
                  <item>
                   <widget class="QTableWidget" name="usetime_table">
                    <property name="sizePolicy">
-                    <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                      <horstretch>0</horstretch>
                      <verstretch>0</verstretch>
                     </sizepolicy>
-                   </property>
-                   <property name="minimumSize">
-                    <size>
-                     <width>770</width>
-                     <height>0</height>
-                    </size>
                    </property>
                    <property name="styleSheet">
                     <string notr="true">QTableWidget { border: none; gridline-color: #956a9e;
@@ -1186,8 +1180,11 @@ QTableWidget QHeaderView::section ,QTableCornerButton::section{
     background-color: #9D43C9;
 }</string>
                    </property>
-                   <property name="selectionMode">
-                    <enum>QAbstractItemView::MultiSelection</enum>
+                   <property name="sizeAdjustPolicy">
+                    <enum>QAbstractScrollArea::AdjustToContents</enum>
+                   </property>
+                   <property name="editTriggers">
+                    <set>QAbstractItemView::NoEditTriggers</set>
                    </property>
                    <property name="showGrid">
                     <bool>true</bool>
@@ -1198,8 +1195,11 @@ QTableWidget QHeaderView::section ,QTableCornerButton::section{
                    <attribute name="horizontalHeaderVisible">
                     <bool>true</bool>
                    </attribute>
+                   <attribute name="horizontalHeaderMinimumSectionSize">
+                    <number>30</number>
+                   </attribute>
                    <attribute name="horizontalHeaderDefaultSectionSize">
-                    <number>31</number>
+                    <number>30</number>
                    </attribute>
                    <attribute name="verticalHeaderVisible">
                     <bool>false</bool>

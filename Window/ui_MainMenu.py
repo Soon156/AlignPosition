@@ -15,18 +15,18 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QAbstractItemView, QApplication, QCheckBox, QComboBox,
-    QDoubleSpinBox, QFrame, QGridLayout, QHBoxLayout,
-    QHeaderView, QLabel, QLineEdit, QMainWindow,
-    QPushButton, QSizePolicy, QStackedWidget, QTableWidget,
-    QTableWidgetItem, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QAbstractItemView, QAbstractScrollArea, QApplication, QCheckBox,
+    QComboBox, QDoubleSpinBox, QFrame, QGridLayout,
+    QHBoxLayout, QHeaderView, QLabel, QLineEdit,
+    QMainWindow, QPushButton, QSizePolicy, QStackedWidget,
+    QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget)
 import resource_rc
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1173, 526)
+        MainWindow.resize(1094, 526)
         icon = QIcon()
         icon.addFile(u":/icon/logo.ico", QSize(), QIcon.Normal, QIcon.Off)
         MainWindow.setWindowIcon(icon)
@@ -709,23 +709,21 @@ class Ui_MainWindow(object):
         __qtablewidgetitem30 = QTableWidgetItem()
         self.usetime_table.setVerticalHeaderItem(6, __qtablewidgetitem30)
         self.usetime_table.setObjectName(u"usetime_table")
-        sizePolicy7 = QSizePolicy(QSizePolicy.Maximum, QSizePolicy.Expanding)
-        sizePolicy7.setHorizontalStretch(0)
-        sizePolicy7.setVerticalStretch(0)
-        sizePolicy7.setHeightForWidth(self.usetime_table.sizePolicy().hasHeightForWidth())
-        self.usetime_table.setSizePolicy(sizePolicy7)
-        self.usetime_table.setMinimumSize(QSize(770, 0))
+        sizePolicy6.setHeightForWidth(self.usetime_table.sizePolicy().hasHeightForWidth())
+        self.usetime_table.setSizePolicy(sizePolicy6)
         self.usetime_table.setStyleSheet(u"QTableWidget { border: none; gridline-color: #956a9e;\n"
 "}\n"
 "\n"
 "QTableWidget QHeaderView::section ,QTableCornerButton::section{\n"
 "    background-color: #9D43C9;\n"
 "}")
-        self.usetime_table.setSelectionMode(QAbstractItemView.MultiSelection)
+        self.usetime_table.setSizeAdjustPolicy(QAbstractScrollArea.AdjustToContents)
+        self.usetime_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.usetime_table.setShowGrid(True)
         self.usetime_table.setGridStyle(Qt.DashLine)
         self.usetime_table.horizontalHeader().setVisible(True)
-        self.usetime_table.horizontalHeader().setDefaultSectionSize(31)
+        self.usetime_table.horizontalHeader().setMinimumSectionSize(30)
+        self.usetime_table.horizontalHeader().setDefaultSectionSize(30)
         self.usetime_table.verticalHeader().setVisible(False)
 
         self.horizontalLayout_20.addWidget(self.usetime_table)
@@ -893,11 +891,11 @@ class Ui_MainWindow(object):
         self.horizontalLayout_22.setContentsMargins(0, 0, 0, 0)
         self.frame_36 = QFrame(self.BreakFrame)
         self.frame_36.setObjectName(u"frame_36")
-        sizePolicy8 = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
-        sizePolicy8.setHorizontalStretch(0)
-        sizePolicy8.setVerticalStretch(0)
-        sizePolicy8.setHeightForWidth(self.frame_36.sizePolicy().hasHeightForWidth())
-        self.frame_36.setSizePolicy(sizePolicy8)
+        sizePolicy7 = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
+        sizePolicy7.setHorizontalStretch(0)
+        sizePolicy7.setVerticalStretch(0)
+        sizePolicy7.setHeightForWidth(self.frame_36.sizePolicy().hasHeightForWidth())
+        self.frame_36.setSizePolicy(sizePolicy7)
         self.frame_36.setFrameShape(QFrame.StyledPanel)
         self.frame_36.setFrameShadow(QFrame.Raised)
         self.horizontalLayout_23 = QHBoxLayout(self.frame_36)
@@ -905,8 +903,8 @@ class Ui_MainWindow(object):
         self.horizontalLayout_23.setContentsMargins(0, -1, -1, -1)
         self.reminder_lbl = QLabel(self.frame_36)
         self.reminder_lbl.setObjectName(u"reminder_lbl")
-        sizePolicy8.setHeightForWidth(self.reminder_lbl.sizePolicy().hasHeightForWidth())
-        self.reminder_lbl.setSizePolicy(sizePolicy8)
+        sizePolicy7.setHeightForWidth(self.reminder_lbl.sizePolicy().hasHeightForWidth())
+        self.reminder_lbl.setSizePolicy(sizePolicy7)
         self.reminder_lbl.setFont(font1)
 
         self.horizontalLayout_23.addWidget(self.reminder_lbl)
@@ -940,8 +938,8 @@ class Ui_MainWindow(object):
 
         self.frame_37 = QFrame(self.BreakFrame)
         self.frame_37.setObjectName(u"frame_37")
-        sizePolicy8.setHeightForWidth(self.frame_37.sizePolicy().hasHeightForWidth())
-        self.frame_37.setSizePolicy(sizePolicy8)
+        sizePolicy7.setHeightForWidth(self.frame_37.sizePolicy().hasHeightForWidth())
+        self.frame_37.setSizePolicy(sizePolicy7)
         self.frame_37.setFrameShape(QFrame.StyledPanel)
         self.frame_37.setFrameShadow(QFrame.Raised)
         self.verticalLayout_27 = QVBoxLayout(self.frame_37)
@@ -972,11 +970,11 @@ class Ui_MainWindow(object):
         self.horizontalLayout_24.setContentsMargins(0, 0, 0, 0)
         self.alert_lbl = QLabel(self.AlertFrame)
         self.alert_lbl.setObjectName(u"alert_lbl")
-        sizePolicy9 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
-        sizePolicy9.setHorizontalStretch(0)
-        sizePolicy9.setVerticalStretch(0)
-        sizePolicy9.setHeightForWidth(self.alert_lbl.sizePolicy().hasHeightForWidth())
-        self.alert_lbl.setSizePolicy(sizePolicy9)
+        sizePolicy8 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        sizePolicy8.setHorizontalStretch(0)
+        sizePolicy8.setVerticalStretch(0)
+        sizePolicy8.setHeightForWidth(self.alert_lbl.sizePolicy().hasHeightForWidth())
+        self.alert_lbl.setSizePolicy(sizePolicy8)
         self.alert_lbl.setBaseSize(QSize(1, 0))
         self.alert_lbl.setFont(font1)
         self.alert_lbl.setAlignment(Qt.AlignCenter)
@@ -987,11 +985,11 @@ class Ui_MainWindow(object):
         self.alert_box.addItem("")
         self.alert_box.addItem("")
         self.alert_box.setObjectName(u"alert_box")
-        sizePolicy10 = QSizePolicy(QSizePolicy.Maximum, QSizePolicy.Fixed)
-        sizePolicy10.setHorizontalStretch(0)
-        sizePolicy10.setVerticalStretch(0)
-        sizePolicy10.setHeightForWidth(self.alert_box.sizePolicy().hasHeightForWidth())
-        self.alert_box.setSizePolicy(sizePolicy10)
+        sizePolicy9 = QSizePolicy(QSizePolicy.Maximum, QSizePolicy.Fixed)
+        sizePolicy9.setHorizontalStretch(0)
+        sizePolicy9.setVerticalStretch(0)
+        sizePolicy9.setHeightForWidth(self.alert_box.sizePolicy().hasHeightForWidth())
+        self.alert_box.setSizePolicy(sizePolicy9)
         self.alert_box.setMinimumSize(QSize(118, 0))
         self.alert_box.setStyleSheet(u"")
 
@@ -1013,8 +1011,8 @@ class Ui_MainWindow(object):
         self.camera_lbl = QLabel(self.CameraFrame)
         self.camera_lbl.setObjectName(u"camera_lbl")
         self.camera_lbl.setEnabled(True)
-        sizePolicy9.setHeightForWidth(self.camera_lbl.sizePolicy().hasHeightForWidth())
-        self.camera_lbl.setSizePolicy(sizePolicy9)
+        sizePolicy8.setHeightForWidth(self.camera_lbl.sizePolicy().hasHeightForWidth())
+        self.camera_lbl.setSizePolicy(sizePolicy8)
         self.camera_lbl.setFont(font1)
         self.camera_lbl.setAlignment(Qt.AlignCenter)
 
@@ -1022,8 +1020,8 @@ class Ui_MainWindow(object):
 
         self.camera_box = QComboBox(self.CameraFrame)
         self.camera_box.setObjectName(u"camera_box")
-        sizePolicy10.setHeightForWidth(self.camera_box.sizePolicy().hasHeightForWidth())
-        self.camera_box.setSizePolicy(sizePolicy10)
+        sizePolicy9.setHeightForWidth(self.camera_box.sizePolicy().hasHeightForWidth())
+        self.camera_box.setSizePolicy(sizePolicy9)
         self.camera_box.setMinimumSize(QSize(118, 0))
 
         self.horizontalLayout_25.addWidget(self.camera_box, 0, Qt.AlignLeft)
@@ -1127,11 +1125,11 @@ class Ui_MainWindow(object):
         self.verticalLayout.setContentsMargins(0, -1, 0, 0)
         self.page_hint_lbl = QLabel(self.ChangePINPage)
         self.page_hint_lbl.setObjectName(u"page_hint_lbl")
-        sizePolicy11 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
-        sizePolicy11.setHorizontalStretch(0)
-        sizePolicy11.setVerticalStretch(0)
-        sizePolicy11.setHeightForWidth(self.page_hint_lbl.sizePolicy().hasHeightForWidth())
-        self.page_hint_lbl.setSizePolicy(sizePolicy11)
+        sizePolicy10 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
+        sizePolicy10.setHorizontalStretch(0)
+        sizePolicy10.setVerticalStretch(0)
+        sizePolicy10.setHeightForWidth(self.page_hint_lbl.sizePolicy().hasHeightForWidth())
+        self.page_hint_lbl.setSizePolicy(sizePolicy10)
         self.page_hint_lbl.setFont(font1)
         self.page_hint_lbl.setAlignment(Qt.AlignCenter)
 
@@ -1229,8 +1227,8 @@ class Ui_MainWindow(object):
 
         self.change_PIN_hint_lbl = QLabel(self.ChangePINPage)
         self.change_PIN_hint_lbl.setObjectName(u"change_PIN_hint_lbl")
-        sizePolicy11.setHeightForWidth(self.change_PIN_hint_lbl.sizePolicy().hasHeightForWidth())
-        self.change_PIN_hint_lbl.setSizePolicy(sizePolicy11)
+        sizePolicy10.setHeightForWidth(self.change_PIN_hint_lbl.sizePolicy().hasHeightForWidth())
+        self.change_PIN_hint_lbl.setSizePolicy(sizePolicy10)
         self.change_PIN_hint_lbl.setAlignment(Qt.AlignCenter)
 
         self.verticalLayout.addWidget(self.change_PIN_hint_lbl, 0, Qt.AlignHCenter)
@@ -1332,7 +1330,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.cont_stackedwidget.setCurrentIndex(1)
+        self.cont_stackedwidget.setCurrentIndex(3)
         self.PIN_stackedwidget.setCurrentIndex(0)
 
 
