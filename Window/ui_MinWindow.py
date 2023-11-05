@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'MinWindow.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.6.0
+## Created by: Qt User Interface Compiler version 6.5.3
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -27,7 +27,7 @@ class Ui_minDialog(object):
         icon = QIcon()
         icon.addFile(u":/icon/logo.ico", QSize(), QIcon.Normal, QIcon.Off)
         minDialog.setWindowIcon(icon)
-        minDialog.setStyleSheet(u"#minDialog {background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 rgb(26, 16, 57), stop:0.5 rgb(41, 14, 47), stop:1 rgb(26, 16, 57))}\n"
+        minDialog.setStyleSheet(u"#minDialog {background-color:#9BBEC8;}\n"
 "")
         self.horizontalLayout = QHBoxLayout(minDialog)
         self.horizontalLayout.setSpacing(0)
@@ -44,8 +44,7 @@ class Ui_minDialog(object):
         font.setFamilies([u"Roboto"])
         font.setPointSize(12)
         self.use_time_lbl.setFont(font)
-        self.use_time_lbl.setStyleSheet(u"color: white;\n"
-"font-family: \"Roboto\", sans-serif;")
+        self.use_time_lbl.setStyleSheet(u"font-family: \"Roboto\", sans-serif;")
         self.use_time_lbl.setAlignment(Qt.AlignCenter)
 
         self.horizontalLayout.addWidget(self.use_time_lbl, 0, Qt.AlignVCenter)

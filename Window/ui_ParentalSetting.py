@@ -27,7 +27,7 @@ class Ui_Dialog(object):
         icon = QIcon()
         icon.addFile(u":/icon/logo.ico", QSize(), QIcon.Normal, QIcon.Off)
         Dialog.setWindowIcon(icon)
-        Dialog.setStyleSheet(u"#Dialog {background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 rgb(26, 16, 57), stop:0.5 rgb(41, 14, 47), stop:1 rgb(26, 16, 57))}\n"
+        Dialog.setStyleSheet(u"#Dialog {background-color: rgb(221, 242, 253);}\n"
 "\n"
 "QPushButton{\n"
 "padding: 5px 20px 5px 20px;\n"
@@ -42,8 +42,8 @@ class Ui_Dialog(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.ButtonFrame_2.sizePolicy().hasHeightForWidth())
         self.ButtonFrame_2.setSizePolicy(sizePolicy)
-        self.ButtonFrame_2.setStyleSheet(u"color: white;\n"
-"font-family: \"Roboto\", sans-serif;")
+        self.ButtonFrame_2.setStyleSheet(u"font-family: \"Roboto\", sans-serif;\n"
+"color: white;")
         self.ButtonFrame_2.setFrameShape(QFrame.StyledPanel)
         self.ButtonFrame_2.setFrameShadow(QFrame.Raised)
         self.verticalLayout_2 = QVBoxLayout(self.ButtonFrame_2)
@@ -51,7 +51,12 @@ class Ui_Dialog(object):
         self.verticalLayout_2.setContentsMargins(-1, 0, -1, 0)
         self.monitor_setting_box = QCheckBox(self.ButtonFrame_2)
         self.monitor_setting_box.setObjectName(u"monitor_setting_box")
+        font = QFont()
+        font.setFamilies([u"Roboto"])
+        font.setPointSize(10)
+        self.monitor_setting_box.setFont(font)
         self.monitor_setting_box.setStyleSheet(u"QCheckBox {\n"
+"	color:black;\n"
 "    spacing: 10px;\n"
 "}\n"
 "\n"
@@ -78,7 +83,7 @@ class Ui_Dialog(object):
 "background-color: #a10000;\n"
 "}\n"
 "\n"
-"QPushButton{\n"
+"QPushButton:hover{\n"
 "background: #d10000;\n"
 "}")
 
@@ -98,13 +103,15 @@ class Ui_Dialog(object):
         self.exct_data_btn.setObjectName(u"exct_data_btn")
         self.exct_data_btn.setMinimumSize(QSize(150, 0))
         self.exct_data_btn.setStyleSheet(u"QPushButton{\n"
-"background-color: #3b006e;\n"
+"background-color: #427D9D;\n"
 "padding: 5px 20px 5px 20px;\n"
+"color: white;\n"
 "}\n"
 "\n"
 "QPushButton:hover{\n"
-"background: #a200ff;\n"
-"}")
+"background: #9BBEC8;\n"
+"}\n"
+"")
 
         self.verticalLayout_2.addWidget(self.exct_data_btn)
 
