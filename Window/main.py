@@ -34,7 +34,7 @@ import resource_rc  # DO NOT REMOVE
 
 dark_cell = QColor(113, 94, 117)
 light_cell = QColor(155, 190, 200)
-
+transparent_cell = QColor(0, 0, 0, 0)
 
 if get_theme():
     ui_class = Ui_MainWindow
@@ -399,15 +399,15 @@ class MainWindow(QMainWindow, ui_class):
                     if hour in hour_list:
                         self.init_cell(table_item)
                     else:
-                        table_item.setBackground(QColor(0, 0, 0, 0))
+                        table_item.setBackground(transparent_cell)
             for day, box_name in enumerate(box_list):
                 box_name.setValue(8)
 
     def toggle_cell(self, item):
-        if item.background() == QColor(0, 0, 0, 0):
+        if item.background() == transparent_cell:
             self.init_cell(item)
         else:
-            item.setBackground(QColor(0, 0, 0, 0))
+            item.setBackground(transparent_cell)
 
     def init_cell(self, item):
         if self.theme:
@@ -826,7 +826,7 @@ class MainWindow(QMainWindow, ui_class):
             for days in range(7):
                 for hour in range(24):
                     item = self.usetime_table.item(days, hour)
-                    if item.background() == QColor(113, 94, 117) or QColor(155, 190, 200):
+                    if item.background() == light_cell or item.background() == dark_cell:
                         selected_cells.append((days, hour))
             parental_data = [time_limit_list, self.parental_box.isChecked(), selected_cells]
             save_table_data(parental_data)

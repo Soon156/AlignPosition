@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'MainWindow.ui'
+## Form generated from reading UI file 'MainWindowDark.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.6.0
 ##
@@ -30,32 +30,25 @@ class Ui_MainWindow(object):
         icon = QIcon()
         icon.addFile(u":/icon/logo.ico", QSize(), QIcon.Normal, QIcon.Off)
         MainWindow.setWindowIcon(icon)
-        MainWindow.setStyleSheet(u"#widget {background-color: rgb(221, 242, 253)}\n"
-"\n"
-"QLineEdit {\n"
-"    border: 1px solid #9BBEC8;\n"
-"    border-radius: 3px;\n"
-"    padding: 2px 4px;\n"
-"}\n"
-"\n"
+        MainWindow.setStyleSheet(u"#widget {background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 rgb(26, 16, 57), stop:0.5 rgb(41, 14, 47), stop:1 rgb(26, 16, 57))}\n"
 "QDoubleSpinBox {\n"
 "	padding: 5px;\n"
-"    border: 1px solid #9BBEC8;\n"
-"    border-radius: 5px;\n"
+"border: 1px solid #000;\n"
+"border-radius: 5px;\n"
+"border-color: white;\n"
 "}\n"
 "\n"
 "QDoubleSpinBox::up-button {\n"
 "    subcontrol-origin: border;\n"
 "    subcontrol-position: top right;\n"
-"    border-image: url(:/icon/icons8-up-48-blue.png) 1;\n"
+"    border-image: url(:/icon/icons8-up-48.png) 1;\n"
 "}\n"
 "\n"
 "QDoubleSpinBox::down-button {\n"
 "    subcontrol-origin: border;\n"
 "    subcontrol-position: bottom right;\n"
-"    border-image: url(:/icon/icons8-down-48-blue.png) 1;\n"
+"    border-image: url(:/icon/icons8-down-48.png) 1;\n"
 "}\n"
-"\n"
 "QCheckBox {\n"
 "    spacing: 10px;\n"
 "}\n"
@@ -76,17 +69,15 @@ class Ui_MainWindow(object):
         MainWindow.setUnifiedTitleAndToolBarOnMac(False)
         self.widget = QWidget(MainWindow)
         self.widget.setObjectName(u"widget")
-        self.widget.setStyleSheet(u"font-family: \"Roboto\", sans-serif;")
+        self.widget.setStyleSheet(u"color: white;\n"
+"font-family: \"Roboto\", sans-serif;")
         self.horizontalLayout_2 = QHBoxLayout(self.widget)
         self.horizontalLayout_2.setSpacing(0)
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
         self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.SideMenuBar = QFrame(self.widget)
         self.SideMenuBar.setObjectName(u"SideMenuBar")
-        self.SideMenuBar.setStyleSheet(u"#SideMenuBar {background:rgba(66, 125, 157, 0.5);\n"
-"}\n"
-"\n"
-"")
+        self.SideMenuBar.setStyleSheet(u"")
         self.SideMenuBar.setFrameShape(QFrame.StyledPanel)
         self.SideMenuBar.setFrameShadow(QFrame.Raised)
         self.verticalLayout_9 = QVBoxLayout(self.SideMenuBar)
@@ -101,12 +92,11 @@ class Ui_MainWindow(object):
         self.logo_with_title_lbl.setSizePolicy(sizePolicy)
         self.logo_with_title_lbl.setPixmap(QPixmap(u":/icon/new-title-resize.png"))
 
-        self.verticalLayout_9.addWidget(self.logo_with_title_lbl, 0, Qt.AlignHCenter)
+        self.verticalLayout_9.addWidget(self.logo_with_title_lbl, 0, Qt.AlignLeft)
 
         self.frame = QFrame(self.SideMenuBar)
         self.frame.setObjectName(u"frame")
         self.frame.setStyleSheet(u"QPushButton {\n"
-"	color: white;\n"
 "	background-color: transparent;\n"
 "}\n"
 "\n"
@@ -130,7 +120,7 @@ class Ui_MainWindow(object):
         sizePolicy1.setHeightForWidth(self.frame1.sizePolicy().hasHeightForWidth())
         self.frame1.setSizePolicy(sizePolicy1)
         self.frame1.setMinimumSize(QSize(178, 0))
-        self.frame1.setStyleSheet(u"QFrame {background: rgba(22, 72, 99, 0.5);\n"
+        self.frame1.setStyleSheet(u"QFrame {background: rgba(46, 2, 102, 0.5);\n"
 "border-radius: 25px;\n"
 "};\n"
 "\n"
@@ -434,13 +424,12 @@ class Ui_MainWindow(object):
         font5.setPointSize(20)
         self.frame_3.setFont(font5)
         self.frame_3.setStyleSheet(u"QPushButton {\n"
-"color: white;\n"
-"background-color: #427D9D;\n"
+"background-color: #5e00b0;\n"
 "padding: 5px 20px 5px 20px;\n"
 "}\n"
 "\n"
 "QPushButton:hover {\n"
-"background: #9BBEC8;\n"
+"background: #a200ff;\n"
 "}")
         self.frame_3.setFrameShape(QFrame.StyledPanel)
         self.frame_3.setFrameShadow(QFrame.Raised)
@@ -717,11 +706,11 @@ class Ui_MainWindow(object):
         self.usetime_table.setObjectName(u"usetime_table")
         sizePolicy6.setHeightForWidth(self.usetime_table.sizePolicy().hasHeightForWidth())
         self.usetime_table.setSizePolicy(sizePolicy6)
-        self.usetime_table.setStyleSheet(u"QTableWidget { border: none; gridline-color: #9BBEC8;\n"
+        self.usetime_table.setStyleSheet(u"QTableWidget { border: none; gridline-color: #956a9e;\n"
 "}\n"
 "\n"
 "QTableWidget QHeaderView::section ,QTableCornerButton::section{\n"
-"    background-color: #427D9D; color: white;\n"
+"    background-color: #9D43C9;\n"
 "}")
         self.usetime_table.setSizeAdjustPolicy(QAbstractScrollArea.AdjustToContents)
         self.usetime_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
@@ -771,10 +760,9 @@ class Ui_MainWindow(object):
 
         self.usetime_btn = QPushButton(self.frame_5)
         self.usetime_btn.setObjectName(u"usetime_btn")
-        self.usetime_btn.setStyleSheet(u"QPushButton {background-color: #00d991;color: white;}\n"
+        self.usetime_btn.setStyleSheet(u"QPushButton {background-color: #00d991;}\n"
 "QPushButton:hover{background-color: #00fca8;}\n"
-"QPushButton:pressed{background-color: #00fca8;}\n"
-"")
+"QPushButton:pressed{background-color: #00fca8;}")
 
         self.horizontalLayout_11.addWidget(self.usetime_btn, 0, Qt.AlignRight)
 
@@ -794,16 +782,17 @@ class Ui_MainWindow(object):
         self.SettingOptionFrame = QFrame(self.Settings)
         self.SettingOptionFrame.setObjectName(u"SettingOptionFrame")
         self.SettingOptionFrame.setMinimumSize(QSize(400, 400))
-        self.SettingOptionFrame.setStyleSheet(u"QComboBox {\n"
+        self.SettingOptionFrame.setStyleSheet(u"\n"
+"QComboBox {\n"
 "    border-radius: 3px;\n"
 "    min-width: 8em;\n"
-"	background: #427D9D;\n"
-"	padding: 3px;\n"
+"	background: #7346ad;\n"
+"	padding: 3px\n"
 "}\n"
 "\n"
 "/* QComboBox gets the \"on\" state when the popup is open */\n"
 "QComboBox:!editable:on, QComboBox::drop-down:editable:on {\n"
-"    background:  #9BBEC8;\n"
+"    background:  #3b006e;\n"
 "}\n"
 "\n"
 "QComboBox:on { /* shift the text when the popup opens */\n"
@@ -815,8 +804,9 @@ class Ui_MainWindow(object):
 "    subcontrol-origin: padding;\n"
 "    subcontrol-position: top right;\n"
 "    width: 15px;\n"
+"\n"
 "    border-left-width: 1px;\n"
-"    border-left-color:  #9BBEC8;\n"
+"    border-left-color:  #3b006e;\n"
 "    border-left-style: solid;\n"
 "    border-top-right-radius: 3px;\n"
 "    border-bottom-right-radius: 3px;\n"
@@ -824,7 +814,7 @@ class Ui_MainWindow(object):
 "}\n"
 "\n"
 "QComboBox::down-arrow {\n"
-"    border-image: url(:/icon/icons8-down-48-blue.png) 4;\n"
+"    border-image: url(:/icon/icons8-down-48.png) 4;\n"
 "}\n"
 "\n"
 "QComboBox::down-arrow:on { /* shift the arrow when popup is open */\n"
@@ -869,6 +859,7 @@ class Ui_MainWindow(object):
         self.frame_4.setFrameShape(QFrame.StyledPanel)
         self.frame_4.setFrameShadow(QFrame.Raised)
         self.horizontalLayout_10 = QHBoxLayout(self.frame_4)
+        self.horizontalLayout_10.setSpacing(30)
         self.horizontalLayout_10.setObjectName(u"horizontalLayout_10")
         self.app_time_track_box = QCheckBox(self.frame_4)
         self.app_time_track_box.setObjectName(u"app_time_track_box")
@@ -887,7 +878,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_10.addWidget(self.theme_box)
 
 
-        self.verticalLayout_26.addWidget(self.frame_4)
+        self.verticalLayout_26.addWidget(self.frame_4, 0, Qt.AlignHCenter)
 
         self.BreakFrame = QFrame(self.SettingOptionFrame)
         self.BreakFrame.setObjectName(u"BreakFrame")
@@ -979,7 +970,7 @@ class Ui_MainWindow(object):
         sizePolicy6.setHeightForWidth(self.alert_box.sizePolicy().hasHeightForWidth())
         self.alert_box.setSizePolicy(sizePolicy6)
         self.alert_box.setMinimumSize(QSize(118, 0))
-        self.alert_box.setStyleSheet(u"color:white;")
+        self.alert_box.setStyleSheet(u"")
 
         self.horizontalLayout_24.addWidget(self.alert_box, 0, Qt.AlignLeft)
 
@@ -1011,7 +1002,6 @@ class Ui_MainWindow(object):
         sizePolicy6.setHeightForWidth(self.camera_box.sizePolicy().hasHeightForWidth())
         self.camera_box.setSizePolicy(sizePolicy6)
         self.camera_box.setMinimumSize(QSize(118, 0))
-        self.camera_box.setStyleSheet(u"color:white;")
 
         self.horizontalLayout_25.addWidget(self.camera_box, 0, Qt.AlignLeft)
 
@@ -1023,13 +1013,12 @@ class Ui_MainWindow(object):
         sizePolicy.setHeightForWidth(self.SettingsBtnFrame.sizePolicy().hasHeightForWidth())
         self.SettingsBtnFrame.setSizePolicy(sizePolicy)
         self.SettingsBtnFrame.setStyleSheet(u"QPushButton{\n"
-"background-color: #427D9D;\n"
+"background-color: #3b006e;\n"
 "padding: 5px 20px 5px 20px;\n"
-"color: white;\n"
 "}\n"
 "\n"
 "QPushButton:hover{\n"
-"background: #9BBEC8;\n"
+"background: #a200ff;\n"
 "}\n"
 "\n"
 "QPushButton#apply_btn{\n"
@@ -1086,7 +1075,6 @@ class Ui_MainWindow(object):
         self.horizontalLayout_13.setContentsMargins(0, 0, 0, 0)
         self.web_btn = QPushButton(self.frame_7)
         self.web_btn.setObjectName(u"web_btn")
-        self.web_btn.setStyleSheet(u"color:black;")
         icon9 = QIcon()
         icon9.addFile(u":/icon/icons8-info-48.png", QSize(), QIcon.Normal, QIcon.Off)
         self.web_btn.setIcon(icon9)
@@ -1109,10 +1097,8 @@ class Ui_MainWindow(object):
         self.horizontalLayout_8.setContentsMargins(0, 0, 0, 0)
         self.PIN_stackedwidget = QStackedWidget(self.Authenticate)
         self.PIN_stackedwidget.setObjectName(u"PIN_stackedwidget")
-        self.PIN_stackedwidget.setStyleSheet(u"")
         self.ChangePINPage = QWidget()
         self.ChangePINPage.setObjectName(u"ChangePINPage")
-        self.ChangePINPage.setStyleSheet(u"")
         self.verticalLayout = QVBoxLayout(self.ChangePINPage)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.verticalLayout.setContentsMargins(0, -1, 0, 0)
@@ -1231,7 +1217,6 @@ class Ui_MainWindow(object):
         sizePolicy6.setHeightForWidth(self.change_PIN_btn.sizePolicy().hasHeightForWidth())
         self.change_PIN_btn.setSizePolicy(sizePolicy6)
         self.change_PIN_btn.setStyleSheet(u"QPushButton{\n"
-"color: white;\n"
 "padding: 3px 25px 3px 25px;\n"
 "background-color: #00d991;\n"
 "}\n"
@@ -1280,7 +1265,6 @@ class Ui_MainWindow(object):
         self.PIN_btn = QPushButton(self.PINFrame)
         self.PIN_btn.setObjectName(u"PIN_btn")
         self.PIN_btn.setStyleSheet(u"QPushButton{\n"
-"color: white;\n"
 "padding: 3px 25px 3px 25px;\n"
 "background-color: #00d991;\n"
 "}\n"
@@ -1456,7 +1440,7 @@ class Ui_MainWindow(object):
         self.confirm_lbl.setText(QCoreApplication.translate("MainWindow", u"Confirm PIN", None))
         self.change_PIN_hint_lbl.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
         self.change_PIN_btn.setText(QCoreApplication.translate("MainWindow", u"OK", None))
-        self.label_6.setText(QCoreApplication.translate("MainWindow", u"Enter your PIN", None))
+        self.label_6.setText(QCoreApplication.translate("MainWindow", u"Enter your 6-digit PIN", None))
         self.PIN_btn.setText(QCoreApplication.translate("MainWindow", u"OK", None))
         self.PIN_checkbox.setText(QCoreApplication.translate("MainWindow", u"Remember me", None))
         self.PIN_hint_lbl.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
