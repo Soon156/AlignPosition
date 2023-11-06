@@ -1,10 +1,17 @@
 from PySide6.QtWidgets import QDialog, QLineEdit
 from Funtionality.Notification import update_cancel_cond
 from ParentalControl.Auth import login_user
+from Window.changeStyleSheet import get_theme
 from Window.ui_Authorize import Ui_PINDialog
+from Window.ui_AuthorizeDark import Ui_PINDialog as Ui_PINDialogDark
+
+if get_theme():
+    ui_class = Ui_PINDialog
+else:
+    ui_class = Ui_PINDialogDark
 
 
-class PINDialog(QDialog, Ui_PINDialog):
+class PINDialog(QDialog, ui_class):
 
     def __init__(self):
         super().__init__()

@@ -87,7 +87,7 @@ log.basicConfig(
 CONFIG_PATH = f'{app_folder}/config.ini'
 DEFAULT_VAL = {
     'camera': 0,
-    'rest': 60,
+    'rest': 30,
     'idle': 0.1,
     'bad_posture': 1,
     'notifications': True,
@@ -97,6 +97,7 @@ DEFAULT_VAL = {
     'overlay_enable': True,
     'auto': True,
     'monitoring': True,
+    'theme': 1,
     'init': True,
     'dev': False
 }
@@ -267,6 +268,7 @@ def check_condition():
             create_config()
             raise Exception("Invalid config option")
         int(values.get('camera'))
+        int(values.get('theme'))
         float(values.get('idle'))
         float(values.get('bad_posture'))
         a = values.get('background') == 'True' or values.get('background') == 'False'

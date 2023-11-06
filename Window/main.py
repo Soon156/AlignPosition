@@ -25,27 +25,29 @@ from .Authorize import PINDialog
 from .Authorize_2 import PINDialog2
 from .OverlayWindow import OverlayWidget
 from .ParentalWindow import ParentalDialog
+from .changeStyleSheet import get_theme, top_side_menu, top_side_menu_dark, choice_side_menu, choice_side_menu_dark, \
+    btm_side_menu, btm_side_menu_dark
 from .ui_MainMenu import Ui_MainWindow
+from .ui_MainMenuDark import Ui_MainWindow as Ui_MainWindowDark
 from .minWindow import MinWindow
 import resource_rc  # DO NOT REMOVE
 
-top_side_menu = "background: #7346ad;border-top-left-radius: 25px;border-top-right-radius: 25px;"
-btm_side_menu = "background: #7346ad;border-bottom-left-radius: 25px;border-bottom-right-radius: 25px;"
-choice_side_menu = "background: #7346ad;"
+dark_cell = QColor(113, 94, 117)
+light_cell = QColor(155, 190, 200)
 
 
-def toggle_cell(item):
-    if item.background() == QColor(0, 0, 0, 0):
-        item.setBackground(QColor(113, 94, 117))
-    else:
-        item.setBackground(QColor(0, 0, 0, 0))
+if get_theme():
+    ui_class = Ui_MainWindow
+else:
+    ui_class = Ui_MainWindowDark
 
 
-class MainWindow(QMainWindow, Ui_MainWindow):
+class MainWindow(QMainWindow, ui_class):
 
     def __init__(self):
         super().__init__()
         # Window Attribute
+        self.theme = get_theme()
         self.setupUi(self)
         self.setWindowFlag(Qt.FramelessWindowHint)
         self.center()  # Window draggable
@@ -59,7 +61,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.settings_btn_2.clicked.connect(self.settings_page)
         self.parental_box.clicked.connect(self.update_parental_box)
         self.warning_msg = None
-        self.user_lbl.hide()
         self.UsernameFrame.hide()
 
         # Dashboard page
@@ -79,7 +80,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.init_setting_page()
         self.reset_btn.clicked.connect(self.reset_config)
         self.apply_btn.clicked.connect(self.update_setting)
-        self.usetime_table.itemClicked.connect(toggle_cell)
+        self.usetime_table.itemClicked.connect(self.toggle_cell)
+        self.theme_box.toggled.connect(self.update_theme_box)
         self.web_btn.clicked.connect(lambda: QDesktopServices.openUrl("https://github.com/Soon156/AlignPosition/wiki"))
         self.remove_data_btn.clicked.connect(self.remove_data)
 
@@ -233,7 +235,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     # Page handler
     def dashboard_page(self):
         self.reset_stylesheet()
-        self.a_2.setStyleSheet(top_side_menu)
+        if self.theme:
+            self.a_2.setStyleSheet(top_side_menu)
+        else:
+            self.a_2.setStyleSheet(top_side_menu_dark)
         if os.path.exists(key_file_path):
             self.cont_stackedwidget.setCurrentIndex(0)
             elapsed_time, _ = read_elapsed_time_data()
@@ -245,7 +250,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def parental_page(self):
         self.reset_stylesheet()
-        self.d_2.setStyleSheet(choice_side_menu)
+        if self.theme:
+            self.d_2.setStyleSheet(choice_side_menu)
+        else:
+            self.d_2.setStyleSheet(choice_side_menu_dark)
         self.cont_stackedwidget.setCurrentIndex(3)  # Authentic page
         if self.login_state:
             self.valid_pin(True)
@@ -263,7 +271,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def settings_page(self):
         self.reset_stylesheet()
-        self.c_2.setStyleSheet(btm_side_menu)
+        if self.theme:
+            self.c_2.setStyleSheet(btm_side_menu)
+        else:
+            self.c_2.setStyleSheet(btm_side_menu_dark)
         self.cont_stackedwidget.setCurrentIndex(2)  # Setting page
         self.init_setting_page()
 
@@ -379,17 +390,30 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 day = cell[0]
                 hour = cell[1]
                 table_item = self.usetime_table.item(day, hour)
-                table_item.setBackground(QColor(113, 94, 117))
+                self.init_cell(table_item)
+
         else:
             for day in range(7):  # Re-init table cell
                 for hour in range(24):
                     table_item = self.usetime_table.item(day, hour)
                     if hour in hour_list:
-                        table_item.setBackground(QColor(113, 94, 117))
+                        self.init_cell(table_item)
                     else:
                         table_item.setBackground(QColor(0, 0, 0, 0))
             for day, box_name in enumerate(box_list):
                 box_name.setValue(8)
+
+    def toggle_cell(self, item):
+        if item.background() == QColor(0, 0, 0, 0):
+            self.init_cell(item)
+        else:
+            item.setBackground(QColor(0, 0, 0, 0))
+
+    def init_cell(self, item):
+        if self.theme:
+            item.setBackground(light_cell)
+        else:
+            item.setBackground(dark_cell)
 
     def change_pin(self, new_user=False):  # True: create new PIN for first time user
         old = self.old_PIN_line.text()
@@ -464,6 +488,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             self.app_time_track_box.setChecked(False)
 
+        if get_theme():
+            self.theme_box.setChecked(True)
+            self.theme_box.setText("Light Theme")
+        else:
+            self.theme_box.setChecked(False)
+            self.theme_box.setText("Dark Theme")
+
         if values.get('notifications') == "True":
             self.notify_box.setChecked(True)
         else:
@@ -477,6 +508,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         index = self.alert_box.findText(values.get('overlay'))
         self.alert_box.setCurrentIndex(index)
+
+    def update_theme_box(self, state):
+        if state:
+            self.theme_box.setText("Light Theme")
+        else:
+            self.theme_box.setText("Dark Theme")
 
     def update_setting(self):
         message = None
@@ -537,6 +574,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self.values['overlay'] = pos
                 log.info(f"Overlay change to {pos} side")
 
+            if self.theme_box.isChecked():
+                if self.values['theme'] != "1":
+                    message = "Theme"
+                    self.values['theme'] = 1
+            else:
+                if self.values['theme'] == "1":
+                    message = "Theme"
+                    self.values['theme'] = 0
             write_config(self.values)
             self.init_setting_page()
             self.values = get_config()
@@ -546,7 +591,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 pass
 
         if message is not None:
-            QMessageBox.warning(self, message[1], message[2])
+            if message != "Theme":
+                QMessageBox.warning(self, message[1], message[2])
+            else:
+                QMessageBox.information(self, "Settings", "Setting is update, theme need to be restart to applied!")
         else:
             QMessageBox.information(self, "Settings", "Setting is applied!")
 
@@ -610,7 +658,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         chart_view = QChartView(chart)
         chart_view.setRenderHint(QPainter.Antialiasing)
-        chart_view.chart().setTheme(QChart.ChartThemeDark)
+        if not self.theme:
+            chart_view.chart().setTheme(QChart.ChartThemeDark)
         chart.setAnimationOptions(QChart.SeriesAnimations)
 
         size_policy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -655,7 +704,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         chart_view = QChartView(chart)
         chart_view.setRenderHint(QPainter.Antialiasing)
-        chart_view.chart().setTheme(QChart.ChartThemeDark)
+        if not self.theme:
+            chart_view.chart().setTheme(QChart.ChartThemeDark)
         chart.setAnimationOptions(QChart.SeriesAnimations)
 
         size_policy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -711,7 +761,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # set chart renderer and theme
         chart_view = QChartView(chart)
-        chart_view.chart().setTheme(QChart.ChartThemeDark)
+        if not self.theme:
+            chart_view.chart().setTheme(QChart.ChartThemeDark)
         chart_view.setRenderHint(QPainter.Antialiasing)
         size_policy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         chart_view.setSizePolicy(size_policy)
@@ -775,7 +826,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             for days in range(7):
                 for hour in range(24):
                     item = self.usetime_table.item(days, hour)
-                    if item.background() == QColor(113, 94, 117):
+                    if item.background() == QColor(113, 94, 117) or QColor(155, 190, 200):
                         selected_cells.append((days, hour))
             parental_data = [time_limit_list, self.parental_box.isChecked(), selected_cells]
             save_table_data(parental_data)
@@ -805,14 +856,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     # Draggable handler
     def mousePressEvent(self, event):
-        if event.button() == Qt.LeftButton:
-            self.dragPos = event.globalPos()
+        if event is not None:
+            if event.button() == Qt.LeftButton:
+                self.dragPos = event.globalPos()
 
     def mouseMoveEvent(self, event):
-        if event.buttons() == Qt.LeftButton:
-            self.move(self.pos() + event.globalPos() - self.dragPos)
-            self.dragPos = event.globalPos()
-        event.accept()
+        if event is not None:
+            if event.buttons() == Qt.LeftButton:
+                self.move(self.pos() + event.globalPos() - self.dragPos)
+                self.dragPos = event.globalPos()
+            event.accept()
 
     # Close Event handler
     def closeEvent(self, event):

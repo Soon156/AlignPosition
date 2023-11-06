@@ -3,7 +3,6 @@ import argparse
 
 from PySide6.QtWidgets import QApplication
 from Window.loadingWindow import GifAnimationDialog
-import resource_rc
 
 
 def main(background):

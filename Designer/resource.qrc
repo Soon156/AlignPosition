@@ -1,19 +1,21 @@
 <RCC>
   <qresource prefix="icon">
+    <file>icons8-checked-radio-button-48.png</file>
+    <file>icons8-unchecked-radio-button-48.png</file>
+    <file>icons8-shutdown-48.png</file>
+    <file>icons8-startup.png</file>
+    <file>icons8-down-48-blue.png</file>
+    <file>icons8-up-48-blue.png</file>
     <file>ezgif.com-gif-maker.gif</file>
     <file>icons8-control-48.png</file>
-    <file>icons8-reset-48.png</file>
     <file>icons8-info-48.png</file>
     <file>access-title-resize.png</file>
     <file>icons8-down-48.png</file>
     <file>icons8-toggle-off-48.png</file>
     <file>icons8-toggle-on-48.png</file>
     <file>icons8-up-48.png</file>
-    <file>icons8-shutdown-48.png</file>
-    <file>icons8-startup.png</file>
     <file>tut-title-resize.png</file>
     <file>icons8-switches-48.png</file>
-    <file>icons8-stop-48 (2).png</file>
     <file>icons8-popup-window-48.png</file>
     <file>icons8-play-48.png</file>
     <file>icons8-setting-48.png</file>

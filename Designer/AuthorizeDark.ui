@@ -18,7 +18,7 @@
     <normaloff>:/icon/logo.ico</normaloff>:/icon/logo.ico</iconset>
   </property>
   <property name="styleSheet">
-   <string notr="true">#PINDialog {background-color: rgb(221, 242, 253);}</string>
+   <string notr="true">#PINDialog {background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 rgb(26, 16, 57), stop:0.5 rgb(41, 14, 47), stop:1 rgb(26, 16, 57))}</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
@@ -27,7 +27,8 @@
    <item alignment="Qt::AlignVCenter">
     <widget class="QFrame" name="PINValidationFrame">
      <property name="styleSheet">
-      <string notr="true">font-family: &quot;Roboto&quot;, sans-serif;</string>
+      <string notr="true">color: white;
+font-family: &quot;Roboto&quot;, sans-serif;</string>
      </property>
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
@@ -69,13 +70,6 @@
       </item>
       <item alignment="Qt::AlignVCenter">
        <widget class="QFrame" name="PINFrame">
-        <property name="styleSheet">
-         <string notr="true">QLineEdit {
-    border: 1px solid #9BBEC8;
-    border-radius: 3px;
-    padding: 2px 4px;
-}</string>
-        </property>
         <property name="frameShape">
          <enum>QFrame::StyledPanel</enum>
         </property>
@@ -100,7 +94,6 @@
           <widget class="QPushButton" name="PIN_btn">
            <property name="styleSheet">
             <string notr="true">QPushButton{
-color:white;
 padding: 3px 25px 3px 25px;
 background-color: #00d991;
 }

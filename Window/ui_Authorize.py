@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'Authorize.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.5.2
+## Created by: Qt User Interface Compiler version 6.5.3
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -28,14 +28,13 @@ class Ui_PINDialog(object):
         icon = QIcon()
         icon.addFile(u":/icon/logo.ico", QSize(), QIcon.Normal, QIcon.Off)
         PINDialog.setWindowIcon(icon)
-        PINDialog.setStyleSheet(u"#PINDialog {background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1, stop:0 rgb(26, 16, 57), stop:0.5 rgb(41, 14, 47), stop:1 rgb(26, 16, 57))}")
+        PINDialog.setStyleSheet(u"#PINDialog {background-color: rgb(221, 242, 253);}")
         self.verticalLayout = QVBoxLayout(PINDialog)
         self.verticalLayout.setSpacing(0)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.PINValidationFrame = QFrame(PINDialog)
         self.PINValidationFrame.setObjectName(u"PINValidationFrame")
-        self.PINValidationFrame.setStyleSheet(u"color: white;\n"
-"font-family: \"Roboto\", sans-serif;")
+        self.PINValidationFrame.setStyleSheet(u"font-family: \"Roboto\", sans-serif;")
         self.PINValidationFrame.setFrameShape(QFrame.StyledPanel)
         self.PINValidationFrame.setFrameShadow(QFrame.Raised)
         self.verticalLayout_4 = QVBoxLayout(self.PINValidationFrame)
@@ -57,6 +56,11 @@ class Ui_PINDialog(object):
 
         self.PINFrame = QFrame(self.PINValidationFrame)
         self.PINFrame.setObjectName(u"PINFrame")
+        self.PINFrame.setStyleSheet(u"QLineEdit {\n"
+"    border: 1px solid #9BBEC8;\n"
+"    border-radius: 3px;\n"
+"    padding: 2px 4px;\n"
+"}")
         self.PINFrame.setFrameShape(QFrame.StyledPanel)
         self.PINFrame.setFrameShadow(QFrame.Raised)
         self.horizontalLayout_7 = QHBoxLayout(self.PINFrame)
@@ -71,6 +75,7 @@ class Ui_PINDialog(object):
         self.PIN_btn = QPushButton(self.PINFrame)
         self.PIN_btn.setObjectName(u"PIN_btn")
         self.PIN_btn.setStyleSheet(u"QPushButton{\n"
+"color:white;\n"
 "padding: 3px 25px 3px 25px;\n"
 "background-color: #00d991;\n"
 "}\n"

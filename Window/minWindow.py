@@ -3,12 +3,19 @@ from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QDialog, QApplication
 
 from PostureRecognize.ElapsedTime import read_elapsed_time_data, seconds_to_hms
+from .changeStyleSheet import get_theme
 from .ui_MinWindow import Ui_minDialog
+from .ui_MinWindowDark import Ui_minDialog as Ui_minDialogDark
 from PySide6.QtCore import Qt
 import resource_rc
 
+if get_theme():
+    ui_class = Ui_minDialog
+else:
+    ui_class = Ui_minDialogDark
 
-class MinWindow(QDialog, Ui_minDialog):
+
+class MinWindow(QDialog, ui_class):
     signal_bool = Signal(bool)
 
     def __init__(self, parent):
