@@ -3,9 +3,9 @@ import json
 import os
 import logging as log
 import datetime
-import pickle
 import winreg
 
+import matplotlib as plt
 from psutil import process_iter
 from pygrabber.dshow_graph import FilterGraph
 
@@ -16,7 +16,44 @@ now = datetime.datetime.now()
 current_month, current_year = now.month, now.year
 
 # App_Use_Time Filter List
-filter_list = {"Align Position", "null", "Application Frame Host", "", "Pick an app", "LockApp.exe"}
+filter_list = {"Align Position", "null", "Application Frame Host", "", "Pick an app", "LockApp.exe",
+               "Modern Setup Host"}
+
+# Chart Font
+font = {'family': 'arial',
+        'weight': 'normal',
+        'size': 9,
+        }
+
+STRING_LIMIT = 13
+GRAY_COLOR = '#5A5A5A'
+plt.rc('font', **font)
+plt.set_loglevel('WARNING')
+
+# Color of chart
+bright_colors_light_blue_theme = [
+    "#ADD8E6",  # Light Blue
+    "#87CEEB",  # Sky Blue
+    "#89CFF0",  # Baby Blue
+    "#40E0D0",  # Turquoise
+    "#00FFFF",  # Cyan / Aqua
+    "#AFEEEE",  # Pale Turquoise
+    "#B0C4DE",  # Light Steel Blue
+    "#B0E0E6",  # Powder Blue
+    "#00BFFF"  # Deep Sky Blue
+]
+
+dark_colors_purple_theme = [
+    "#9370DB",  # Medium Purple
+    "#8A2BE2",  # Blue Violet
+    "#800080",  # Purple
+    "#9932CC",  # Dark Orchid
+    "#9400D3",  # Dark Violet
+    "#8B008B",  # Dark Magenta
+    "#4B0082",  # Indigo
+    "#6A5ACD",  # Slate Blue
+    "#483D8B"  # Dark Slate Blue
+]
 
 
 def get_registry_value(key=winreg.HKEY_CURRENT_USER, subkey="SOFTWARE\Align Position", value_name="Resource Folder"):
@@ -101,18 +138,6 @@ DEFAULT_VAL = {
     'init': True,
     'dev': False
 }
-
-# COLORS
-APP_BACKGROUND_COLOR = '#1FC3B7'  # LIGHT GREEN
-
-# TEXT STYLE
-TITLE_TEXT_SIZE = 26
-TEXT_SIZE = 18
-SMALL_TEXT = 12
-TEXT_COLOR = '#ffffff'  # WHITE
-SYNC_TEXT_COLOR = '#0F615B'  # DARK GREEN
-BUTTON_COLOR = '#0F615B'
-FONT = 'Calibri'
 
 
 # clear log if exist >3
