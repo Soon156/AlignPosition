@@ -3,6 +3,7 @@ import json
 import os
 import shutil
 import zipfile
+import logging as log
 from Funtionality.Config import app_folder, app_filter_list, temp_folder, CONFIG_PATH
 from ParentalControl.Auth import read_use_time, read_app_use_time, write_use_time, write_app_use_time, \
     read_table_data, save_table_data
@@ -11,6 +12,7 @@ files = ["use_time.csv", "app_use_time.csv", "table_data.json", "filter.json", "
 
 
 def extract_use_time():
+    log.info(f"Saving Use Time...")
     data = read_use_time()
     path = os.path.join(temp_folder, files[0])
     with open(path, mode="w", newline="") as file:
@@ -19,6 +21,7 @@ def extract_use_time():
 
 
 def extract_app_use_time():
+    log.info(f"Saving Program Time...")
     data = read_app_use_time()
     # Extract the column names (unique keys from all inner dictionaries)
     columns = set()
@@ -39,6 +42,7 @@ def extract_app_use_time():
 
 
 def extract_table_data():
+    log.info(f"Saving Parental Setting...")
     path = os.path.join(temp_folder, files[2])
     data = read_table_data()
     with open(path, "w") as file:
@@ -46,6 +50,7 @@ def extract_table_data():
 
 
 def retrieve_use_time(path):
+    log.info(f"Reading Use Time...")
     loaded_2d_array = []
     with open(path, mode="r", newline="") as file:
         reader = csv.reader(file)
@@ -55,6 +60,7 @@ def retrieve_use_time(path):
 
 
 def retrieve_app_use_time(path):
+    log.info(f"Reading Program Use Time...")
     # Initialize an empty dictionary to store the retrieved data
     retrieved_data = {}
 
@@ -79,6 +85,7 @@ def retrieve_app_use_time(path):
 
 
 def retrieve_table_data(path):
+    log.info(f"Reading Parental Setting...")
     with open(path, "r") as file:
         data = json.load(file)
     return data
@@ -96,10 +103,12 @@ def zip_files(path):
                 os.remove(temp_path)
             else:
                 if file is files[4]:
-                    print(CONFIG_PATH)
+                    log.info("Saving config...")
                     zipf.write(CONFIG_PATH, os.path.basename(file))
                 else:
+                    log.info("Saving app filer list...")
                     zipf.write(app_filter_list, os.path.basename(file))
+    log.info(f"Data has been extracted and backup on !{path}")
     return path
 
 
@@ -119,11 +128,14 @@ def extract_zip(zip_file_path):
             save_table_data(table_data)
         if file == files[3]:
             os.remove(app_filter_list)
+            log.info("Saving app filer list...")
             shutil.move(path, app_folder)
         if file == files[4]:
             os.remove(CONFIG_PATH)
+            log.info("Saving Config...")
             shutil.move(path, app_folder)
         try:
             os.remove(path)
         except FileNotFoundError:
             pass
+    log.info("Data has been recovered!")
