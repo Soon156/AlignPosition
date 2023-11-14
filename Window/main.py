@@ -715,19 +715,19 @@ class MainWindow(QMainWindow, ui_class):
 
     def put_chart(self):
         data = read_app_use_time()
+        sorted_dates = sorted(data.keys(), key=lambda x: datetime.strptime(x, "%Y-%m-%d"))
         # Calculate the total time for each app
-        app_total_time = {}
         date_list = []
-        for date in data:
-            if date not in date_list:
-                date_list.append(datetime.strptime(date, "%Y-%m-%d").strftime("%b %d"))
+        app_total_time = {}
+        for date in sorted_dates[:7]:
+            formatted_date = datetime.strptime(date, "%Y-%m-%d").strftime("%b %d")
+            date_list.append(formatted_date)
             for app in data[date]:
                 app_total_time[app] = app_total_time.get(app, 0) + data[date][app]
 
         # Sort the apps based on total time in descending order
         sorted_apps = sorted(app_total_time.items(), key=lambda x: x[1], reverse=True)
         top_7_apps = [app for app, _ in sorted_apps[:7]]
-
         series = QtCharts.QStackedBarSeries()
 
         for app in top_7_apps:
