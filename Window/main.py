@@ -5,19 +5,19 @@ import logging as log
 from datetime import datetime
 
 import zroya
-from PySide6 import QtCharts
 from PySide6.QtCore import Slot, Qt, QSize
-from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox, QSizePolicy, QLineEdit, \
+from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox, QLineEdit, \
     QTableWidgetItem, QSystemTrayIcon, QMenu
-from PySide6.QtCharts import QBarSet, QBarSeries, QBarCategoryAxis, QChart, QChartView
-from PySide6.QtGui import QPainter, QColor, QDesktopServices, QIcon, QAction
+from PySide6.QtGui import QColor, QDesktopServices, QIcon, QAction
+
+from Chart.BadTime import BadTimeChartWidget
+from Chart.ProgramUseTime import ProgramUseTimeChartWidget
 from Funtionality.Config import get_config, get_available_cameras, create_config, \
     key_file_path, abs_logo_path, remove_all_data, check_key, reset_parental  # parental_monitoring
 from Funtionality.UpdateConfig import write_config, tracking_instance, stop_tracking, waiting, \
     get_app_tracking_state
 from Funtionality.Notification import first_notify, break_notify
-from ParentalControl.Auth import change_password, login_user, read_use_time, \
-    read_app_use_time, user_register, save_table_data, read_table_data, msg
+from ParentalControl.Auth import change_password, login_user, user_register, save_table_data, read_table_data, msg
 from ParentalControl.ParentalControl import ParentalTracking
 from PostureRecognize.ElapsedTime import seconds_to_hms
 from PostureRecognize.PositionDetect import PostureRecognizerThread, read_elapsed_time_data  # StartPreview
@@ -27,10 +27,10 @@ from .OverlayWindow import OverlayWidget
 from .ParentalWindow import ParentalDialog
 from .changeStyleSheet import get_theme, top_side_menu, top_side_menu_dark, choice_side_menu, choice_side_menu_dark, \
     btm_side_menu, btm_side_menu_dark
-from .ui_MainMenu import Ui_MainWindow
-from .ui_MainMenuDark import Ui_MainWindow as Ui_MainWindowDark
+from Chart.UseTime import UseTimeChartWidget
+from Ui_Window.ui_MainMenu import Ui_MainWindow
+from Ui_Window.ui_MainMenuDark import Ui_MainWindow as Ui_MainWindowDark
 from .minWindow import MinWindow
-import resource_rc  # DO NOT REMOVE
 
 dark_cell = QColor(113, 94, 117)
 light_cell = QColor(155, 190, 200)
@@ -127,7 +127,7 @@ class MainWindow(QMainWindow, ui_class):
         self.login_state = False  # Hold login state
 
         self.dashboard_page()  # Set the default page
-        self.tut_chart()  # Show default chart
+        self.init_chart('tut')  # Show default chart
 
         # Parental control related function init
         self.current_day = datetime.now().weekday()
@@ -243,7 +243,7 @@ class MainWindow(QMainWindow, ui_class):
             self.cont_stackedwidget.setCurrentIndex(0)
             elapsed_time, _ = read_elapsed_time_data()
             self.use_time_lbl.setText(seconds_to_hms(elapsed_time))
-            self.tut_chart()
+            self.init_chart('tut')
             self.use_time_btn.setText("Program Use Time")
         else:
             self.parental_page()
@@ -621,152 +621,17 @@ class MainWindow(QMainWindow, ui_class):
         QMessageBox.information(self, "Settings", "Config has been reset")
 
     # Chart list
-    def tut_chart(self):
-        rows = read_use_time()
-        rows.reverse()
-        # Create a single QBarSet to hold the data values
-        bar_set = QBarSet("Data Values")
-        categories = []
-        temp = []
-        # Add data values to the bar_set
-        for item in rows[:7]:
-            temp.append(item)
-        temp.reverse()
-        for item in temp:
-            bar_set.append(int(item[1]) / 60)
-            categories.append(datetime.strptime(item[0], "%Y-%m-%d").strftime("%b %d"))
-
-        # Create a QBarSeries and add the bar_set to it
-        series = QBarSeries()
-        series.append(bar_set)
-
-        chart = QChart()
-        chart.addSeries(series)
-        chart.setTitle("Total Use Time")
-
-        # Set up the X-axis with the date categories
-        axis = QBarCategoryAxis()
-        axis.append(categories)
-
-        chart.createDefaultAxes()
-        chart.setAxisX(axis, series)
-        y_axis = chart.axisY()
-        y_axis.setTitleText("Use Time (min)")
-
-        chart.legend().setVisible(False)
-        chart.legend().setAlignment(Qt.AlignBottom)
-
-        chart_view = QChartView(chart)
-        chart_view.setRenderHint(QPainter.Antialiasing)
-        if not self.theme:
-            chart_view.chart().setTheme(QChart.ChartThemeDark)
-        chart.setAnimationOptions(QChart.SeriesAnimations)
-
-        size_policy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        size_policy.setHeightForWidth(chart_view.sizePolicy().hasHeightForWidth())
-        chart_view.setSizePolicy(size_policy)
-        self.update_chart(chart_view)
-
-    def but_chart(self):
-        rows = read_use_time()
-        rows.reverse()
-        # Create a single QBarSet to hold the data values
-        bar_set = QBarSet("Data Values")
-        categories = []
-        temp = []
-        # Add data values to the bar_set
-        for item in rows[:7]:
-            temp.append(item)
-        temp.reverse()
-        for item in temp:
-            bar_set.append(float(item[2]) / 60)
-            categories.append(datetime.strptime(item[0], "%Y-%m-%d").strftime("%b %d"))
-
-        # Create a QBarSeries and add the bar_set to it
-        series = QBarSeries()
-        series.append(bar_set)
-
-        chart = QChart()
-        chart.addSeries(series)
-        chart.setTitle("Total Bad Posture Time")
-
-        # Set up the X-axis with the date categories
-        axis = QBarCategoryAxis()
-        axis.append(categories)
-
-        chart.createDefaultAxes()
-        chart.setAxisX(axis, series)
-        y_axis = chart.axisY()
-        y_axis.setTitleText("Minutes")
-
-        chart.legend().setVisible(False)
-        chart.legend().setAlignment(Qt.AlignBottom)
-
-        chart_view = QChartView(chart)
-        chart_view.setRenderHint(QPainter.Antialiasing)
-        if not self.theme:
-            chart_view.chart().setTheme(QChart.ChartThemeDark)
-        chart.setAnimationOptions(QChart.SeriesAnimations)
-
-        size_policy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        size_policy.setHeightForWidth(chart_view.sizePolicy().hasHeightForWidth())
-        chart_view.setSizePolicy(size_policy)
-        self.update_chart(chart_view)
-
-    def put_chart(self):
-        data = read_app_use_time()
-        sorted_dates = sorted(data.keys(), key=lambda x: datetime.strptime(x, "%Y-%m-%d"))
-        # Calculate the total time for each app
-        date_list = []
-        app_total_time = {}
-        for date in sorted_dates[:7]:
-            formatted_date = datetime.strptime(date, "%Y-%m-%d").strftime("%b %d")
-            date_list.append(formatted_date)
-            for app in data[date]:
-                app_total_time[app] = app_total_time.get(app, 0) + data[date][app]
-
-        # Sort the apps based on total time in descending order
-        sorted_apps = sorted(app_total_time.items(), key=lambda x: x[1], reverse=True)
-        top_7_apps = [app for app, _ in sorted_apps[:7]]
-        series = QtCharts.QStackedBarSeries()
-
-        for app in top_7_apps:
-            temp = []
-            name = None
-            total_time = 0
-            for date in data:
-                use_timedate = 0
-                if app in data[date]:
-                    use_timedate = data[date][app] / 60
-                    total_time += use_timedate
-                temp.append(use_timedate)
-                name = f"{app}: {round(total_time, 2)} m"
-            bar_set = QBarSet(name)
-            bar_set.append(temp)
-            series.append(bar_set)
-
-        chart = QChart()
-        chart.addSeries(series)
-        chart.setTitle("Program Use Time")
-        chart.setAnimationOptions(QChart.SeriesAnimations)
-
-        axis = QBarCategoryAxis()
-        axis.append(date_list)
-        chart.createDefaultAxes()
-        chart.setAxisX(axis, series)
-
-        # Set chart legend
-        chart.legend().setVisible(True)
-        chart.legend().setAlignment(Qt.AlignRight)
-
-        # set chart renderer and theme
-        chart_view = QChartView(chart)
-        if not self.theme:
-            chart_view.chart().setTheme(QChart.ChartThemeDark)
-        chart_view.setRenderHint(QPainter.Antialiasing)
-        size_policy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        chart_view.setSizePolicy(size_policy)
-        self.update_chart(chart_view)
+    def init_chart(self, chart):
+        while self.chart_cont.count() > 0:
+            item = self.chart_cont.takeAt(0)
+            if item.widget():
+                item.widget().deleteLater()
+        if chart == 'tut':
+            self.chart_cont.addWidget(UseTimeChartWidget(self.theme))
+        elif chart == 'but':
+            self.chart_cont.addWidget(BadTimeChartWidget(self.theme))
+        else:
+            self.chart_cont.addWidget(ProgramUseTimeChartWidget(self.theme))
 
     def show_chart(self, refresh=False):
 
@@ -783,29 +648,21 @@ class MainWindow(QMainWindow, ui_class):
         if self.use_time_btn.text() == "Program Use Time":
             if not refresh:
                 self.use_time_btn.setText("Total Bad Posture")
-                self.put_chart()
+                self.init_chart('put')
             else:
-                self.tut_chart()
+                self.init_chart('tut')
         elif self.use_time_btn.text() == "Total Use Time":
             if not refresh:
                 self.use_time_btn.setText("Program Use Time")
-                self.tut_chart()
+                self.init_chart('tut')
             else:
-                self.but_chart()
+                self.init_chart('but')
         else:
             if not refresh:
                 self.use_time_btn.setText("Total Use Time")
-                self.but_chart()
+                self.init_chart('but')
             else:
-                self.put_chart()
-
-    def update_chart(self, chart_view=None):
-        chart_view.setMinimumSize(QSize(900, 300))
-        while self.chart_cont.count() > 0:
-            item = self.chart_cont.takeAt(0)
-            if item.widget():
-                item.widget().deleteLater()
-        self.chart_cont.addWidget(chart_view)
+                self.init_chart('put')
 
     # Table view
     def handle_submit(self):
@@ -934,6 +791,7 @@ class MainWindow(QMainWindow, ui_class):
             sys.exit()
 
     def stop_waiting_all(self):
+        log.info("Stopping all active thread....")
         try:
             self.posture_recognizer.stop_capture()  # Stop posture detection
         except:
