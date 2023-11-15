@@ -28,8 +28,8 @@ from .ParentalWindow import ParentalDialog
 from .changeStyleSheet import get_theme, top_side_menu, top_side_menu_dark, choice_side_menu, choice_side_menu_dark, \
     btm_side_menu, btm_side_menu_dark
 from Chart.UseTime import UseTimeChartWidget
-from Ui_Window.ui_MainMenu import Ui_MainWindow
-from Ui_Window.ui_MainMenuDark import Ui_MainWindow as Ui_MainWindowDark
+from UI_Window.ui_MainMenu import Ui_MainWindow
+from UI_Window.ui_MainMenuDark import Ui_MainWindow as Ui_MainWindowDark
 from .minWindow import MinWindow
 
 dark_cell = QColor(113, 94, 117)

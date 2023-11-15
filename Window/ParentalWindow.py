@@ -6,8 +6,8 @@ from Funtionality.Config import desktop_path
 from ParentalControl.Auth import read_table_data
 from ParentalControl.Backup_Restore import zip_files, extract_zip
 from Window.changeStyleSheet import get_theme
-from Ui_Window.ui_ParentalSetting import Ui_Dialog
-from Ui_Window.ui_ParentalSettingDark import Ui_Dialog as Ui_DialogDark
+from UI_Window.ui_ParentalSetting import Ui_Dialog
+from UI_Window.ui_ParentalSettingDark import Ui_Dialog as Ui_DialogDark
 
 from Funtionality.Config import get_config
 from Funtionality.UpdateConfig import write_config, get_app_tracking_state, tracking_instance
