@@ -47,6 +47,13 @@ class ProgramUseTimeChartWidget(QWidget):
                        edgecolor='none')
         self.ax.set_title('Program Use Time')
         self.ax.set_xlim(-1, len(self.date_list))
+        max_value = 0
+
+        for key, value in self.app_use_time_per_day.items():
+            if value > max_value:
+                max_value = value
+        if max_value > 0:
+            self.ax.set_ylim(0, max_value * 115/100)
         self.figure.tight_layout()
 
         # Embed Matplotlib plot in PyQt widget

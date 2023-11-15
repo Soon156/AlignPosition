@@ -43,6 +43,9 @@ class UseTimeChartWidget(QWidget):
 
         self.ax.set_ylabel('Use Time (mins)')
         self.ax.set_title('Total Use Time')
+        self.ax.set_xlim(-1, len(categories))
+        if len(values) != 0:
+            self.ax.set_ylim(0, max(values) * 115/100)
         self.figure.tight_layout()
 
         # Embed Matplotlib plot in PyQt widget
