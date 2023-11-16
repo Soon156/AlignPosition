@@ -250,6 +250,7 @@ class PostureRecognizerThread(QThread):
         if self.values.get('dev') == "True":
             frame = cv2.flip(frame, 1)
             frame = cv2.resize(frame, (640, 360))
+            output_frame = frame.copy()
             label_text = f"Posture: {label}, {self.average}"
             cv2.putText(frame, label_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
@@ -277,14 +278,14 @@ class PostureRecognizerThread(QThread):
                 timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
                 frame_filename = f'good_{timestamp}.jpg'
                 file_path = os.path.join(temp_folder, frame_filename)
-                cv2.imwrite(file_path, frame)
+                cv2.imwrite(file_path, output_frame)
                 log.info(f"{frame_filename} is write to {file_path}")
 
             if temp1 & 0xFF == ord('b'):
                 timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
                 frame_filename = f'bad_{timestamp}.jpg'
                 file_path = os.path.join(temp_folder, frame_filename)
-                cv2.imwrite(file_path, frame)
+                cv2.imwrite(file_path, output_frame)
                 log.info(f"{frame_filename} is write to {file_path}")
 
             if temp1 == ord('q'):
