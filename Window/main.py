@@ -9,11 +9,12 @@ from PySide6.QtCore import Slot, Qt, QSize
 from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox, QLineEdit, \
     QTableWidgetItem, QSystemTrayIcon, QMenu
 from PySide6.QtGui import QColor, QDesktopServices, QIcon, QAction
+from matplotlib import pyplot as plt
 
 from Chart.BadTime import BadTimeChartWidget
 from Chart.ProgramUseTime import ProgramUseTimeChartWidget
 from Funtionality.Config import get_config, get_available_cameras, create_config, \
-    key_file_path, abs_logo_path, remove_all_data, check_key, reset_parental  # parental_monitoring
+    key_file_path, abs_logo_path, remove_all_data, check_key, reset_parental, GRAY_COLOR  # parental_monitoring
 from Funtionality.UpdateConfig import write_config, tracking_instance, stop_tracking, waiting, \
     get_app_tracking_state
 from Funtionality.Notification import first_notify, break_notify
@@ -48,6 +49,12 @@ class MainWindow(QMainWindow, ui_class):
         super().__init__()
         # Window Attribute
         self.theme = get_theme()
+        if self.theme:
+            plt.rcParams['text.color'] = 'white'
+            plt.rcParams['axes.labelcolor'] = 'white'
+        else:
+            plt.rcParams['text.color'] = GRAY_COLOR
+            plt.rcParams['axes.labelcolor'] = GRAY_COLOR
         self.setupUi(self)
         self.setWindowFlag(Qt.FramelessWindowHint)
         self.center()  # Window draggable
