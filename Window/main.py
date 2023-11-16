@@ -50,11 +50,11 @@ class MainWindow(QMainWindow, ui_class):
         # Window Attribute
         self.theme = get_theme()
         if self.theme:
-            plt.rcParams['text.color'] = 'white'
-            plt.rcParams['axes.labelcolor'] = 'white'
-        else:
             plt.rcParams['text.color'] = GRAY_COLOR
             plt.rcParams['axes.labelcolor'] = GRAY_COLOR
+        else:
+            plt.rcParams['text.color'] = 'white'
+            plt.rcParams['axes.labelcolor'] = 'white'
         self.setupUi(self)
         self.setWindowFlag(Qt.FramelessWindowHint)
         self.center()  # Window draggable
