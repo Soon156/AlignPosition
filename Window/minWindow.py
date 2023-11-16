@@ -31,6 +31,7 @@ class MinWindow(QDialog, ui_class):
         self.stop_btn.clicked.connect(self.start_monitor)
         self.close_btn.clicked.connect(self.close_me)
         self.stick_threshold = 70
+        self.setWindowOpacity(0.7)
         self.center()
 
     def init(self):
@@ -57,6 +58,12 @@ class MinWindow(QDialog, ui_class):
             self.stop_btn.setIcon(self.icon_stop)
         else:
             self.stop_btn.setIcon(self.icon_start)
+   # Hover Event
+    def enterEvent(self, event):
+        self.setWindowOpacity(1)
+
+    def leaveEvent(self, event):
+        self.setWindowOpacity(0.7)
 
     # Draggable handler
     def center(self):

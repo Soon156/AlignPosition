@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'MinWindow.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.5.3
+## Created by: Qt User Interface Compiler version 6.6.0
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -27,7 +27,7 @@ class Ui_minDialog(object):
         icon = QIcon()
         icon.addFile(u":/icon/logo.ico", QSize(), QIcon.Normal, QIcon.Off)
         minDialog.setWindowIcon(icon)
-        minDialog.setStyleSheet(u"#minDialog {background-color:#9BBEC8;}\n"
+        minDialog.setStyleSheet(u"#minDialog {background-color:rgb(221, 242, 253);}\n"
 "")
         self.horizontalLayout = QHBoxLayout(minDialog)
         self.horizontalLayout.setSpacing(0)
