@@ -4,7 +4,7 @@ import logging as log
 from datetime import datetime
 from PySide6.QtCore import QThread, Signal
 from Funtionality.Config import get_config  # parental_monitoring
-from Funtionality.Notification import show_control, reset_signal, get_signal
+from Funtionality.Notification import show_control, reset_signal, get_signal, update_cancel_cond
 from ParentalControl.Auth import read_table_data
 
 
@@ -75,5 +75,6 @@ class ParentalTracking(QThread):
             if cancel_signal:
                 self.cancel.emit()
                 reset_signal()
+        update_cancel_cond()
         self.parent().parental_control_thread = False
         log.info("Parental tracking stop")
