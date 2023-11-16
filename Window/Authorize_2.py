@@ -2,8 +2,8 @@ from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QDialog, QLineEdit
 from ParentalControl.Auth import login_user
 from Window.changeStyleSheet import get_theme
-from Ui_Window.ui_Authorize import Ui_PINDialog
-from Ui_Window.ui_AuthorizeDark import Ui_PINDialog as Ui_PINDialogDark
+from UI_Window.ui_Authorize import Ui_PINDialog
+from UI_Window.ui_AuthorizeDark import Ui_PINDialog as Ui_PINDialogDark
 
 if get_theme():
     ui_class = Ui_PINDialog

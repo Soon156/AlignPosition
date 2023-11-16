@@ -4,8 +4,8 @@ from PySide6.QtWidgets import QDialog, QApplication
 
 from PostureRecognize.ElapsedTime import read_elapsed_time_data, seconds_to_hms
 from .changeStyleSheet import get_theme
-from Ui_Window.ui_MinWindow import Ui_minDialog
-from Ui_Window.ui_MinWindowDark import Ui_minDialog as Ui_minDialogDark
+from UI_Window.ui_MinWindow import Ui_minDialog
+from UI_Window.ui_MinWindowDark import Ui_minDialog as Ui_minDialogDark
 from PySide6.QtCore import Qt
 
 if get_theme():
