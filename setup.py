@@ -13,7 +13,7 @@ base = "Win32GUI" if sys.platform == "win32" else None
 
 setup(
     name="AlignPosition",
-    version="0.5.1",
+    version="0.5.2",
     description="Align Position",
     options={"build_exe": build_exe_options},
     executables=[Executable("AlignPosition.py", base=base, icon="Resources/logo.ico", copyright="MSU")],
