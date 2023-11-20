@@ -16,7 +16,7 @@ def main(background):
     check_condition()
 
     from Window.main import MainWindow
-    window = MainWindow()
+    window = MainWindow(background)
     window.setScreen(app.primaryScreen())
 
     if background:

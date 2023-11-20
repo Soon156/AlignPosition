@@ -27,7 +27,6 @@ def check_for_update():
     if values['check_update'] == "No":
         return None
     latest_version = get_latest_release()
-    latest_version = '0.5.4'
     if latest_version is not None:
         if latest_version > current_version:
             return latest_version
