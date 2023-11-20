@@ -89,7 +89,7 @@ def train_model(good_landmark, bad_landmark, batch_size, epoch=60, num_landmarks
     # Compile the model
     model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
-    early_stopping = EarlyStopping(monitor='val_loss', patience=10, restore_best_weights=True)
+    early_stopping = EarlyStopping(monitor='val_loss', patience=15, restore_best_weights=True)
 
     weights = dict(enumerate(class_weights))
 
@@ -107,4 +107,4 @@ def train_model(good_landmark, bad_landmark, batch_size, epoch=60, num_landmarks
     model.save("..\posture_detection_model.keras")
 
 
-preprocess_img(epoch=999, batch_size=8)
+preprocess_img(epoch=999, batch_size=10)

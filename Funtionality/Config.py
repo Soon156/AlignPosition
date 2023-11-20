@@ -73,7 +73,8 @@ appdata_path = os.getenv('APPDATA')
 app_folder = os.path.join(appdata_path, 'AlignPosition')
 log_folder = os.path.join(app_folder, 'logs')
 model_file = 'posture_detection_model.keras'
-detection_file = 'pose_landmarker_full.task'
+landmark_model_full = 'pose_landmarker_full.task'
+landmark_model_lite = 'pose_landmarker_lite.task'
 temp_folder = os.path.join(app_folder, 'temps')
 b_config = os.path.join(temp_folder, 'config_old.ini')
 userdata = os.path.join(app_folder, 'usetime_data.bin')
@@ -88,7 +89,7 @@ install_path = get_registry_value()
 abs_logo_path = os.path.join(install_path, logo_path)
 abs_overlay_pic_path = os.path.join(install_path, overlay_logo_path)
 abs_model_file_path = os.path.join(install_path, model_file)
-abs_detection_file_path = os.path.join(install_path, detection_file)
+abs_detection_file_path = os.path.join(install_path, landmark_model_lite)
 hidden_file_path = os.path.expanduser('~/.AlignPosition')
 key_file_path = os.path.expanduser('~/.AlignPosition/user.key')
 salt_file_path = os.path.expanduser('~/.AlignPosition/salt.bin')
@@ -136,6 +137,7 @@ DEFAULT_VAL = {
     'monitoring': True,
     'theme': 1,
     'init': True,
+    'model': 'Lite',
     'dev': False
 }
 
@@ -171,6 +173,11 @@ def check_logo():
 
 
 def check_model():
+    global abs_detection_file_path
+    values = get_config()
+    if values['model'] != 'Lite':
+        abs_detection_file_path = os.path.join(install_path, landmark_model_full)
+    log.info(f'Landmarker model: {abs_detection_file_path}')
     if os.path.exists(abs_model_file_path) and os.path.exists(abs_detection_file_path):
         return True
     else:
