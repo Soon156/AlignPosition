@@ -220,12 +220,12 @@ class MainWindow(QMainWindow, ui_class):
         result = msgbox.exec()
         if result == 0:
             QDesktopServices.openUrl("https://github.com/Soon156/AlignPosition/releases/latest")
+            self.values['check_update'] = "Yes"
         elif result == 1:
             self.values['check_update'] = version
-            write_config(self.values)
         else:
             self.values['check_update'] = "No"
-            write_config(self.values)
+        write_config(self.values)
 
     def tray_action(self, react):
         if react == QSystemTrayIcon.DoubleClick or react == QSystemTrayIcon.Trigger:
