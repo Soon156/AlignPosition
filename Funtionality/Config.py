@@ -89,6 +89,7 @@ install_path = get_registry_value()
 abs_logo_path = os.path.join(install_path, logo_path)
 abs_overlay_pic_path = os.path.join(install_path, overlay_logo_path)
 abs_model_file_path = os.path.join(install_path, model_file)
+abs_model_file_path = os.path.join(install_path, model_file)
 abs_detection_file_path = os.path.join(install_path, landmark_model_lite)
 hidden_file_path = os.path.expanduser('~/.AlignPosition')
 key_file_path = os.path.expanduser('~/.AlignPosition/user.key')
@@ -138,6 +139,7 @@ DEFAULT_VAL = {
     'theme': 1,
     'init': True,
     'model': 'Lite',
+    'check_update': 'Yes',
     'dev': False
 }
 

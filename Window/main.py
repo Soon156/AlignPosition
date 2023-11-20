@@ -18,6 +18,7 @@ from Funtionality.Config import get_config, get_available_cameras, create_config
 from Funtionality.UpdateConfig import write_config, tracking_instance, stop_tracking, waiting, \
     get_app_tracking_state
 from Funtionality.Notification import first_notify, break_notify
+from Funtionality.Version import check_for_update
 from ParentalControl.Auth import change_password, login_user, user_register, save_table_data, read_table_data, msg
 from ParentalControl.ParentalControl import ParentalTracking
 from PostureRecognize.ElapsedTime import seconds_to_hms
@@ -198,6 +199,32 @@ class MainWindow(QMainWindow, ui_class):
                 self.start_monitoring()
         except Exception as e:
             self.error_handler(e)
+
+        # Check Update
+        version = check_for_update()
+        if version is not None:
+            if self.values['check_update'] == "Yes":
+                self.update_msg(version)
+            elif version > self.values['check_update']:
+                self.update_msg(version)
+
+    def update_msg(self, version):
+        msgbox = QMessageBox(self)
+        msgbox.setWindowTitle('Align Position')
+        msgbox.setIcon(QMessageBox.Information)
+        msgbox.setText(f"An update is available! Latest version: {version}")
+        msgbox.addButton('Update', QMessageBox.YesRole)
+        msgbox.addButton('Skip This Version', QMessageBox.ApplyRole)
+        msgbox.addButton('Do Not Check Update', QMessageBox.NoRole)
+        result = msgbox.exec()
+        if result == 0:
+            QDesktopServices.openUrl("https://github.com/Soon156/AlignPosition/releases/latest")
+        elif result == 1:
+            self.values['check_update'] = version
+            write_config(self.values)
+        else:
+            self.values['check_update'] = "No"
+            write_config(self.values)
 
     def tray_action(self, react):
         if react == QSystemTrayIcon.DoubleClick or react == QSystemTrayIcon.Trigger:

@@ -1,5 +1,6 @@
 import sys
 from cx_Freeze import setup, Executable
+from Env import current_version
 
 # Dependencies are automatically detected, but it might need fine-tuning.
 build_exe_options = {
@@ -13,7 +14,7 @@ base = "Win32GUI" if sys.platform == "win32" else None
 
 setup(
     name="AlignPosition",
-    version="0.5.2",
+    version=current_version,
     description="Align Position",
     options={"build_exe": build_exe_options},
     executables=[Executable("AlignPosition.py", base=base, icon="Resources/logo.ico", copyright="MSU")],
