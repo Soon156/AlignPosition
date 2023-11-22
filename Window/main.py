@@ -46,7 +46,7 @@ else:
 
 class MainWindow(QMainWindow, ui_class):
 
-    def __init__(self):
+    def __init__(self, background=False):
         super().__init__()
         # Window Attribute
         self.theme = get_theme()
@@ -201,12 +201,13 @@ class MainWindow(QMainWindow, ui_class):
             self.error_handler(e)
 
         # Check Update
-        version = check_for_update()
-        if version is not None:
-            if self.values['check_update'] == "Yes":
-                self.update_msg(version)
-            elif version > self.values['check_update']:
-                self.update_msg(version)
+        if not background:
+            version = check_for_update()
+            if version is not None:
+                if self.values['check_update'] == "Yes":
+                    self.update_msg(version)
+                elif version > self.values['check_update']:
+                    self.update_msg(version)
 
     def update_msg(self, version):
         msgbox = QMessageBox(self)
@@ -219,12 +220,12 @@ class MainWindow(QMainWindow, ui_class):
         result = msgbox.exec()
         if result == 0:
             QDesktopServices.openUrl("https://github.com/Soon156/AlignPosition/releases/latest")
+            self.values['check_update'] = "Yes"
         elif result == 1:
             self.values['check_update'] = version
-            write_config(self.values)
         else:
             self.values['check_update'] = "No"
-            write_config(self.values)
+        write_config(self.values)
 
     def tray_action(self, react):
         if react == QSystemTrayIcon.DoubleClick or react == QSystemTrayIcon.Trigger:
@@ -819,7 +820,7 @@ class MainWindow(QMainWindow, ui_class):
                     window.destroy()
                 except Exception:
                     pass
-
+            log.info("Application Exit...")
             self.destroy()  # End Main Window
             QApplication.exit()
             sys.exit()
@@ -853,3 +854,4 @@ class MainWindow(QMainWindow, ui_class):
             waiting()
         except Exception:
             pass
+        log.info("All thread stopped.")
