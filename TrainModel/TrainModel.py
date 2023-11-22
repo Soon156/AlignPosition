@@ -23,7 +23,7 @@ def preprocess_img(epoch=100, batch_size=12):
         file_counts.append(file_count)
         counts += file_count
         print(f"Number of files in the {label} folder: {file_count}")
-
+    print(f"Total files: {counts}")
     with ThreadPoolExecutor() as executor:
         good = executor.submit(process_img, "good")
         bad = executor.submit(process_img, "bad")
@@ -32,6 +32,7 @@ def preprocess_img(epoch=100, batch_size=12):
 
     n_batches = counts / batch_size
     n_batches = math.ceil(n_batches)
+
     train_model(good_result, bad_result, n_batches, epoch)
 
 

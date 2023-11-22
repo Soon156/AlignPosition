@@ -63,6 +63,7 @@ class PostureRecognizerThread(QThread):
             temp_time = 0
             counter = False
 
+
             # Threshold & controller for posture monitoring
             switch = False
             threshold = 30  # black image
@@ -76,7 +77,7 @@ class PostureRecognizerThread(QThread):
             notify_time = 0
             bad_temp_time = 0
             bad_posture_time = 0
-
+            process_time_start = 0
             data = False
 
             try:
@@ -85,7 +86,6 @@ class PostureRecognizerThread(QThread):
                 pass
 
             while self.running and not switch:
-
                 if not cap.isOpened():
                     switch = True
                     log.warning("Camera not available")
@@ -107,8 +107,12 @@ class PostureRecognizerThread(QThread):
                                 label = "good"
                             else:
                                 label = "bad"
-
+                        process_time = time.time() - process_time_start
+                        log.info(f"Processing Time per Result:{process_time}")
+                        if process_time > 3:
+                            log.warning(f"Performance issue, processing time more than expected: {process_time}")
                         results = []
+                        process_time_start = time.time()
 
                     elif frame_count % 5 == 0:
                         # Get landmark of frame
@@ -249,8 +253,8 @@ class PostureRecognizerThread(QThread):
     def show_dev(self, frame, label, result):
         if self.values.get('dev') == "True":
             frame = cv2.flip(frame, 1)
-            frame = cv2.resize(frame, (640, 360))
             output_frame = frame.copy()
+            frame = cv2.resize(frame, (640, 360))
             label_text = f"Posture: {label}, {self.average}"
             cv2.putText(frame, label_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 

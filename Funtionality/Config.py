@@ -128,7 +128,7 @@ DEFAULT_VAL = {
     'camera': 0,
     'rest': 30,
     'idle': 0.1,
-    'bad_posture': 1,
+    'bad_posture': 3,
     'notifications': True,
     'background': True,
     'app_tracking': False,
@@ -138,7 +138,7 @@ DEFAULT_VAL = {
     'monitoring': True,
     'theme': 1,
     'init': True,
-    'model': 'Lite',
+    'model': 'Full',
     'check_update': 'Yes',
     'dev': False
 }
