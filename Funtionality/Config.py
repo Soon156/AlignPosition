@@ -89,8 +89,7 @@ install_path = get_registry_value()
 abs_logo_path = os.path.join(install_path, logo_path)
 abs_overlay_pic_path = os.path.join(install_path, overlay_logo_path)
 abs_model_file_path = os.path.join(install_path, model_file)
-abs_model_file_path = os.path.join(install_path, model_file)
-abs_detection_file_path = os.path.join(install_path, landmark_model_lite)
+abs_detection_file_path = os.path.join(install_path, landmark_model_full)
 hidden_file_path = os.path.expanduser('~/.AlignPosition')
 key_file_path = os.path.expanduser('~/.AlignPosition/user.key')
 salt_file_path = os.path.expanduser('~/.AlignPosition/salt.bin')
@@ -129,6 +128,7 @@ DEFAULT_VAL = {
     'rest': 30,
     'idle': 0.1,
     'bad_posture': 3,
+    'input_idle': 30,
     'notifications': True,
     'background': True,
     'app_tracking': False,
@@ -303,6 +303,7 @@ def check_condition():
             raise Exception("Invalid config option")
         int(values.get('camera'))
         int(values.get('theme'))
+        int(values.get('input_idle'))
         float(values.get('idle'))
         float(values.get('bad_posture'))
         a = values.get('background') == 'True' or values.get('background') == 'False'
