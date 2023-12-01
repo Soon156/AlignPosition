@@ -1,4 +1,5 @@
 import os.path
+import threading
 from datetime import date, datetime
 import tensorflow as tf
 import cv2
@@ -6,6 +7,8 @@ import time
 import numpy as np
 import zroya
 from PySide6.QtCore import Signal, QThread
+
+from Funtionality.ActivityDetect import ActivityDetector
 from Funtionality.Config import get_config, abs_model_file_path, temp_folder
 from Funtionality.Notification import posture_notify, brightness_notify
 from ParentalControl.Auth import read_table_data
@@ -23,6 +26,8 @@ class PostureRecognizerThread(QThread):
 
     def __init__(self):
         super().__init__()
+        self.start_time = time.time()
+        self.activity_thread = None
         self.old_time = 0
         self.average = 0
         self.bad_time = 0
@@ -49,7 +54,7 @@ class PostureRecognizerThread(QThread):
             cap = cv2.VideoCapture(int(self.values.get('camera')), cv2.CAP_DSHOW)
             cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
             cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
-            start_time = time.time()
+            self.start_time = time.time()
             landmark = None
 
             # Control speed and calculate result
@@ -62,7 +67,6 @@ class PostureRecognizerThread(QThread):
             idle_time = 0
             temp_time = 0
             counter = False
-
 
             # Threshold & controller for posture monitoring
             switch = False
@@ -108,8 +112,8 @@ class PostureRecognizerThread(QThread):
                             else:
                                 label = "bad"
                         process_time = time.time() - process_time_start
-                        log.info(f"Processing Time per Result:{process_time}")
-                        if process_time > 3:
+                        log.debug(f"Processing Time per Result:{process_time}")
+                        if process_time > 3 and process_time_start != 0:
                             log.warning(f"Performance issue, processing time more than expected: {process_time}")
                         results = []
                         process_time_start = time.time()
@@ -163,10 +167,10 @@ class PostureRecognizerThread(QThread):
 
                                 # Update the elapsed time
                                 if counter:  # If there is idle
-                                    start_time += temp_time
+                                    self.start_time += temp_time
                                 counter = False  # Reset idle flag
 
-                                self.new_time = int(time.time() - start_time) + self.old_time
+                                self.new_time = int(time.time() - self.start_time) + self.old_time
                                 self.elapsed_time_updated.emit(self.new_time)
 
                             else:
@@ -213,31 +217,21 @@ class PostureRecognizerThread(QThread):
                     self.update_overlay.emit(label)
 
                 else:  # TODO active input thread
-                    self.running = False
-                    self.error_msg.emit("Camera reading failed, please make sure you are in bright environment, "
-                                        "activity monitor trough keyboard/mouse WIP")
-                    log.info("Switching to input detection, this will be implement in future....")
-
-                if date.today() != self.date_today:  # Reset the time if pass 12am
-                    self.save_usetime()
-                    self.new_time = 0
-                    self.bad_time = 0
-                    self.old_time = self.new_time
-                    self.date_today = date.today()
-                    start_time = time.time()
-
-                if time.time() - start_time > 600:  # CHECKME possible solution for crash after long time use
-                    start_time = time.time()
-                    self.save_usetime()
-                    self.old_time = self.new_time
-                    self.new_time = 0
-
+                    self.error_msg.emit("Camera reading failed, please make sure the camera is available!\n"
+                                        "Switching to input detection for now...")
+                    log.warning("Read Camera Failed, switching to input detection....")
+                    self.activity_thread = threading.Thread(target=self.activity_tracking)
+                    self.activity_thread.start()
+                    break
+                self.reset_usetime()
+                self.checkpoint_save()
             self.save_usetime()
             # Release the VideoCapture and close the OpenCV windows
             cap.release()
             detector.close()
             cv2.destroyAllWindows()
-            self.finished.emit(self.running)
+            if self.activity_thread is None:
+                self.finished.emit(self.running)
         except Exception as e:
             log.warning(e)
             self.error_msg.emit(str(e))
@@ -249,6 +243,22 @@ class PostureRecognizerThread(QThread):
 
     def save_usetime(self):
         save_elapsed_time_data(self.new_time, self.date_today, self.bad_time)
+
+    def reset_usetime(self):  # Reset the time if pass 12am
+        if date.today() != self.date_today:
+            self.save_usetime()
+            self.new_time = 0
+            self.bad_time = 0
+            self.old_time = self.new_time
+            self.date_today = date.today()
+            self.start_time = time.time()
+
+    def checkpoint_save(self):  # Auto save after 5 minutes
+        if time.time() - self.start_time > 300:  # CHECKME possible solution for crash after long time use
+            self.start_time = time.time()
+            self.save_usetime()
+            self.old_time = self.new_time
+            self.new_time = 0
 
     def show_dev(self, frame, label, result):
         if self.values.get('dev') == "True":
@@ -294,3 +304,41 @@ class PostureRecognizerThread(QThread):
 
             if temp1 == ord('q'):
                 self.running = False
+
+    def activity_tracking(self):
+        activity_detector = ActivityDetector()
+        idle_time = 0
+        update_new_time = True
+        threshold = float(self.values.get('input_idle'))
+        log.info("Activity detector started")
+        try:
+            while self.running:
+                time.sleep(1)
+                if idle_time > threshold:  # TODO
+                    update_new_time = False
+
+                if activity_detector.check_activity():
+                    if not update_new_time:
+                        self.start_time += idle_time - threshold
+                        update_new_time = True
+                    activity_detector.reset_activity()
+                    idle_time = 0
+                else:
+                    idle_time += 1
+
+                if update_new_time:
+                    self.new_time = int(time.time() - self.start_time) + self.old_time
+                    self.elapsed_time_updated.emit(self.new_time)
+                self.reset_usetime()
+                self.checkpoint_save()
+            self.save_usetime()
+            self.stop_capture()
+            activity_detector.waiting_join()
+            log.info("Activity detector stopped")
+            self.finished.emit(self.running)
+        except Exception as e:
+            log.warning("Activity Detector:", e)
+            self.error_msg.emit(str(e))
+            self.stop_capture()
+            activity_detector.waiting_join()
+            self.finished.emit(self.running)
