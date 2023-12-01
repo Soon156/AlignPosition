@@ -216,7 +216,7 @@ class PostureRecognizerThread(QThread):
                     # Display the labels on the dev frame
                     self.update_overlay.emit(label)
 
-                else:  # TODO active input thread
+                else:
                     self.error_msg.emit("Camera reading failed, please make sure the camera is available!\n"
                                         "Switching to input detection for now...")
                     log.warning("Read Camera Failed, switching to input detection....")
