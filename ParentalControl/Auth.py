@@ -1,7 +1,7 @@
 import json
 import os
 import pickle
-
+from datetime import datetime
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
@@ -95,6 +95,9 @@ def write_use_time(data):
         pickled_row = pickle.dumps(data)
         encrypted_data = encrypt_data(pickled_row, key)
         with open(userdata, 'wb') as file:
+            total_keys = len(data)
+            if total_keys > 90:
+                data.remove(data[0])
             file.write(encrypted_data)
         log.info("Elapsed time saved")
 
@@ -127,6 +130,10 @@ def write_app_use_time(data):
         json_data = json.dumps(data).encode('utf-8')
         encrypted_data = encrypt_data(json_data, key)
         with open(app_use_time, "wb") as file:
+            total_keys = len(data)
+            if total_keys > 90:
+                sorted_dates = sorted(data.keys(), key=lambda x: datetime.strptime(x, "%Y-%m-%d"))
+                del data[sorted_dates[0]]
             file.write(encrypted_data)
 
 
