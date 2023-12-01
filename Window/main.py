@@ -1,37 +1,38 @@
+import ctypes
+import logging as log
 import os
 import sys
 import time
-import logging as log
 from datetime import datetime
-
 import zroya
 from PySide6.QtCore import Slot, Qt, QSize
+from PySide6.QtGui import QColor, QDesktopServices, QIcon, QAction
 from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox, QLineEdit, \
     QTableWidgetItem, QSystemTrayIcon, QMenu
-from PySide6.QtGui import QColor, QDesktopServices, QIcon, QAction
 from matplotlib import pyplot as plt
 
 from Chart.BadTime import BadTimeChartWidget
 from Chart.ProgramUseTime import ProgramUseTimeChartWidget
+from Chart.UseTime import UseTimeChartWidget
 from Funtionality.Config import get_config, get_available_cameras, create_config, \
     key_file_path, abs_logo_path, remove_all_data, check_key, reset_parental, GRAY_COLOR  # parental_monitoring
-from Funtionality.UpdateConfig import write_config, tracking_instance, stop_tracking, waiting, \
-    get_app_tracking_state
 from Funtionality.Notification import first_notify, break_notify
+from Funtionality.UpdateConfig import write_config, tracking_instance, stop_tracking, waiting, \
+    get_app_tracking_state, tracking_app_use_time
 from Funtionality.Version import check_for_update
+from Funtionality.WindowEvent import CheckEvent
 from ParentalControl.Auth import change_password, login_user, user_register, save_table_data, read_table_data, msg
 from ParentalControl.ParentalControl import ParentalTracking
 from PostureRecognize.ElapsedTime import seconds_to_hms
 from PostureRecognize.PositionDetect import PostureRecognizerThread, read_elapsed_time_data  # StartPreview
+from UI_Window.ui_MainMenu import Ui_MainWindow
+from UI_Window.ui_MainMenuDark import Ui_MainWindow as Ui_MainWindowDark
 from .Authorize import PINDialog
 from .Authorize_2 import PINDialog2
 from .OverlayWindow import OverlayWidget
 from .ParentalWindow import ParentalDialog
 from .changeStyleSheet import get_theme, top_side_menu, top_side_menu_dark, choice_side_menu, choice_side_menu_dark, \
     btm_side_menu, btm_side_menu_dark
-from Chart.UseTime import UseTimeChartWidget
-from UI_Window.ui_MainMenu import Ui_MainWindow
-from UI_Window.ui_MainMenuDark import Ui_MainWindow as Ui_MainWindowDark
 from .minWindow import MinWindow
 
 dark_cell = QColor(113, 94, 117)
@@ -42,7 +43,6 @@ if get_theme():
     ui_class = Ui_MainWindow
 else:
     ui_class = Ui_MainWindowDark
-
 
 class MainWindow(QMainWindow, ui_class):
 
@@ -208,6 +208,12 @@ class MainWindow(QMainWindow, ui_class):
                     self.update_msg(version)
                 elif version > self.values['check_update']:
                     self.update_msg(version)
+
+        # Event Handler
+        self.event_checker = CheckEvent()
+        self.event_checker.update_event.connect(self.event_handler)
+        self.event_checker.start()
+        self.control_thread = None
 
     def update_msg(self, version):
         msgbox = QMessageBox(self)
@@ -812,6 +818,8 @@ class MainWindow(QMainWindow, ui_class):
         else:
             self.hide()
             self.stop_waiting_all()
+            ctypes.windll.advapi32.InitiateSystemShutdownW(None, None, 0, True, True)
+            self.event_checker.stop()
 
             # Close all dialog window
             windows = [self.w, self.w1, self.w2, self.w3, self.w4]
@@ -824,6 +832,37 @@ class MainWindow(QMainWindow, ui_class):
             self.destroy()  # End Main Window
             QApplication.exit()
             sys.exit()
+
+    def event_handler(self, event):
+        if event == "sleep":
+            self.sleeping_state()
+        elif event == "shutdown":
+            self.sleeping_state(True)
+        elif event == "return":
+            self.return_from_sleep()
+        else:
+            log.info("Unhandled event: ", event)
+
+    def sleeping_state(self, shutdown=False):
+        if shutdown:
+            ctypes.windll.advapi32.AbortSystemShutdownW(None)
+            self.w3_authorize_lock = False
+            self.exit_main()
+        else:
+            ctypes.windll.kernel32.SetThreadExecutionState(0x80000002)  # ES_CONTINUOUS | ES_SYSTEM_REQUIRED
+            self.control_thread = [self.parental_control_thread, self.monitoring_state, get_app_tracking_state()]
+            if self.monitoring_state:
+                self.start_monitoring()
+            self.stop_waiting_all()
+            ctypes.windll.kernel32.SetThreadExecutionState(0x00000002)  # ES_CONTINUOUS
+
+    def return_from_sleep(self):
+        if self.control_thread[0]:
+            self.start_parental_control_thread()
+        if self.control_thread[1]:
+            self.start_monitoring()
+        if self.control_thread[2]:
+            tracking_app_use_time()
 
     def stop_waiting_all(self):
         log.info("Stopping all active thread....")
