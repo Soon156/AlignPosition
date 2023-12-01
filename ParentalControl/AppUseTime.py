@@ -6,7 +6,7 @@ import win32api
 import win32gui
 import logging as log
 
-from Funtionality.Config import get_config, retrieve_filter
+from Funtionality.Config import retrieve_filter
 from ParentalControl.Auth import write_app_use_time, read_app_use_time
 
 
@@ -20,7 +20,6 @@ class Tracking:
         self.app_use_times = read_app_use_time()
         self.specific_date = str(date.today())
         self.usage_time_for_specific_date = {}
-        self.values = get_config()
         self.cond_usetime = True
         self.filter_list = retrieve_filter()
 
@@ -43,7 +42,6 @@ class Tracking:
         self.cond_usetime = True
 
         while self.cond_usetime:
-            self.values = get_config()  # keep track update
             pid = win32process.GetWindowThreadProcessId(win32gui.GetForegroundWindow())[1]
             try:
                 p = psutil.Process(pid)
@@ -55,7 +53,7 @@ class Tracking:
                 if app_name not in self.filter_list and "window" not in app_name.lower():
                     while pid == win32process.GetWindowThreadProcessId(win32gui.GetForegroundWindow())[1]:
                         time.sleep(1)
-                        self.active_time = int(time.time() - start_time)
+                    self.active_time = int(time.time() - start_time)
                     # Add the new use time to the existing use time for the app
                     if app_name in self.usage_time_for_specific_date:
                         self.usage_time_for_specific_date[app_name] += self.active_time
