@@ -31,7 +31,7 @@ def check_for_update():
         if latest_version > current_version:
             return latest_version
         else:
-            log.warning("Your application is up to date.")
+            log.info("Your application is up to date.")
             return None
     else:
         log.warning("Unable to check for updates.")

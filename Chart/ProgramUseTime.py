@@ -3,7 +3,6 @@ from PySide6.QtWidgets import QVBoxLayout, QWidget
 from matplotlib import pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from datetime import datetime
-
 from Funtionality.Config import GRAY_COLOR, STRING_LIMIT
 from ParentalControl.Auth import read_app_use_time
 
