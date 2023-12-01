@@ -1,11 +1,29 @@
+import ctypes
 import sys
 import argparse
-
+from Funtionality.Config import check_key
 from PySide6.QtWidgets import QApplication
 from Window.loadingWindow import GifAnimationDialog
 
 
+def run_as_admin():
+    # Check if the script is already running with admin privileges
+    try:
+        is_admin = ctypes.windll.shell32.IsUserAnAdmin()
+    except AttributeError:
+        is_admin = False
+
+    if not is_admin:
+        # Run the script with admin privileges
+        ctypes.windll.shell32.ShellExecuteW(
+            None, "runas", sys.executable, " ".join(sys.argv), None, 1
+        )
+        sys.exit()
+
+
 def main(background):
+    if not check_key:
+        run_as_admin()
     # Create the application instance
     app = QApplication(sys.argv)
     w = GifAnimationDialog()
@@ -29,8 +47,7 @@ def main(background):
 
 
 def check_condition():
-    from Funtionality.Config import get_config, check_model, check_process, check_logo, retrieve_filter, clear_log, \
-        check_key
+    from Funtionality.Config import get_config, check_model, check_process, check_logo, retrieve_filter, clear_log
     from Funtionality.ErrorMessage import WarningMessageBox
     from Funtionality.UpdateConfig import tracking_app_use_time
     values = get_config()
