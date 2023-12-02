@@ -44,6 +44,7 @@ if get_theme():
 else:
     ui_class = Ui_MainWindowDark
 
+
 class MainWindow(QMainWindow, ui_class):
 
     def __init__(self, background=False):
@@ -127,11 +128,6 @@ class MainWindow(QMainWindow, ui_class):
         self.posture_recognizer.update_overlay.connect(self.update_overlay)
         self.posture_recognizer.finished.connect(self.change_monitoring_state)
 
-        self.preview_thread = None  # Preview state
-        self.calibrate_thread = None  # Hold calibrate thread
-        self.is_capturing = False  # Indicate if calibrate is in progress
-        self.temp = None  # Indicate temp restore/backup progress
-        self.training_thread = None  # Hold different training thread
         self.login_state = False  # Hold login state
 
         self.dashboard_page()  # Set the default page

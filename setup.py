@@ -4,7 +4,7 @@ from Env import current_version
 
 # Dependencies are automatically detected, but it might need fine-tuning.
 build_exe_options = {
-    "packages": ["ml_dtypes"],
+    "packages": ["ml_dtypes", "pynput"],
     "include_files": ["Resources", "pose_landmarker_full.task", "posture_detection_model.keras", "pose_landmarker_lite.task"],
     "build_exe": "dist/AlignPosition"
 }

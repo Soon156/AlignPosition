@@ -1,11 +1,12 @@
+from PySide6.QtCore import QObject, QMutexLocker, QMutex
 from pynput import mouse, keyboard
-import threading
 
 
-class ActivityDetector:
+class ActivityDetector(QObject):
     def __init__(self):
+        super().__init__()
         self.activity_detected = False
-        self.lock = threading.Lock()
+        self.mutex = QMutex()
 
         # Set up mouse listener
         self.mouse_listener = mouse.Listener(on_move=self.on_move, on_click=self.on_click, on_scroll=self.on_scroll)
@@ -16,30 +17,30 @@ class ActivityDetector:
         self.keyboard_listener.start()
 
     def on_move(self, x, y):
-        with self.lock:
+        with QMutexLocker(self.mutex):
             self.activity_detected = True
 
     def on_click(self, x, y, button, pressed):
-        with self.lock:
+        with QMutexLocker(self.mutex):
             self.activity_detected = True
 
     def on_scroll(self, x, y, dx, dy):
-        with self.lock:
+        with QMutexLocker(self.mutex):
             self.activity_detected = True
 
     def on_press(self, key):
-        with self.lock:
+        with QMutexLocker(self.mutex):
             self.activity_detected = True
 
     def on_release(self, key):
         pass
 
     def check_activity(self):
-        with self.lock:
+        with QMutexLocker(self.mutex):
             return self.activity_detected
 
     def reset_activity(self):
-        with self.lock:
+        with QMutexLocker(self.mutex):
             self.activity_detected = False
 
     def waiting_join(self):

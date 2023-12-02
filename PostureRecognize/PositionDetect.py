@@ -220,8 +220,7 @@ class PostureRecognizerThread(QThread):
                     self.error_msg.emit("Camera reading failed, please make sure the camera is available!\n"
                                         "Switching to input detection for now...")
                     log.warning("Read Camera Failed, switching to input detection....")
-                    self.activity_thread = threading.Thread(target=self.activity_tracking)
-                    self.activity_thread.start()
+                    self.activity_tracking()
                     break
                 self.reset_usetime()
                 self.checkpoint_save()
@@ -314,7 +313,7 @@ class PostureRecognizerThread(QThread):
         try:
             while self.running:
                 time.sleep(1)
-                if idle_time > threshold:  # TODO
+                if idle_time > threshold:
                     update_new_time = False
 
                 if activity_detector.check_activity():

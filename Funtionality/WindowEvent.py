@@ -1,6 +1,4 @@
 import ctypes
-import threading
-
 import win32con
 import win32gui
 from Funtionality import Config
@@ -26,8 +24,7 @@ class CheckEvent(QThread):
 
     def run(self):
         self.power_handler = PowerBroadcastHandler()
-        handler = threading.Thread(target=self.power_handler.start)
-        handler.start()
+        self.power_handler.start()
 
         while self.running:
             if event is not None:

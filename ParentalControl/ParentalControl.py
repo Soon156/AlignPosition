@@ -1,10 +1,9 @@
-import threading
 import time
 import logging as log
 from datetime import datetime
 from PySide6.QtCore import QThread, Signal
 from Funtionality.Config import get_config  # parental_monitoring
-from Funtionality.Notification import show_control, reset_signal, get_signal, update_cancel_cond
+from Funtionality.Notification import show_control, reset_signal, get_signal
 from ParentalControl.Auth import read_table_data
 
 
@@ -14,7 +13,6 @@ class ParentalTracking(QThread):
 
     def __init__(self):
         super().__init__()
-        self.thread = None
         self.current_day = datetime.now().weekday()
         self.current_time = datetime.now().time()
         self.values = get_config()
@@ -22,7 +20,7 @@ class ParentalTracking(QThread):
         self.state = False  # To control the notification not spam
         self.total_time_state = False  # To control the total time notification
         self.notify_time = 0  # Time to reset notification state
-        self.notification_thread = None
+        self.notification_worker = None
         # parental_monitoring(value=1)
 
     def stop_parental_thread(self):
@@ -40,7 +38,9 @@ class ParentalTracking(QThread):
             self.current_day = datetime.now().weekday()
         self.current_time = datetime.now().time()
 
-    def use_time_tracking(self):
+    def run(self):
+        log.info("Parental tracking start")
+
         while self.cond_usetime:
             time.sleep(1)
             self.update_time()
@@ -52,17 +52,16 @@ class ParentalTracking(QThread):
             except AttributeError:
                 use_time = 0
 
-            # CHECKME need avoid crash on 2 notification
             # Check limit use time
             if limit_time >= 24 and use_time > limit_time_in_sec and not self.total_time_state:
-                self.notification_thread = threading.Thread(target=show_control)
-                self.notification_thread.start()
+                self.notification_worker = NotificationWorker()
+                self.notification_worker.start()
                 self.total_time_state = True
 
             # Check the computer access time
             if (self.current_day, self.current_time.hour) in self.data[2] and not self.state:
-                self.notification_thread = threading.Thread(target=show_control)
-                self.notification_thread.start()
+                self.notification_worker = NotificationWorker()
+                self.notification_worker.start()
                 self.notify_time = time.time()
                 self.state = True
 
@@ -75,11 +74,12 @@ class ParentalTracking(QThread):
             if cancel_signal:
                 self.cancel.emit()
                 reset_signal()
-        update_cancel_cond()
+
         self.parent().parental_control_thread = False
         log.info("Parental tracking stop")
 
+
+class NotificationWorker(QThread):
     def run(self):
-        log.info("Parental tracking start")
-        self.thread = threading.Thread(target=self.use_time_tracking)
-        self.thread.start()
+        show_control()
+        log.info("NotificationWorker stopped")

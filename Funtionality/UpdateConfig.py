@@ -1,45 +1,43 @@
 import ast
 import configparser
 import logging as log
-import threading
 import winreg
 
 from Funtionality.Config import key_path, app_name, exe_path, CONFIG_PATH, b_config
 from ParentalControl.AppUseTime import Tracking
 
-tracking_instance = Tracking()
+tracking_instance = None
+tracking_state = False
 use_time = None
 
 
 def tracking_app_use_time():
-    global use_time
+    global use_time, tracking_instance
     try:
-        use_time = threading.Thread(target=tracking_instance.run)
-        use_time.start()
+        tracking_instance = Tracking()
+        tracking_instance.start()
     except RuntimeError as e:
         log.warning("App time tracking ald start")
 
 
 def waiting():
     try:
-        use_time.join()
+        while tracking_instance.isRunning():
+            pass
     except:
         pass
 
 
 def get_app_tracking_state():
     try:
-        if use_time.is_alive():
-            return True
-        else:
-            return False
+        return tracking_instance.check_condition()
     except Exception as e:
         return False
 
 
 def stop_tracking():
     try:
-        tracking_instance.update_condition()
+        tracking_instance.stop_tracking()
         waiting()
     except RuntimeError:
         log.warning("App time tracking ald stop")

@@ -6,12 +6,13 @@ import win32api
 import win32gui
 import logging as log
 
+from PySide6.QtCore import QThread
+
 from Funtionality.Config import retrieve_filter
 from ParentalControl.Auth import write_app_use_time, read_app_use_time
 
 
-class Tracking:
-
+class Tracking(QThread):
     current_date = str(date.today())
 
     def __init__(self):
@@ -23,8 +24,11 @@ class Tracking:
         self.cond_usetime = True
         self.filter_list = retrieve_filter()
 
-    def update_condition(self):
+    def stop_tracking(self):
         self.cond_usetime = False
+
+    def check_condition(self):
+        return self.cond_usetime
 
     def save_app_usetime(self):
         if self.app_use_times is not None:
@@ -67,5 +71,6 @@ class Tracking:
             except Exception:
                 pass
 
-        log.info("App use time tracking stop")
         self.save_app_usetime()
+
+        log.info("App use time tracking stop")
