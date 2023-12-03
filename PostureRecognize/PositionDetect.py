@@ -308,7 +308,7 @@ class PostureRecognizerThread(QThread):
         idle_time = 0
         update_new_time = True
         threshold = float(self.values.get('input_idle'))
-        self.update_overlay.emit("good")
+        self.update_overlay.emit("activity")
         log.info("Activity detector started")
         try:
             while self.running:

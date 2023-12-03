@@ -340,7 +340,6 @@ def init_filter():
 def read_filter():
     with open(app_filter_list, 'r') as json_file:
         loaded_list = load(json_file)
-        log.info("Filter list read")
     return loaded_list
 
 
