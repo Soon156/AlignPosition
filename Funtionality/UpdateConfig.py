@@ -35,6 +35,10 @@ def get_app_tracking_state():
         return False
 
 
+def save_usetime():
+    tracking_instance.save_app_usetime()
+
+
 def stop_tracking():
     try:
         tracking_instance.stop_tracking()
