@@ -10,7 +10,6 @@ from PySide6.QtGui import QColor, QDesktopServices, QIcon, QAction
 from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox, QLineEdit, \
     QTableWidgetItem, QSystemTrayIcon, QMenu
 from matplotlib import pyplot as plt
-
 from Chart.BadTime import BadTimeChartWidget
 from Chart.ProgramUseTime import ProgramUseTimeChartWidget
 from Chart.UseTime import UseTimeChartWidget

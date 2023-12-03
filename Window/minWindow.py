@@ -1,7 +1,6 @@
 from PySide6.QtCore import Signal, QSize
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QDialog, QApplication
-
 from PostureRecognize.ElapsedTime import read_elapsed_time_data, seconds_to_hms
 from .changeStyleSheet import get_theme
 from UI_Window.ui_MinWindow import Ui_minDialog

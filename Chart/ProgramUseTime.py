@@ -1,4 +1,4 @@
-import numpy as np
+from numpy import sum
 from PySide6.QtWidgets import QVBoxLayout, QWidget
 from matplotlib import pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -31,7 +31,7 @@ class ProgramUseTimeChartWidget(QWidget):
             if i == 0:
                 self.ax.bar(self.date_list, use_time, label=app)
             else:
-                bottom = np.sum(self.app_use_time_list[:i], axis=0)
+                bottom = sum(self.app_use_time_list[:i], axis=0)
                 self.ax.bar(self.date_list, use_time, bottom=bottom, label=app)
 
         if self.theme:

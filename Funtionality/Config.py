@@ -1,18 +1,18 @@
-import configparser
-import json
+from configparser import ConfigParser
+from json import dump, load
 import os
 import logging as log
-import datetime
+from datetime import datetime
 import winreg
 
 import matplotlib as plt
 from psutil import process_iter
 from pygrabber.dshow_graph import FilterGraph
 
-import shutil
+from shutil import rmtree
 
 # Get the current month and year
-now = datetime.datetime.now()
+now = datetime.now()
 current_month, current_year = now.month, now.year
 
 # App_Use_Time Filter List
@@ -105,7 +105,7 @@ os.makedirs(temp_folder, exist_ok=True)
 os.makedirs(os.path.dirname(key_file_path), exist_ok=True)  # Create the directory if it doesn't exist
 
 # LOGGING
-X = datetime.datetime.now()
+X = datetime.now()
 FORMAT = X.strftime("%Y") + '-' + X.strftime("%m") + '-' + X.strftime("%d") + ' ' + X.strftime("%H") + X.strftime(
     "%M") + X.strftime("%S")
 # Maximum number of log records allowed
@@ -207,10 +207,10 @@ def remove_all_data():
             if os.path.isdir(item_path):  # Check if it's a directory
                 if item != 'logs':  # Exclude the 'log' folder
                     # Remove the directory and its contents
-                    shutil.rmtree(item_path)
+                    rmtree(item_path)
             else:
                 os.remove(item_path)
-        shutil.rmtree(hidden_file_path)
+        rmtree(hidden_file_path)
         # parental_monitoring()
         log.info("All data has been remove, app will close soon")
     except Exception as e:
@@ -239,7 +239,7 @@ def reset_parental():
 
 # create or reset config
 def create_config():
-    config = configparser.ConfigParser(allow_no_value=True)
+    config = ConfigParser(allow_no_value=True)
     config['Option'] = DEFAULT_VAL
     with open(CONFIG_PATH, "w") as f:
         config.write(f)
@@ -250,7 +250,7 @@ def create_config():
 def read_config():
     if os.path.exists(CONFIG_PATH):
         # Read config from a file
-        config = configparser.ConfigParser(allow_no_value=True)
+        config = ConfigParser(allow_no_value=True)
         config.read(CONFIG_PATH)
         config_dict = dict(config['Option'])
         return config_dict
@@ -279,7 +279,7 @@ def get_config():
 def restore_config():  # CHECKME
     if os.path.exists(b_config):
         log.warning("Backup config found")
-        config = configparser.ConfigParser(allow_no_value=True)
+        config = ConfigParser(allow_no_value=True)
         config.read(b_config)
         config_dict = dict(config['Option'])
 
@@ -333,13 +333,13 @@ def check_key():
 def init_filter():
     with open(app_filter_list, 'w') as json_file:
         filter_set = list(filter_list)
-        json.dump(filter_set, json_file, indent=4)
+        dump(filter_set, json_file, indent=4)
         log.info("Filter list created")
 
 
 def read_filter():
     with open(app_filter_list, 'r') as json_file:
-        loaded_list = json.load(json_file)
+        loaded_list = load(json_file)
         log.info("Filter list read")
     return loaded_list
 

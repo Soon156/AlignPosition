@@ -1,10 +1,9 @@
 import os.path
-import threading
 from datetime import date, datetime
-import tensorflow as tf
+from tensorflow import keras
 import cv2
 import time
-import numpy as np
+from numpy import mean, sum, array
 import zroya
 from PySide6.QtCore import Signal, QThread
 
@@ -44,7 +43,7 @@ class PostureRecognizerThread(QThread):
             self.running = True
             self.old_time, self.bad_time = read_elapsed_time_data()
             self.new_time = self.old_time
-            self.model = tf.keras.models.load_model(abs_model_file_path)
+            self.model = keras.models.load_model(abs_model_file_path)
             self.date_today = date.today()
             self.average = 0
             self.values = get_config()
@@ -126,7 +125,7 @@ class PostureRecognizerThread(QThread):
                             landmark = extract_landmark(result)
                             if landmark is not None:
 
-                                mean_value = np.mean(frame)
+                                mean_value = mean(frame)
                                 if mean_value < threshold:
                                     if blank_counter >= 250 and not brightness:  # about 30 sec base on cpu power
                                         zroya.show(brightness_notify)
@@ -139,12 +138,12 @@ class PostureRecognizerThread(QThread):
                                 else:
                                     blank_counter = 0
 
-                                reshape_landmark = np.array(landmark).reshape(-1, 33 * 5)
+                                reshape_landmark = array(landmark).reshape(-1, 33 * 5)
                                 gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
                                 if last_frame is not None:
                                     frame_diff = cv2.absdiff(last_frame, gray)
-                                    diff_sum = np.sum(frame_diff)
+                                    diff_sum = sum(frame_diff)
                                     if len(diff_sum_record) > 3:
                                         diff_sum_record.pop(0)
                                     diff_sum_record.append(diff_sum)

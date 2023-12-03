@@ -2,7 +2,7 @@ import math
 import os
 from concurrent.futures import ThreadPoolExecutor
 from tensorflow.keras.callbacks import EarlyStopping
-import mediapipe as mp
+from mediapipe import tasks, Image
 import numpy as np
 import tensorflow as tf
 from PostureRecognize.ExtractLandmark import extract_landmark
@@ -37,9 +37,9 @@ def preprocess_img(epoch=100, batch_size=12):
 
 
 def process_img(folder_path):
-    base_options = mp.tasks.BaseOptions(model_asset_path='pose_landmarker_heavy.task')
-    options = mp.tasks.vision.PoseLandmarkerOptions(base_options=base_options)
-    detector = mp.tasks.vision.PoseLandmarker.create_from_options(options)
+    base_options = tasks.BaseOptions(model_asset_path='pose_landmarker_heavy.task')
+    options = tasks.vision.PoseLandmarkerOptions(base_options=base_options)
+    detector = tasks.vision.PoseLandmarker.create_from_options(options)
     landmark_vectors = []
     pose_landmarks_list = None
 
@@ -52,7 +52,7 @@ def process_img(folder_path):
         if file_name.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp')):
             # Construct the full path to the image file
             image_path = os.path.join(folder_path, file_name)
-            mp_image = mp.Image.create_from_file(image_path)
+            mp_image = Image.create_from_file(image_path)
             if mp_image is not None:
                 detection_result = detector.detect(mp_image)
                 pose_landmarks_list = extract_landmark(detection_result)

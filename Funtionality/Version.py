@@ -1,4 +1,4 @@
-import requests
+from requests import get, RequestException
 import logging as log
 from Env import current_version, repo_owner, repo_name, github_token
 from Funtionality.Config import get_config
@@ -13,11 +13,11 @@ def get_latest_release():
         headers['Authorization'] = f'Token {github_token}'
 
     try:
-        response = requests.get(api_url, headers=headers)
+        response = get(api_url, headers=headers)
         data = response.json()
         latest_version = data['tag_name']
         return latest_version
-    except requests.RequestException as e:
+    except RequestException as e:
         log.warning(f"Error getting latest release information: {e}")
         return None
 

@@ -1,5 +1,5 @@
-import ast
-import configparser
+from ast import literal_eval
+from configparser import ConfigParser
 import logging as log
 import winreg
 
@@ -69,8 +69,8 @@ def write_config(dictionary_str):
             tracking_app_use_time()
     else:
         stop_tracking()
-    config = configparser.ConfigParser(allow_no_value=True)
-    config2 = configparser.ConfigParser(allow_no_value=True)
+    config = ConfigParser(allow_no_value=True)
+    config2 = ConfigParser(allow_no_value=True)
     config.read(CONFIG_PATH)
     config2.read(b_config)
 
@@ -78,7 +78,7 @@ def write_config(dictionary_str):
         config_dict = dict(config2['Option'])
         if config_dict != dictionary_str:
             config.optionxform = str
-            config['Option'] = ast.literal_eval(str(dictionary_str))
+            config['Option'] = literal_eval(str(dictionary_str))
             with open(b_config, "w") as f:
                 config.write(f)
             with open(CONFIG_PATH, "w") as f:
@@ -88,7 +88,7 @@ def write_config(dictionary_str):
             log.info("No changed in config")
     except:
         config.optionxform = str
-        config['Option'] = ast.literal_eval(str(dictionary_str))
+        config['Option'] = literal_eval(str(dictionary_str))
         with open(b_config, "w") as f:
             config.write(f)
         with open(CONFIG_PATH, "w") as f:

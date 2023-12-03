@@ -1,5 +1,4 @@
 import os
-
 import logging as log
 from PySide6.QtWidgets import QDialog, QMessageBox, QFileDialog
 from Funtionality.Config import desktop_path
@@ -8,7 +7,6 @@ from ParentalControl.Backup_Restore import zip_files, extract_zip
 from Window.changeStyleSheet import get_theme
 from UI_Window.ui_ParentalSetting import Ui_Dialog
 from UI_Window.ui_ParentalSettingDark import Ui_Dialog as Ui_DialogDark
-
 from Funtionality.Config import get_config
 from Funtionality.UpdateConfig import write_config, get_app_tracking_state, tracking_instance
 
