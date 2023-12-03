@@ -17,8 +17,8 @@ from Chart.UseTime import UseTimeChartWidget
 from Funtionality.Config import get_config, get_available_cameras, create_config, \
     key_file_path, abs_logo_path, remove_all_data, check_key, reset_parental, GRAY_COLOR  # parental_monitoring
 from Funtionality.Notification import first_notify, break_notify
-from Funtionality.UpdateConfig import write_config, tracking_instance, stop_tracking, waiting, \
-    get_app_tracking_state, tracking_app_use_time
+from Funtionality.UpdateConfig import write_config, stop_tracking, waiting, \
+    get_app_tracking_state, tracking_app_use_time, save_usetime
 from Funtionality.Version import check_for_update
 from Funtionality.WindowEvent import CheckEvent
 from ParentalControl.Auth import change_password, login_user, user_register, save_table_data, read_table_data, msg
@@ -676,7 +676,7 @@ class MainWindow(QMainWindow, ui_class):
             self.posture_recognizer.save_usetime()
         try:
             if get_app_tracking_state():
-                tracking_instance.save_app_usetime()
+                save_usetime()
         except Exception as e:
             log.warning(str(e))
             pass
