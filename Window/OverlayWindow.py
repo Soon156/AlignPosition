@@ -59,7 +59,7 @@ class OverlayWidget(QWidget):
                 self.show_with_animation(QRect(self.width_geo - 90, -10, 100, 100))
             self.setWindowOpacity(1.0)
             self.state = True
-        else:
+        elif posture == "good":
             if self.state:
                 if self.pos == "left":
                     self.show_with_animation(QRect(-30, -30, 100, 100))
@@ -67,6 +67,8 @@ class OverlayWidget(QWidget):
                     self.show_with_animation(QRect(self.width_geo - 80, -30, 100, 100))
                 self.state = False
                 self.setWindowOpacity(0.5)
+        else:
+            self.hide()
 
     def win_geometry(self):
         screen = self.screen().size()

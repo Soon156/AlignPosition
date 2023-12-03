@@ -12,7 +12,7 @@ class LandmarkResult:
 
     def create_detector(self):
         # callback function
-        def update_result(result: tasks.vision.PoseLandmarkerResult, output_image: mp.Image, timestamp_ms: int):
+        def update_result(result: tasks.vision.PoseLandmarkerResult, output_image: Image, timestamp_ms: int):
             self.result = result
 
         options = tasks.vision.PoseLandmarkerOptions(
