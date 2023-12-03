@@ -106,7 +106,7 @@ class PostureRecognizerThread(QThread):
                         frame_count = 0
                         if not len(results) == 0:
                             self.average = sum(results) / len(results)
-                            predicted_labels = [0 if self.average < 0.6 else 1]
+                            predicted_labels = [0 if self.average < 0.4 else 1]
                             if predicted_labels[0] == 0:
                                 label = "good"
                             else:
