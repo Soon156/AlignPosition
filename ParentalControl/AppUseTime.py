@@ -58,6 +58,7 @@ class Tracking(QThread):
                     while pid == win32process.GetWindowThreadProcessId(win32gui.GetForegroundWindow())[1]:
                         time.sleep(1)
                     self.active_time = int(time.time() - start_time)
+                    log.debug(app_name, self.active_time)
                     # Add the new use time to the existing use time for the app
                     if app_name in self.usage_time_for_specific_date:
                         self.usage_time_for_specific_date[app_name] += self.active_time
