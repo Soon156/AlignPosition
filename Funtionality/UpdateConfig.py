@@ -45,6 +45,8 @@ def stop_tracking():
         waiting()
     except RuntimeError:
         log.warning("App time tracking ald stop")
+    except AttributeError:
+        pass
 
 
 def write_config(dictionary_str):
