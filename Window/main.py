@@ -20,7 +20,7 @@ from Funtionality.Notification import first_notify, break_notify
 from Funtionality.UpdateConfig import write_config, stop_tracking, waiting, \
     get_app_tracking_state, tracking_app_use_time, save_usetime
 from Funtionality.Version import get_latest_release
-from Funtionality.WindowEvent import CheckEvent
+from Funtionality.WindowEvent import SendSignal, check_signal, CheckEvent
 from ParentalControl.Auth import change_password, login_user, user_register, save_table_data, read_table_data, msg
 from ParentalControl.ParentalControl import ParentalTracking
 from PostureRecognize.ElapsedTime import seconds_to_hms
@@ -203,10 +203,12 @@ class MainWindow(QMainWindow, ui_class):
             self.check_update()
 
         # Event Handler
+        self.receive_signal = check_signal
+        self.receive_signal.win_event.connect(self.event_handler)
         self.event_checker = CheckEvent()
-        self.event_checker.update_event.connect(self.event_handler)
         self.event_checker.start()
         self.control_thread = None
+        self.waiting_state = False
 
     def check_update(self, manual=False):
         version = get_latest_release()
@@ -830,6 +832,7 @@ class MainWindow(QMainWindow, ui_class):
         else:
             self.hide()
             self.stop_waiting_all()
+            self.event_checker.stop()
             ctypes.windll.advapi32.InitiateSystemShutdownW(None, None, 0, True, True)
             # Close all dialog window
             windows = [self.w, self.w1, self.w2, self.w3, self.w4]
@@ -855,18 +858,19 @@ class MainWindow(QMainWindow, ui_class):
 
     def sleeping_state(self, shutdown=False):
         if shutdown:
-            ctypes.windll.advapi32.AbortSystemShutdownW(None)
             self.w3_authorize_lock = False
             self.exit_main()
         else:
-            ctypes.windll.kernel32.SetThreadExecutionState(0x80000002)  # ES_CONTINUOUS | ES_SYSTEM_REQUIRED
             self.control_thread = [self.parental_control_thread, self.monitoring_state, get_app_tracking_state()]
+            print(self.control_thread)
             if self.monitoring_state:
                 self.start_monitoring()
             self.stop_waiting_all()
-            ctypes.windll.kernel32.SetThreadExecutionState(0x00000002)  # ES_CONTINUOUS
+            ctypes.windll.kernel32.SetThreadExecutionState(0x80000000)  # ES_CONTINUOUS
 
     def return_from_sleep(self):
+        while self.waiting_state:
+            pass
         if self.control_thread[0]:
             self.start_parental_control_thread()
         if self.control_thread[1]:
@@ -876,6 +880,7 @@ class MainWindow(QMainWindow, ui_class):
 
     def stop_waiting_all(self):
         log.info("Stopping all active thread....")
+        self.waiting_state = True
         try:
             self.posture_recognizer.stop_capture()  # Stop posture detection
         except:
@@ -903,6 +908,5 @@ class MainWindow(QMainWindow, ui_class):
             waiting()
         except Exception:
             pass
-
-        self.event_checker.stop()
+        self.waiting_state = False
         log.info("All thread stopped.")

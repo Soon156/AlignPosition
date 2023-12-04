@@ -3,38 +3,45 @@ import win32con
 import win32gui
 from Funtionality import Config
 import logging as log
-from PySide6.QtCore import Signal, QThread
+from PySide6.QtCore import Signal, QThread, QObject
 
 event = None
-condition = False
-
+condition = True
 
 def reset_event():
     global event
     event = None
 
 
-class CheckEvent(QThread):
-    update_event = Signal(str)
+class SendSignal(QObject):
+    # Define a signal with specific parameters (if needed)
+    win_event = Signal(str)
 
     def __init__(self):
         super().__init__()
-        self.power_handler = None
-        self.running = True
 
     def run(self):
+        if event is not None:
+            self.win_event.emit(event)
+            reset_event()
+
+
+check_signal = SendSignal()
+
+
+class CheckEvent(QThread):
+    def __init__(self):
+        super().__init__()
         self.power_handler = PowerBroadcastHandler()
+
+    def run(self):
         self.power_handler.start()
 
-        while self.running:
-            if event is not None:
-                self.update_event.emit(event)
-                reset_event()
-            pass
-        self.power_handler.stop()
-
     def stop(self):
-        self.running = False
+        self.power_handler.stop()
+        while condition:
+            pass
+        log.info("Exit window event handler")
 
 
 def power_broadcast_handler(hwnd, msg, wparam, lparam):
@@ -60,6 +67,10 @@ def power_broadcast_handler(hwnd, msg, wparam, lparam):
     elif event_type == win32con.PBT_APMQUERYSUSPEND:
         event = "sleep"
 
+    if event == "sleep":
+        ctypes.windll.kernel32.SetThreadExecutionState(0x80000001)  # ES_CONTINUOUS | ES_SYSTEM_REQUIRED
+    check_signal.run()
+
     return True
 
 
@@ -68,13 +79,15 @@ def query_end_session_handler(hwnd, msg, wparam, lparam):
     global event
     log.info("System is shutting down...")
     event = "shutdown"
+    ctypes.windll.advapi32.AbortSystemShutdownW(None)
+    print("shutdown Aboard")
     return True
 
 
 # Register the power broadcast and query end session handlers
 class PowerBroadcastHandler:
     def __init__(self):
-        self.running = True
+        self.is_running = True
         self.hwnd = None
         self.message_map = {
             win32con.WM_POWERBROADCAST: power_broadcast_handler,
@@ -94,17 +107,20 @@ class PowerBroadcastHandler:
             0, 0, hinst, None
         )
         win32gui.InitCommonControls()
-        win32gui.PumpMessages()
-
-        while self.running:
-            pass
+        while self.is_running:
+            try:
+                win32gui.PumpWaitingMessages()
+            except Exception as e:
+                log.error(f"Error in PumpWaitingMessages: {e}")
 
     def stop(self):
-        self.running = False
+        global condition
+        self.is_running = False
         try:
             if self.hwnd:
                 win32gui.DestroyWindow(self.hwnd)
                 win32gui.UnregisterClass(self.classAtom, None)
-        except:
+        except Exception as e:
+            log.warning("Window handler: " + str(e))
             pass
-        log.info("Exit window event handler")
+        condition = False

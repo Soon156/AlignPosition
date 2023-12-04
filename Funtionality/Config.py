@@ -148,8 +148,8 @@ DEFAULT_VAL = {
 def clear_log():
     log_files = [f for f in os.listdir(log_folder) if f.endswith('.log')]
     log_files.sort(key=lambda x: os.path.getmtime(os.path.join(log_folder, x)))
-    if len(log_files) > 5:
-        files_to_remove = log_files[:-3]  # Get the files to remove (excluding the newest 3)
+    if len(log_files) > 10:
+        files_to_remove = log_files[:-10]  # Get the files to remove
         for file_name in files_to_remove:
             file_path = os.path.join(log_folder, file_name)
             os.remove(file_path)
