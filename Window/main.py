@@ -20,7 +20,7 @@ from Funtionality.Notification import first_notify, break_notify
 from Funtionality.UpdateConfig import write_config, stop_tracking, waiting, \
     get_app_tracking_state, tracking_app_use_time, save_usetime
 from Funtionality.Version import get_latest_release
-from Funtionality.WindowEvent import SendSignal, check_signal, CheckEvent
+from Funtionality.WindowEvent import check_signal, CheckEvent
 from ParentalControl.Auth import change_password, login_user, user_register, save_table_data, read_table_data, msg
 from ParentalControl.ParentalControl import ParentalTracking
 from PostureRecognize.ElapsedTime import seconds_to_hms
