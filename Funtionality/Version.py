@@ -1,7 +1,6 @@
 from requests import get, RequestException
 import logging as log
-from Env import current_version, repo_owner, repo_name, github_token
-from Funtionality.Config import get_config
+from Env import repo_owner, repo_name, github_token
 
 
 def get_latest_release():
@@ -19,20 +18,4 @@ def get_latest_release():
         return latest_version
     except RequestException as e:
         log.warning(f"Error getting latest release information: {e}")
-        return None
-
-
-def check_for_update():
-    values = get_config()
-    if values['check_update'] == "No":
-        return None
-    latest_version = get_latest_release()
-    if latest_version is not None:
-        if latest_version > current_version:
-            return latest_version
-        else:
-            log.info("Your application is up to date.")
-            return None
-    else:
-        log.warning("Unable to check for updates.")
         return None

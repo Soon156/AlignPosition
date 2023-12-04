@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="icon">
+    <file>icons8-question-48.png</file>
     <file>icons8-checked-radio-button-48.png</file>
     <file>icons8-unchecked-radio-button-48.png</file>
     <file>icons8-shutdown-48.png</file>

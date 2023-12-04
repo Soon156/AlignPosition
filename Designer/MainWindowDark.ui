@@ -1982,23 +1982,8 @@ background: #d10000;
                 <property name="frameShadow">
                  <enum>QFrame::Raised</enum>
                 </property>
-                <layout class="QHBoxLayout" name="horizontalLayout_13">
-                 <property name="spacing">
-                  <number>0</number>
-                 </property>
-                 <property name="leftMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="topMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="rightMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="bottomMargin">
-                  <number>0</number>
-                 </property>
-                 <item alignment="Qt::AlignHCenter">
+                <layout class="QHBoxLayout" name="horizontalLayout_12">
+                 <item>
                   <widget class="QPushButton" name="web_btn">
                    <property name="text">
                     <string>Info/Help</string>
@@ -2012,7 +1997,34 @@ background: #d10000;
                    </property>
                   </widget>
                  </item>
+                 <item>
+                  <widget class="QPushButton" name="update_btn">
+                   <property name="text">
+                    <string>  Check Update</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="resource.qrc">
+                     <normaloff>:/icon/icons8-question-48.png</normaloff>:/icon/icons8-question-48.png</iconset>
+                   </property>
+                   <property name="flat">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
                 </layout>
+               </widget>
+              </item>
+              <item alignment="Qt::AlignHCenter">
+               <widget class="QLabel" name="app_ver_label">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>App Version</string>
+                </property>
                </widget>
               </item>
              </layout>

@@ -26,7 +26,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1111, 526)
+        MainWindow.resize(1116, 526)
         icon = QIcon()
         icon.addFile(u":/icon/logo.ico", QSize(), QIcon.Normal, QIcon.Off)
         MainWindow.setWindowIcon(icon)
@@ -1082,10 +1082,8 @@ class Ui_MainWindow(object):
         self.frame_7.setSizePolicy(sizePolicy)
         self.frame_7.setFrameShape(QFrame.StyledPanel)
         self.frame_7.setFrameShadow(QFrame.Raised)
-        self.horizontalLayout_13 = QHBoxLayout(self.frame_7)
-        self.horizontalLayout_13.setSpacing(0)
-        self.horizontalLayout_13.setObjectName(u"horizontalLayout_13")
-        self.horizontalLayout_13.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_12 = QHBoxLayout(self.frame_7)
+        self.horizontalLayout_12.setObjectName(u"horizontalLayout_12")
         self.web_btn = QPushButton(self.frame_7)
         self.web_btn.setObjectName(u"web_btn")
         self.web_btn.setStyleSheet(u"color:black;")
@@ -1094,10 +1092,27 @@ class Ui_MainWindow(object):
         self.web_btn.setIcon(icon9)
         self.web_btn.setFlat(True)
 
-        self.horizontalLayout_13.addWidget(self.web_btn, 0, Qt.AlignHCenter)
+        self.horizontalLayout_12.addWidget(self.web_btn)
+
+        self.update_btn = QPushButton(self.frame_7)
+        self.update_btn.setObjectName(u"update_btn")
+        self.update_btn.setStyleSheet(u"color:black;")
+        icon10 = QIcon()
+        icon10.addFile(u":/icon/icons8-question-48.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.update_btn.setIcon(icon10)
+        self.update_btn.setFlat(True)
+
+        self.horizontalLayout_12.addWidget(self.update_btn)
 
 
         self.verticalLayout_26.addWidget(self.frame_7)
+
+        self.app_ver_label = QLabel(self.SettingOptionFrame)
+        self.app_ver_label.setObjectName(u"app_ver_label")
+        sizePolicy.setHeightForWidth(self.app_ver_label.sizePolicy().hasHeightForWidth())
+        self.app_ver_label.setSizePolicy(sizePolicy)
+
+        self.verticalLayout_26.addWidget(self.app_ver_label, 0, Qt.AlignHCenter)
 
 
         self.verticalLayout_6.addWidget(self.SettingOptionFrame, 0, Qt.AlignHCenter|Qt.AlignVCenter)
@@ -1450,7 +1465,9 @@ class Ui_MainWindow(object):
         self.reset_btn.setText(QCoreApplication.translate("MainWindow", u"Reset Config", None))
         self.remove_data_btn.setText(QCoreApplication.translate("MainWindow", u"Reset All", None))
         self.apply_btn.setText(QCoreApplication.translate("MainWindow", u"Apply", None))
-        self.web_btn.setText(QCoreApplication.translate("MainWindow", u"Info/Help", None))
+        self.web_btn.setText(QCoreApplication.translate("MainWindow", u"  Info/Help", None))
+        self.update_btn.setText(QCoreApplication.translate("MainWindow", u"  Check Update", None))
+        self.app_ver_label.setText(QCoreApplication.translate("MainWindow", u"App Version", None))
         self.page_hint_lbl.setText(QCoreApplication.translate("MainWindow", u"Create New PIN", None))
         self.username_lbl.setText(QCoreApplication.translate("MainWindow", u"Username", None))
         self.old_PIN_lbl.setText(QCoreApplication.translate("MainWindow", u"Old PIN       ", None))

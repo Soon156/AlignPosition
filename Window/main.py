@@ -13,12 +13,13 @@ from matplotlib import pyplot as plt
 from Chart.BadTime import BadTimeChartWidget
 from Chart.ProgramUseTime import ProgramUseTimeChartWidget
 from Chart.UseTime import UseTimeChartWidget
+from Env import current_version
 from Funtionality.Config import get_config, get_available_cameras, create_config, \
     key_file_path, abs_logo_path, remove_all_data, check_key, reset_parental, GRAY_COLOR  # parental_monitoring
 from Funtionality.Notification import first_notify, break_notify
 from Funtionality.UpdateConfig import write_config, stop_tracking, waiting, \
     get_app_tracking_state, tracking_app_use_time, save_usetime
-from Funtionality.Version import check_for_update
+from Funtionality.Version import get_latest_release
 from Funtionality.WindowEvent import CheckEvent
 from ParentalControl.Auth import change_password, login_user, user_register, save_table_data, read_table_data, msg
 from ParentalControl.ParentalControl import ParentalTracking
@@ -91,6 +92,8 @@ class MainWindow(QMainWindow, ui_class):
         self.usetime_table.itemClicked.connect(self.toggle_cell)
         self.theme_box.toggled.connect(self.update_theme_box)
         self.web_btn.clicked.connect(lambda: QDesktopServices.openUrl("https://github.com/Soon156/AlignPosition/wiki"))
+        self.update_btn.clicked.connect(lambda: self.check_update(True))
+        self.app_ver_label.setText(f"App Version: {current_version}")
         self.remove_data_btn.clicked.connect(self.remove_data)
 
         # Authenticate page
@@ -197,18 +200,32 @@ class MainWindow(QMainWindow, ui_class):
 
         # Check Update
         if not background:
-            version = check_for_update()
-            if version is not None:
-                if self.values['check_update'] == "Yes":
-                    self.update_msg(version)
-                elif version > self.values['check_update']:
-                    self.update_msg(version)
+            self.check_update()
 
         # Event Handler
         self.event_checker = CheckEvent()
         self.event_checker.update_event.connect(self.event_handler)
         self.event_checker.start()
         self.control_thread = None
+
+    def check_update(self, manual=False):
+        version = get_latest_release()
+        if version is not None:
+            if version > current_version:
+                if self.values['check_update'] == "Yes":
+                    self.update_msg(version)
+                elif version > self.values['check_update']:
+                    self.update_msg(version)
+                elif manual:
+                    self.update_msg(version)
+            elif manual:
+                QMessageBox.information(self, "Update", "Your application is up to date.")
+            else:
+                log.info("App updated")
+        elif manual:
+            QMessageBox.warning(self, "Update", "Check updated failed")
+        else:
+            log.warning("Check updated failed")
 
     def update_msg(self, version):
         msgbox = QMessageBox(self)
@@ -814,8 +831,6 @@ class MainWindow(QMainWindow, ui_class):
             self.hide()
             self.stop_waiting_all()
             ctypes.windll.advapi32.InitiateSystemShutdownW(None, None, 0, True, True)
-            self.event_checker.stop()
-
             # Close all dialog window
             windows = [self.w, self.w1, self.w2, self.w3, self.w4]
             for window in windows:
@@ -888,4 +903,6 @@ class MainWindow(QMainWindow, ui_class):
             waiting()
         except Exception:
             pass
+
+        self.event_checker.stop()
         log.info("All thread stopped.")
