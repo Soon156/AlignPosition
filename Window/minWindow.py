@@ -47,7 +47,7 @@ class MinWindow(QDialog, ui_class):
         self.parent.popout_btn.setEnabled(True)
         self.hide()
         if not self.parent.isVisible():
-            self.parent.show()
+            self.parent.if_visible()
 
     def start_monitor(self):
         self.parent.start_monitoring()

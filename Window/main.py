@@ -160,19 +160,20 @@ class MainWindow(QMainWindow, ui_class):
         self.tray_icon = QSystemTrayIcon(self)
         self.tray_icon.setIcon(QIcon(abs_logo_path))
         self.tray_icon.activated.connect(self.tray_action)
+        self.tray_icon.setToolTip("Align Position")
 
-        show_action = QAction("Show", self)
-        show_action.triggered.connect(self.show)
+        self.show_action = QAction("Show", self)
+        self.show_action.triggered.connect(self.if_visible)
 
-        detection_action = QAction("Detection", self)
-        detection_action.triggered.connect(self.start_monitoring)
+        self.detection_action = QAction("Detection", self)
+        self.detection_action.triggered.connect(self.start_monitoring)
 
         exit_action = QAction("Exit", self)
         exit_action.triggered.connect(self.show_authorize_win)
 
         tray_menu = QMenu()
-        tray_menu.addAction(show_action)
-        tray_menu.addAction(detection_action)
+        tray_menu.addAction(self.show_action)
+        tray_menu.addAction(self.detection_action)
         tray_menu.addAction(exit_action)
 
         self.tray_icon.setContextMenu(tray_menu)
@@ -201,6 +202,7 @@ class MainWindow(QMainWindow, ui_class):
         # Check Update
         if not background:
             self.check_update()
+            self.show_action.setText("Hide")
 
         # Event Handler
         self.receive_signal = check_signal
@@ -249,10 +251,7 @@ class MainWindow(QMainWindow, ui_class):
 
     def tray_action(self, react):
         if react == QSystemTrayIcon.DoubleClick or react == QSystemTrayIcon.Trigger:
-            if self.isVisible():
-                self.hide()
-            else:
-                self.show()
+            self.if_visible()
 
     def reset_w3_control_state(self):
         self.w3_authorize_lock = False
@@ -276,6 +275,7 @@ class MainWindow(QMainWindow, ui_class):
         try:
             if self.w.isVisible():
                 self.hide()
+                self.set_hint_icon()
             else:
                 self.showMinimized()
         except:
@@ -283,9 +283,17 @@ class MainWindow(QMainWindow, ui_class):
 
     def if_visible(self):  # Check main window visibility (tray icon)
         if self.isVisible():
+            self.set_hint_icon()
             self.hide()
         else:
+            self.set_hint_icon()
             self.show()
+
+    def set_hint_icon(self):
+        if self.isVisible():
+            self.show_action.setText("Show")
+        else:
+            self.show_action.setText("Hide")
 
     # Page handler
     def dashboard_page(self):
@@ -336,6 +344,7 @@ class MainWindow(QMainWindow, ui_class):
     def min_window(self):  # Small Window
         self.w.init()
         self.popout_btn.setEnabled(False)
+        self.set_hint_icon()
         self.hide()
 
     # Monitoring
@@ -347,6 +356,8 @@ class MainWindow(QMainWindow, ui_class):
                 self.w.update_btn_state()
             except:
                 pass
+
+            self.detection_action.setText("Start Detection")
             log.info("Monitoring stop")
         else:
             self.monitor_btn.setIcon(self.icon_stop)
@@ -357,6 +368,7 @@ class MainWindow(QMainWindow, ui_class):
             except:
                 pass
             self.posture_recognizer.start()
+            self.detection_action.setText("Stop Detection")
             log.info("Monitoring start")
         self.monitoring_state = state
 
@@ -791,6 +803,7 @@ class MainWindow(QMainWindow, ui_class):
                 write_config(var)
                 log.info("First Time Launch")
                 zroya.show(first_notify)
+            self.set_hint_icon()
             self.hide()
         else:
             self.show_authorize_win()
@@ -865,6 +878,7 @@ class MainWindow(QMainWindow, ui_class):
             print(self.control_thread)
             if self.monitoring_state:
                 self.start_monitoring()
+
             self.stop_waiting_all()
             ctypes.windll.kernel32.SetThreadExecutionState(0x80000000)  # ES_CONTINUOUS
 
