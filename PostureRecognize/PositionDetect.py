@@ -154,8 +154,8 @@ class PostureRecognizerThread(QThread):
                                         diff_count += 1
 
                                 if diff_count < 3:
-                                    predictions = self.model.predict(
-                                        reshape_landmark, verbose=None)  # Make predictions using the trained model
+                                    # Make predictions using the trained model
+                                    predictions = self.model.predict(reshape_landmark, verbose=None)
                                     results.append(predictions[0, 0])
                                 else:
                                     results = []
@@ -304,7 +304,8 @@ class PostureRecognizerThread(QThread):
                 self.running = False
 
     def activity_tracking(self):
-        activity_detector = ActivityDetector()
+        detector = ActivityDetector()
+        detector.start_listening()
         idle_time = 0
         update_new_time = True
         threshold = float(self.values.get('input_idle'))
@@ -316,11 +317,11 @@ class PostureRecognizerThread(QThread):
                 if idle_time > threshold:
                     update_new_time = False
 
-                if activity_detector.check_activity():
+                if detector.check_activity():
                     if not update_new_time:
                         self.start_time += idle_time - threshold
                         update_new_time = True
-                    activity_detector.reset_activity()
+                    detector.reset_activity()
                     idle_time = 0
                 else:
                     idle_time += 1
@@ -332,12 +333,12 @@ class PostureRecognizerThread(QThread):
                 self.checkpoint_save()
             self.save_usetime()
             self.stop_capture()
-            activity_detector.waiting_join()
+            detector.stop_listening()
             log.info("Activity detector stopped")
             self.finished.emit(self.running)
         except Exception as e:
             log.warning("Activity Detector:", e)
             self.error_msg.emit(str(e))
             self.stop_capture()
-            activity_detector.waiting_join()
+            detector.stop_listening()
             self.finished.emit(self.running)
