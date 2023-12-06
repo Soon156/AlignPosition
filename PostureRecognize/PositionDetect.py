@@ -48,6 +48,7 @@ class PostureRecognizerThread(QThread):
             self.average = 0
             self.values = get_config()
             confident_lvl = float(self.values.get('confident_lvl'))
+            method = int(self.values.get('detection_method'))
             att = cv2.CAP_DSHOW
             if self.values.get('camera_attr') == 1:
                 att = cv2.CAP_MSMF
@@ -85,6 +86,8 @@ class PostureRecognizerThread(QThread):
             bad_posture_time = 0
             process_time_start = 0
             data = False
+            lock = False
+            switch_manual = False
 
             try:
                 data = read_table_data()
@@ -92,6 +95,10 @@ class PostureRecognizerThread(QThread):
                 pass
 
             while self.running:
+                if method == 1 and lock:
+                    switch = True
+                    switch_manual = True
+
                 if cap is None or not cap.isOpened():
                     switch = True
                     log.warning("Camera not available")
@@ -103,6 +110,7 @@ class PostureRecognizerThread(QThread):
                     log.error("Error reading frame")
 
                 if not switch:
+                    lock = True
                     frame_count += 1
                     if frame_count >= 25 and not counter:
                         frame_count = 0
@@ -219,9 +227,10 @@ class PostureRecognizerThread(QThread):
                     self.update_overlay.emit(label)
 
                 else:
-                    self.error_msg.emit("Camera reading failed, please make sure the camera is available!\n"
-                                        "Switching to input detection for now...")
-                    log.warning("Read Camera Failed, switching to input detection....")
+                    if not switch_manual:
+                        self.error_msg.emit("Camera reading failed, please make sure the camera is available!\n"
+                                            "Switching to input detection for now...")
+                        log.warning("Read Camera Failed, switching to input detection....")
                     self.activity_tracking()
                     break
                 self.reset_usetime()

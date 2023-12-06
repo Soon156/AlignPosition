@@ -95,7 +95,7 @@ class ParentalDialog(QDialog, ui_class):
             self.monitor_setting_box.setText("Monitor deactivated")
             self.monitor_setting_box.setChecked(False)
 
-        if self.values.get('detection_method') == 0:
+        if int(self.values.get('detection_method')) == 0:
             self.method_box.setText("Camera detection")
             self.method_box.setChecked(True)
         else:
@@ -129,12 +129,13 @@ class ParentalDialog(QDialog, ui_class):
 
     def monitor_method_change(self, state):
         if state:
-            self.values['monitoring'] = 0
-            self.method_box.setText("Camera detection")
-            log.info("Switch to camera detection")
-            write_config(self.values)
+            if int(self.values.get('detection_method')) != 0:
+                self.values['detection_method'] = 0
+                self.method_box.setText("Camera detection")
+                log.info("Switch to camera detection")
+                write_config(self.values)
         else:
-            self.values['monitoring'] = 1
+            self.values['detection_method'] = 1
             self.method_box.setText("Activity detection")
             log.info("Switch to activity detection")
             write_config(self.values)
