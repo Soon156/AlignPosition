@@ -129,6 +129,9 @@ DEFAULT_VAL = {
     'idle': 0.1,
     'bad_posture': 3,
     'input_idle': 30,
+    'camera_attr': 0,
+    'detection_method': 0,
+    'confident_lvl': 0.4,
     'notifications': True,
     'background': True,
     'app_tracking': False,
@@ -304,7 +307,10 @@ def check_condition():
         int(values.get('camera'))
         int(values.get('theme'))
         int(values.get('input_idle'))
+        int(values.get('detection_method'))
+        int(values.get('camera_attr'))
         float(values.get('idle'))
+        float(values.get('confident_lvl'))
         float(values.get('bad_posture'))
         a = values.get('background') == 'True' or values.get('background') == 'False'
         b = values.get('notifications') == 'True' or values.get('notifications') == 'False'
