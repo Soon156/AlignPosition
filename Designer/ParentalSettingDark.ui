@@ -53,6 +53,9 @@ font-family: &quot;Roboto&quot;, sans-serif;</string>
       </property>
       <item>
        <widget class="QCheckBox" name="monitor_setting_box">
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Automatically start detection when application is opened&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
         <property name="styleSheet">
          <string notr="true">QCheckBox {
     spacing: 10px;
@@ -74,6 +77,35 @@ QCheckBox::indicator:checked {
         </property>
         <property name="text">
          <string>Monitor</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="method_box">
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Switch to able/disable posture detection&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QCheckBox {
+    spacing: 10px;
+}
+
+QCheckBox::indicator {
+    width: 24px;
+    height: 24px;
+}
+
+QCheckBox::indicator:unchecked {
+    image: url(:/icon/icons8-toggle-off-48.png);
+}
+
+QCheckBox::indicator:checked {
+    image: url(:/icon/icons8-toggle-on-48.png);
+}
+</string>
+        </property>
+        <property name="text">
+         <string>Detection</string>
         </property>
        </widget>
       </item>
