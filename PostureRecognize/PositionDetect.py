@@ -47,10 +47,13 @@ class PostureRecognizerThread(QThread):
             self.date_today = date.today()
             self.average = 0
             self.values = get_config()
-
+            confident_lvl = float(self.values.get('confident_lvl'))
+            att = cv2.CAP_DSHOW
+            if self.values.get('camera_attr') == 1:
+                att = cv2.CAP_MSMF
             detector = LandmarkResult()
             # Create a VideoCapture object to capture video from the camera
-            cap = cv2.VideoCapture(int(self.values.get('camera')), cv2.CAP_MSMF)
+            cap = cv2.VideoCapture(int(self.values.get('camera')), att)
             cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
             cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
             self.start_time = time.time()
@@ -105,7 +108,7 @@ class PostureRecognizerThread(QThread):
                         frame_count = 0
                         if not len(results) == 0:
                             self.average = sum(results) / len(results)
-                            predicted_labels = [0 if self.average < 0.4 else 1]
+                            predicted_labels = [0 if self.average < confident_lvl else 1]
                             if predicted_labels[0] == 0:
                                 label = "good"
                             else:
