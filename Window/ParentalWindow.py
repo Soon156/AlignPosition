@@ -28,6 +28,7 @@ class ParentalDialog(QDialog, ui_class):
         self.restore_btn.clicked.connect(self.restore_data)
         self.reset_parental_btn.clicked.connect(self.reset_parental_settings)
         self.monitor_setting_box.toggled.connect(self.monitor_state_change)
+        self.method_box.toggled.connect(self.monitor_method_change)
 
     def change_pin_page(self):
         self.parent.cont_stackedwidget.setCurrentIndex(3)  # Set to Authorize page
@@ -94,10 +95,18 @@ class ParentalDialog(QDialog, ui_class):
             self.monitor_setting_box.setText("Monitor deactivated")
             self.monitor_setting_box.setChecked(False)
 
+        if self.values.get('detection_method') == 0:
+            self.method_box.setText("Camera detection")
+            self.method_box.setChecked(True)
+        else:
+            self.method_box.setText("Activity detection")
+            self.method_box.setChecked(False)
+
     def monitor_state_change(self, state):
         if state:
             self.values['monitoring'] = "True"
             self.monitor_setting_box.setText("Monitor activated")
+            log.info("Auto-start monitoring set to True")
             write_config(self.values)
         else:
             data = None
@@ -115,7 +124,20 @@ class ParentalDialog(QDialog, ui_class):
             else:
                 self.values['monitoring'] = "False"
                 self.monitor_setting_box.setText("Monitor deactivated")
+                log.info("Auto-start monitoring set to False")
                 write_config(self.values)
+
+    def monitor_method_change(self, state):
+        if state:
+            self.values['monitoring'] = 0
+            self.method_box.setText("Camera detection")
+            log.info("Switch to camera detection")
+            write_config(self.values)
+        else:
+            self.values['monitoring'] = 1
+            self.method_box.setText("Activity detection")
+            log.info("Switch to activity detection")
+            write_config(self.values)
 
     def closeEvent(self, event):
         event.ignore()
