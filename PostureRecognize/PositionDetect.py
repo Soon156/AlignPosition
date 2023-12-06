@@ -1,9 +1,11 @@
 import os.path
 from datetime import date, datetime
+
+import psutil
 from tensorflow import keras
 import cv2
 import time
-from numpy import mean, sum, array
+from numpy import mean, sum, array, all
 import zroya
 from PySide6.QtCore import Signal, QThread
 
@@ -50,7 +52,7 @@ class PostureRecognizerThread(QThread):
 
             detector = LandmarkResult()
             # Create a VideoCapture object to capture video from the camera
-            cap = cv2.VideoCapture(int(self.values.get('camera')), cv2.CAP_DSHOW)
+            cap = cv2.VideoCapture(int(self.values.get('camera')), cv2.CAP_MSMF)
             cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
             cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
             self.start_time = time.time()
@@ -88,8 +90,8 @@ class PostureRecognizerThread(QThread):
             except:
                 pass
 
-            while self.running and not switch:
-                if not cap.isOpened():
+            while self.running:
+                if cap is None or not cap.isOpened():
                     switch = True
                     log.warning("Camera not available")
 
@@ -125,9 +127,10 @@ class PostureRecognizerThread(QThread):
                             landmark = extract_landmark(result)
                             if landmark is not None:
 
+                                # check environment brightness
                                 mean_value = mean(frame)
                                 if mean_value < threshold:
-                                    if blank_counter >= 250 and not brightness:  # about 30 sec base on cpu power
+                                    if blank_counter >= 200 and not brightness:
                                         zroya.show(brightness_notify)
                                         notify_time = time.time()
                                         brightness = True
@@ -190,7 +193,6 @@ class PostureRecognizerThread(QThread):
                             if str(e) not in ["cannot reshape array of size 1 into shape (165)",
                                               "type object 'PoseLandmarkerResult' has no attribute 'pose_landmarks'"]:
                                 raise Exception(e)
-
                     if data is not None:
                         if not data[1]:
                             self.show_dev(frame, label, landmark)
