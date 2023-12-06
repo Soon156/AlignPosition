@@ -76,6 +76,29 @@ class Ui_Dialog(object):
 
         self.verticalLayout_2.addWidget(self.monitor_setting_box)
 
+        self.method_box = QCheckBox(self.ButtonFrame_2)
+        self.method_box.setObjectName(u"method_box")
+        self.method_box.setStyleSheet(u"QCheckBox {\n"
+"	color:black;\n"
+"    spacing: 10px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator {\n"
+"    width: 24px;\n"
+"    height: 24px;\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:unchecked {\n"
+"    image: url(:/icon/icons8-toggle-off-48.png);\n"
+"}\n"
+"\n"
+"QCheckBox::indicator:checked {\n"
+"    image: url(:/icon/icons8-toggle-on-48.png);\n"
+"}\n"
+"")
+
+        self.verticalLayout_2.addWidget(self.method_box)
+
         self.reset_parental_btn = QPushButton(self.ButtonFrame_2)
         self.reset_parental_btn.setObjectName(u"reset_parental_btn")
         self.reset_parental_btn.setMinimumSize(QSize(150, 0))
@@ -140,7 +163,14 @@ class Ui_Dialog(object):
 
     def retranslateUi(self, Dialog):
         Dialog.setWindowTitle(QCoreApplication.translate("Dialog", u"Parental Settings", None))
+#if QT_CONFIG(tooltip)
+        self.monitor_setting_box.setToolTip(QCoreApplication.translate("Dialog", u"Automatically start detection when application is opened", None))
+#endif // QT_CONFIG(tooltip)
         self.monitor_setting_box.setText(QCoreApplication.translate("Dialog", u"Monitor", None))
+#if QT_CONFIG(tooltip)
+        self.method_box.setToolTip(QCoreApplication.translate("Dialog", u"Switch to able/disable posture detection", None))
+#endif // QT_CONFIG(tooltip)
+        self.method_box.setText(QCoreApplication.translate("Dialog", u"Detection", None))
         self.reset_parental_btn.setText(QCoreApplication.translate("Dialog", u"Reset", None))
         self.restore_btn.setText(QCoreApplication.translate("Dialog", u"Restore Data", None))
         self.exct_data_btn.setText(QCoreApplication.translate("Dialog", u"Extract All Data", None))
