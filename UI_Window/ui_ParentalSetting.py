@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'ParentalSetting.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.5.3
+## Created by: Qt User Interface Compiler version 6.6.0
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -31,8 +31,7 @@ class Ui_Dialog(object):
 "\n"
 "QPushButton{\n"
 "padding: 5px 20px 5px 20px;\n"
-"}\n"
-"")
+"}")
         self.verticalLayout = QVBoxLayout(Dialog)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.ButtonFrame_2 = QFrame(Dialog)
@@ -72,7 +71,11 @@ class Ui_Dialog(object):
 "QCheckBox::indicator:checked {\n"
 "    image: url(:/icon/icons8-toggle-on-48.png);\n"
 "}\n"
-"")
+"\n"
+"QToolTip {\n"
+"background-color: white; \n"
+"color: black;\n"
+"}")
 
         self.verticalLayout_2.addWidget(self.monitor_setting_box)
 
@@ -95,7 +98,11 @@ class Ui_Dialog(object):
 "QCheckBox::indicator:checked {\n"
 "    image: url(:/icon/icons8-toggle-on-48.png);\n"
 "}\n"
-"")
+"\n"
+"QToolTip {\n"
+"background-color: white; \n"
+"color: black;\n"
+"}")
 
         self.verticalLayout_2.addWidget(self.method_box)
 

@@ -22,8 +22,7 @@
 
 QPushButton{
 padding: 5px 20px 5px 20px;
-}
-</string>
+}</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item alignment="Qt::AlignHCenter">
@@ -80,7 +79,11 @@ QCheckBox::indicator:unchecked {
 QCheckBox::indicator:checked {
     image: url(:/icon/icons8-toggle-on-48.png);
 }
-</string>
+
+QToolTip {
+background-color: white; 
+color: black;
+}</string>
         </property>
         <property name="text">
          <string>Monitor</string>
@@ -110,7 +113,11 @@ QCheckBox::indicator:unchecked {
 QCheckBox::indicator:checked {
     image: url(:/icon/icons8-toggle-on-48.png);
 }
-</string>
+
+QToolTip {
+background-color: white; 
+color: black;
+}</string>
         </property>
         <property name="text">
          <string>Detection</string>
