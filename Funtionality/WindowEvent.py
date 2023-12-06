@@ -8,7 +8,6 @@ from PySide6.QtCore import Signal, QThread, QObject
 event = None
 condition = True
 
-
 def reset_event():
     global event
     event = None
