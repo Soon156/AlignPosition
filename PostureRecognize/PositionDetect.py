@@ -50,7 +50,7 @@ class PostureRecognizerThread(QThread):
 
             detector = LandmarkResult()
             # Create a VideoCapture object to capture video from the camera
-            cap = cv2.VideoCapture(int(self.values.get('camera')), cv2.CAP_DSHOW)
+            cap = cv2.VideoCapture(int(self.values.get('camera')), cv2.CAP_MSMF)
             cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
             cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
             self.start_time = time.time()
@@ -88,8 +88,8 @@ class PostureRecognizerThread(QThread):
             except:
                 pass
 
-            while self.running and not switch:
-                if not cap.isOpened():
+            while self.running:
+                if cap is None or not cap.isOpened():
                     switch = True
                     log.warning("Camera not available")
 
