@@ -53,7 +53,7 @@ class PostureRecognizerThread(QThread):
             switch_manual = False
             if method == 0:
                 att = cv2.CAP_DSHOW
-                if self.values.get('camera_attr') == 1:
+                if int(self.values.get('camera_attr')) == 1:
                     att = cv2.CAP_MSMF
                 # Create a VideoCapture object to capture video from the camera
                 cap = cv2.VideoCapture(int(self.values.get('camera')), att)
@@ -105,7 +105,6 @@ class PostureRecognizerThread(QThread):
                     log.warning("Camera not available")
                 else:
                     ret, frame = cap.read()
-
                     if not ret and not switch:
                         switch = True
                         log.error("Error reading frame")
@@ -135,20 +134,6 @@ class PostureRecognizerThread(QThread):
                         try:
                             landmark = extract_landmark(result)
                             if landmark is not None:
-
-                                mean_value = mean(frame)
-                                if mean_value < threshold:
-                                    if blank_counter >= 250 and not brightness:  # about 30 sec base on cpu power
-                                        zroya.show(brightness_notify)
-                                        notify_time = time.time()
-                                        brightness = True
-                                    elif time.time() - notify_time > 1800:
-                                        brightness = False
-                                    else:
-                                        blank_counter += 1
-                                else:
-                                    blank_counter = 0
-
                                 reshape_landmark = array(landmark).reshape(-1, 33 * 5)
                                 gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
@@ -184,6 +169,21 @@ class PostureRecognizerThread(QThread):
                                 self.elapsed_time_updated.emit(self.new_time)
 
                             else:
+
+                                mean_value = mean(frame)
+                                if mean_value < threshold:
+                                    print(blank_counter)
+                                    if blank_counter >= 200 and not brightness:  # about 30 sec base on cpu power
+                                        zroya.show(brightness_notify)
+                                        notify_time = time.time()
+                                        brightness = True
+                                    elif time.time() - notify_time > 1800:
+                                        brightness = False
+                                    else:
+                                        blank_counter += 1
+                                else:
+                                    blank_counter = 0
+
                                 label = "idle"
                                 if not counter:  # If not idle before
                                     idle_time = time.time()
@@ -227,6 +227,7 @@ class PostureRecognizerThread(QThread):
                     self.update_overlay.emit(label)
 
                 else:
+                    print("Test")
                     if not switch_manual:
                         self.error_msg.emit("Camera reading failed, please make sure the camera is available!\n"
                                             "Switching to input detection for now...")
