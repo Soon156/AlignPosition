@@ -229,7 +229,7 @@ class PostureRecognizerThread(QThread):
 
                 else:
                     if not switch_manual:
-                        self.error_msg.emit("Camera reading failed, please make sure the camera is available!\n"
+                        self.error_msg.emit("Camera reading failed, please make sure the seleted camera is available!\n"
                                             "Switching to input detection for now...")
                         log.warning("Read Camera Failed, switching to input detection....")
                     self.activity_tracking()
