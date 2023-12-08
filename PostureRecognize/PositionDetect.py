@@ -51,10 +51,10 @@ class PostureRecognizerThread(QThread):
             method = int(self.values.get('detection_method'))
             cap = None
             switch_manual = False
+            att = cv2.CAP_MSMF
             if method == 0:
-                att = cv2.CAP_DSHOW
                 if int(self.values.get('camera_attr')) == 1:
-                    att = cv2.CAP_MSMF
+                    att = cv2.CAP_DSHOW
                 # Create a VideoCapture object to capture video from the camera
                 cap = cv2.VideoCapture(int(self.values.get('camera')), att)
                 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
@@ -105,6 +105,7 @@ class PostureRecognizerThread(QThread):
                     log.warning("Camera not available")
                 else:
                     ret, frame = cap.read()
+
                     if not ret and not switch:
                         switch = True
                         log.error("Error reading frame")
